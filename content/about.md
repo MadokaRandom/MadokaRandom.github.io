@@ -1,7 +1,7 @@
 ---
 title: "About"
 date: 2021-04-13T00:00:00+08:00
-lastmod: 2021-04-13T21:07:15+08:00
+lastmod: 2021-04-14T16:13:23+08:00
 tags: ["about"]
 draft: false
 weight: 1
@@ -12,16 +12,12 @@ menu:
     identifier: "about"
 ---
 
-A brick carrier whos studies physical chemistry.
+A Ph.D candidate who majors in physical chemistry.
 
-Now he is busy studying for his Ph.D degree.
-
-Levels from <https://english.stackexchange.com/questions/83832/list-of-expertise-levels-from-beginner-to-expert>
-
-| Abilities | level    |
-|-----------|----------|
-| C/C++     | Beginner |
-| Rust      | Beginner |
-| LaTeX     | Newbie   |
-| VASP      | Beginner |
-| Linux     | Beginner |
+| Abilities | [Level](https://english.stackexchange.com/questions/83832/list-of-expertise-levels-from-beginner-to-expert) |
+|-----------|-------------------------------------------------------------------------------------------------------------|
+| C/C++     | Beginner                                                                                                    |
+| Rust      | Beginner                                                                                                    |
+| LaTeX     | Newbie                                                                                                      |
+| VASP      | Beginner                                                                                                    |
+| Linux     | Beginner                                                                                                    |
