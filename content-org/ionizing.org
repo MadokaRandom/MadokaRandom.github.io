@@ -106,7 +106,10 @@ string)
   =:EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :katex true :markup goldmark= 。
 
    此时 =\(F=ma\)= 表示 inline equation ，输出 \(F=ma\) ； =\[F=ma\]= 表示
-   displaystyle equation， jj形式插入当前窗口），重复这个操作可以关闭预览。
+  displaystyle equation 。（冷知识[fn::
+  https://orgmode.org/worg/org-tutorials/org-latex-preview.html]： Orgmode 支持
+  即时渲染公式： =C-c C-x C-l= 会把当前公式渲染好并以 png 的形式插入当前窗口，重
+  复这个操作可以关闭预览）
 
    现在试试一个稍稍复杂点的公式：
 
@@ -136,8 +139,8 @@ string)
 3. 使用图床：现在 GitHub ， GitLab 等也可以用作图床，并且有成熟的软件来做这件事
    比如 PicGo[fn:: https://github.com/Molunerfinn/PicGo] 。把图片传给图床后，图
    床会返回一个链接，直接把它贴在 orgmode 里就能实现引用图片的效果。但之前我用七
-   牛云的图床一段时间后七牛云直接拒绝被薅，改了域名，我也就对图床产生一些顾虑 +，
-   而且使用图床后一个缺点是，它降低了每篇文章 的内聚度，增加了对外部的耦合（掉个
+   牛云的图床一段时间后七牛云直接拒绝被薅，改了域名，我也就对图床产生一些顾虑
+   +，而且使用图床后一个缺点是，它降低了每篇文章的内聚度，增加了对外部的耦合（掉个
    书袋233）+ 。
 
 因此我还是决定把图片等外部文件放在 =<HUGO_BASE_DIR>/content-org/= 里，每篇文章单
