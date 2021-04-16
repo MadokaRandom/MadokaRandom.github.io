@@ -54,10 +54,11 @@ PygmentsOptions = "linenos=table"
   weight = 40
   identifier = "categories"
   url = "/categories/"
-# [[menu.main]]
-#   name = "external-link"
-#   weight = 50
-#   url = "https://gohugo.io"
+ # [[menu.main]]
+ #   name = "External-link"
+ #   weight = 50
+ #   identifier = "external-link"
+ #   url = "/external-link/"
 
 summaryLength = 30
 [params]

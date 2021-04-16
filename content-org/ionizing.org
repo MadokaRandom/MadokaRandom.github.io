@@ -9,6 +9,7 @@
 
 * Table of Contents    :TOC_2:
 - [[#about][About]]
+- [[#external-link][External-link]]
 - [[#posts][Posts]]
   - [[#新的旅程][新的旅程]]
   - [[#记一次-julia-代码性能优化过程][记一次 Julia 代码性能优化过程]]
@@ -29,14 +30,33 @@ CLOSED: [2021-4-13 Tue]
 
 A Ph.D candidate who majors in physical chemistry.
 
-| Abilities | Level[fn:: https://english.stackexchange.com/questions/83832/list-of-expertise-levels-from-beginner-to-expert] |
-|-----------+----------------------------------------------------------------------------------------------------------------|
-| C/C++     | Beginner                                                                                                       |
-| Rust      | Beginner                                                                                                       |
-| LaTeX     | Newbie                                                                                                         |
-| VASP      | Beginner                                                                                                       |
-| Linux     | Beginner                                                                                                       |
+| Abilities | Level[fn:1] |
+|-----------+-------------|
+| C/C++     | Beginner    |
+| Rust      | Beginner    |
+| LaTeX     | Newbie      |
+| VASP      | Beginner    |
+| Linux     | Beginner    |
 
+[fn:1] https://english.stackexchange.com/questions/83832/list-of-expertise-levels-from-beginner-to-expert
+
+
+* DONE External-link
+CLOSED: [2021-04-16 Fri 21:26]
+:PROPERTIES:
+:EXPORT_FILE_NAME: external-link
+:EXPORT_HUGO_SECTION: ./
+:EXPORT_HUGO_MENU: :menu main
+:EXPORT_HUGO_CUSTOM_FRONT_MATTER: :weight 60
+:EXPORT_DATE: [2021-04-16]
+:END:
+
+|-----------+-----------------------------------|
+| Person    | Link                              |
+|-----------+-----------------------------------|
+| Liam0205  | https://liam.page/about/          |
+| Mr. Joker | https://mrjokersince1997.gitee.io |
+|-----------+-----------------------------------|
 
 
 * Posts                :Posts:
