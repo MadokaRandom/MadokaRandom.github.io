@@ -1,7 +1,6 @@
 ---
 title: "About"
 date: 2021-04-13T00:00:00+08:00
-lastmod: 2021-04-16T13:29:43+08:00
 tags: ["about"]
 draft: false
 weight: 1

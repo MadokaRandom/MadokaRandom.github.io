@@ -1,7 +1,6 @@
 ---
 title: "记一次 Julia 代码性能优化过程"
 date: 2021-04-16T13:06:00+08:00
-lastmod: 2021-04-16T13:29:43+08:00
 tags: ["Posts", "Julia", "Optimization", "ParallelProgramming"]
 categories: ["Programming"]
 draft: false
