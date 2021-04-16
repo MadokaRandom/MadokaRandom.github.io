@@ -12,5 +12,5 @@
 &lt;li>&lt;a href="#slab-%E8%A1%AC%E5%BA%95%E5%B1%82%E6%95%B0%E7%9A%84%E6%B5%8B%E8%AF%95">Slab 衬底层数的测试&lt;/a>&lt;/li>
 &lt;/ul>
 &lt;!-- raw HTML omitted -->
-&lt;p>一般而言，在使用 VASP 计算体系之前都需要对一些参数做收敛性测试，侯老师曾写过一本
-VASP 入门手册，里面给了一些测试计算参数的小脚本，这里我也给出一些我经常用的收敛性测试脚本，权当抛砖引玉了。&lt;/p></description></item></channel></rss>
+&lt;p>一般而言，在使用 VASP 计算体系之前都需要对一些参数做收敛性测试，侯老师&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>
+曾写过一本VASP 入门手册，里面给了一些测试计算参数的小脚本，这里我也给出一些我经常用的收敛性测试脚本，权当抛砖引玉了。&lt;/p></description></item></channel></rss>

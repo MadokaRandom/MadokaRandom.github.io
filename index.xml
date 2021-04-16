@@ -50,8 +50,8 @@
 &lt;li>&lt;a href="#slab-%E8%A1%AC%E5%BA%95%E5%B1%82%E6%95%B0%E7%9A%84%E6%B5%8B%E8%AF%95">Slab 衬底层数的测试&lt;/a>&lt;/li>
 &lt;/ul>
 &lt;!-- raw HTML omitted -->
-&lt;p>一般而言，在使用 VASP 计算体系之前都需要对一些参数做收敛性测试，侯老师曾写过一本
-VASP 入门手册，里面给了一些测试计算参数的小脚本，这里我也给出一些我经常用的收敛性测试脚本，权当抛砖引玉了。&lt;/p>
+&lt;p>一般而言，在使用 VASP 计算体系之前都需要对一些参数做收敛性测试，侯老师&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>
+曾写过一本VASP 入门手册，里面给了一些测试计算参数的小脚本，这里我也给出一些我经常用的收敛性测试脚本，权当抛砖引玉了。&lt;/p>
 &lt;p>本文提供的测试脚本可以写进提交任务的脚本中，进而充分利用超算上多核、多节点的计算资源。需要注意的是，这些脚本本身并不产生 VASP 的输入文件，而是在已有的文件基础上进行修改。&lt;/p>
 &lt;h2 id="sigma-的测试">&lt;code>SIGMA&lt;/code> 的测试&lt;/h2>
 &lt;p>和上面的使用前提一样， INCAR 应提前准备好。 SIGMA 收敛的标准通常是 dE 绝对值小于
@@ -187,7 +187,7 @@ tail -1 a.txt
 &lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;h3 id="晶格长度的测试">晶格长度的测试&lt;/h3>
-&lt;p>在测试晶格的角度、长度时就不得不使用其它包了，Python 的 ASE 包提供了相对完善的基础设施，这里在使用它来辅助完成晶格测试的工作。另外，在测试 Slab 的真空层厚度时也可以使用这个脚本&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>。&lt;/p>
+&lt;p>在测试晶格的角度、长度时就不得不使用其它包了，Python 的 ASE 包提供了相对完善的基础设施，这里在使用它来辅助完成晶格测试的工作。另外，在测试 Slab 的真空层厚度时也可以使用这个脚本&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup>。&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre class="chroma">&lt;code>&lt;span class="lnt"> 1
@@ -233,7 +233,7 @@ tail -1 a.txt
 &lt;span class="k">pass&lt;/span>
 &lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>用户可以根据自己需要随意更改晶格的参数，具体的需求可以通过阅读 ASE 的文档&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup>来实现，这里就不一一列举了。&lt;/p>
+&lt;/div>&lt;p>用户可以根据自己需要随意更改晶格的参数，具体的需求可以通过阅读 ASE 的文档&lt;sup id="fnref:3">&lt;a href="#fn:3" class="footnote-ref" role="doc-noteref">3&lt;/a>&lt;/sup>来实现，这里就不一一列举了。&lt;/p>
 &lt;h2 id="slab-衬底层数的测试">Slab 衬底层数的测试&lt;/h2>
 &lt;p>一般而言，结构建模都是在 Materials Studio 上完成的（我现在也是如此），但如果有对
 Slab 衬底做收敛性测试的需求，还是要借助一下 ASE ，它也内置一了些常见的 Slab 。&lt;/p>
@@ -291,18 +291,21 @@ Slab 衬底做收敛性测试的需求，还是要借助一下 ASE ，它也内�
 &lt;span class="k">pass&lt;/span>
 &lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>对于其它金属， ASE 也有支持，详细说明请看它的文档&lt;sup id="fnref:3">&lt;a href="#fn:3" class="footnote-ref" role="doc-noteref">3&lt;/a>&lt;/sup>。&lt;/p>
+&lt;/div>&lt;p>对于其它金属， ASE 也有支持，详细说明请看它的文档&lt;sup id="fnref:4">&lt;a href="#fn:4" class="footnote-ref" role="doc-noteref">4&lt;/a>&lt;/sup>。&lt;/p>
 &lt;section class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
 &lt;li id="fn:1" role="doc-endnote">
-&lt;p>这个脚本要求晶格的 c 轴垂直于 a 轴和 b 轴 &lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://github.com/orivenlikon/vaspDoc/blob/master/%5Bmuchong.com%5Dvasp%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97-%E5%A4%8D%E6%97%A6-%E4%BE%AF%E6%9F%B1%E5%B3%B0.pdf">https://github.com/orivenlikon/vaspDoc/blob/master/%5Bmuchong.com%5Dvasp%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97-%E5%A4%8D%E6%97%A6-%E4%BE%AF%E6%9F%B1%E5%B3%B0.pdf&lt;/a> &lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;li id="fn:2" role="doc-endnote">
-&lt;p>&lt;a href="https://wiki.fysik.dtu.dk/ase/ase/atoms.html">https://wiki.fysik.dtu.dk/ase/ase/atoms.html&lt;/a> 和 &lt;a href="https://wiki.fysik.dtu.dk/ase/ase/geometry.html">https://wiki.fysik.dtu.dk/ase/ase/geometry.html&lt;/a> &lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;p>这个脚本要求晶格的 c 轴垂直于 a 轴和 b 轴 &lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;li id="fn:3" role="doc-endnote">
-&lt;p>&lt;a href="https://wiki.fysik.dtu.dk/ase/ase/build/build.html">https://wiki.fysik.dtu.dk/ase/ase/build/build.html&lt;/a> &lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://wiki.fysik.dtu.dk/ase/ase/atoms.html">https://wiki.fysik.dtu.dk/ase/ase/atoms.html&lt;/a> 和 &lt;a href="https://wiki.fysik.dtu.dk/ase/ase/geometry.html">https://wiki.fysik.dtu.dk/ase/ase/geometry.html&lt;/a> &lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:4" role="doc-endnote">
+&lt;p>&lt;a href="https://wiki.fysik.dtu.dk/ase/ase/build/build.html">https://wiki.fysik.dtu.dk/ase/ase/build/build.html&lt;/a> &lt;a href="#fnref:4" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
 &lt;/section></description></item><item><title>记一次 Julia 代码性能优化过程</title><link>http://ionizing.page/post/a-try-on-julia-code-optimization/</link><pubDate>Fri, 16 Apr 2021 13:06:00 +0800</pubDate><guid>http://ionizing.page/post/a-try-on-julia-code-optimization/</guid><description>&lt;!-- raw HTML omitted -->
