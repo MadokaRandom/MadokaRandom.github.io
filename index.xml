@@ -262,7 +262,7 @@ using Distributions;
 0.2929698750637693
 &lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>一个 Float64 的值有 64 位，共 4 字节（bytes），而刚刚代码中所返回只有一个
+&lt;/div>&lt;p>一个 Float64 的值有 64 位，共 8 字节（bytes），而刚刚代码中所返回只有一个
 Float64 元素的 Array 竟然有 96 字节！既然我们每次只需要返回一个值，那为什么要画蛇添足去生成一个 Array 呢，直接调用只生成一个值的原型不好吗？&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
