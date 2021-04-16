@@ -1,4 +1,764 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Ionizing Radiation</title><link>http://ionizing.page/</link><description>Recent content on Ionizing Radiation</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Wed, 14 Apr 2021 16:15:00 +0800</lastBuildDate><atom:link href="http://ionizing.page/index.xml" rel="self" type="application/rss+xml"/><item><title>新的旅程</title><link>http://ionizing.page/post/a-new-journey/</link><pubDate>Wed, 14 Apr 2021 16:15:00 +0800</pubDate><guid>http://ionizing.page/post/a-new-journey/</guid><description>&lt;!-- raw HTML omitted -->
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Ionizing Radiation</title><link>http://ionizing.page/</link><description>Recent content on Ionizing Radiation</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Fri, 16 Apr 2021 13:06:00 +0800</lastBuildDate><atom:link href="http://ionizing.page/index.xml" rel="self" type="application/rss+xml"/><item><title>记一次 Julia 代码性能优化过程</title><link>http://ionizing.page/post/a-try-on-julia-code-optimization/</link><pubDate>Fri, 16 Apr 2021 13:06:00 +0800</pubDate><guid>http://ionizing.page/post/a-try-on-julia-code-optimization/</guid><description>&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;ul>
+&lt;li>&lt;a href="#%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83">运行环境&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E4%BC%98%E5%8C%96%E8%BF%87%E7%A8%8B">优化过程&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#%E5%8E%9F%E5%A7%8B%E7%89%88%E6%9C%AC">原始版本&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E4%BD%BF%E7%94%A8-c-ffi-%E7%9A%84-rgamma-%E4%B8%8E-rnorm">使用 C-ffi 的 &lt;code>rgamma&lt;/code> 与 &lt;code>rnorm&lt;/code>&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E5%8E%BB%E9%99%A4%E5%A4%96%E9%83%A8%E4%BE%9D%E8%B5%96">去除外部依赖&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E6%83%85%E5%86%B5%E5%88%86%E6%9E%90">内存分配情况分析&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E5%8E%BB%E9%99%A4%E5%86%85%E5%B1%82%E5%BE%AA%E7%8E%AF%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D">去除内层循环的内存分配&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E5%8E%BB%E9%99%A4%E5%A4%96%E5%B1%82%E5%BE%AA%E7%8E%AF%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D">去除外层循环的内存分配&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E4%BD%BF%E7%94%A8%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%8A%A0%E9%80%9F">使用多线程加速&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#%E6%80%BB%E7%BB%93">总结&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;!-- raw HTML omitted -->
+&lt;p>这是和某三爷讨论后对交流内容的整理。&lt;/p>
+&lt;p>众所周知， Julia 是一种高级通用动态编程语言，它专为科学计算而生。为了方便科研人员使用，它的语法被设计得很像 MATLAB ，但比 MATLAB 更合理（譬如数组引用使用 &lt;code>[]&lt;/code>
+，而不是 &lt;code>()&lt;/code> ）。作为一门很年轻的语言，它吸收了前辈们的很多优点，也有着自己的特色，但最受人青睐的一点在于：尽管它是一门动态语言，却宣称拥有 C/C++ 一般的性能。
+一般而言，动态语言的表现能力更为出色，能用更少的代码做更多的事，开发效率高；而静态语言的编译器后端更容易优化，运行效率高。Julia 有动态性，开发效率毋庸置疑，一些测评也显示 Julia 确实拥有很强的性能，但这是否意味着你随手写的一段代码就能有很高并且达到预期的性能？我看未必。&lt;/p>
+&lt;h2 id="运行环境">运行环境&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Processor&lt;/th>
+&lt;th>Intel Core i5 9600KF&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>Memory&lt;/td>
+&lt;td>16GB 3200GMHz&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>OS&lt;/td>
+&lt;td>macOS 10.15.6&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Julia&lt;/td>
+&lt;td>1.5.1&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h2 id="优化过程">优化过程&lt;/h2>
+&lt;h3 id="原始版本">原始版本&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>&lt;/h3>
+&lt;p>废话不多说，直接开始正题，先来看今天的主角&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-fallback" data-lang="fallback">using Rmath;
+using BenchmarkTools;
+function JGibbs1(N::Int, thin::Int)
+mat = zeros(Float64, N, 2)
+x = 0.
+y = 0.
+for i = 1:N
+for j = 1:thin
+x = rgamma(1, 3, 1/(y*y + 4))[1]
+y = rnorm(1, 1/(x+1), 1/sqrt(2(x + 1)))[1]
+end
+mat[i,:] = [x,y]
+end
+mat
+end;
+@btime JGibbs1(20000, 200);
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这是一段关于 Gibbs 采样的代码，它主要由两个循环组成，外部循环一次产生两个值，内部循环是迭代式的，即下一次循环要用到上次循环的结果。很明显它引入了 R 的库，并用
+R 的 &lt;code>rgamma&lt;/code> 和 &lt;code>rnorm&lt;/code> 实现，那么它的性能是怎样的呢？&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-text" data-lang="text"> 501.798 ms (8020002 allocations: 734.56 MiB)
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>根据原文的说法，它的性能已经比 &lt;code>Rgibbs&lt;/code> 快 17 倍，比 &lt;code>RCgibbs&lt;/code> 快 13 倍，已经是比较令人满意的结果了。&lt;/p>
+&lt;h3 id="使用-c-ffi-的-rgamma-与-rnorm">使用 C-ffi 的 &lt;code>rgamma&lt;/code> 与 &lt;code>rnorm&lt;/code>&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>&lt;/h3>
+&lt;p>由于直接用 R 写的代码可能并不是最快的，而且它还在内层循环里，所以我们有理由相信使用 C-ffi&lt;sup id="fnref:3">&lt;a href="#fn:3" class="footnote-ref" role="doc-noteref">3&lt;/a>&lt;/sup> 版的 &lt;code>rgamma&lt;/code> 与 &lt;code>rnorm&lt;/code> 会更快。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-fallback" data-lang="fallback">using Rmath
+import Rmath: libRmath
+using BenchmarkTools
+function JGibbs2(N::Int, thin::Int)
+mat = zeros(Float64, N, 2)
+x = 0.
+y = 0.
+for i = 1:N
+for j = 1:thin
+x = ccall((:rgamma, libRmath), Float64, (Float64, Float64), 3., 1/(y*y + 4))
+y = ccall((:rnorm, libRmath), Float64, (Float64, Float64), 1/(x+1), 1/sqrt(2*(x + 1)))
+end
+mat[i,:] = [x,y]
+end
+mat
+end
+@btime JGibbs2(20000, 200);
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-text" data-lang="text">JGibbs2 (generic function with 1 method)
+259.387 ms (20002 allocations: 2.14 MiB)
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>果然，使用 C-ffi 版的函数后性能又提升了一倍！&lt;/p>
+&lt;h3 id="去除外部依赖">去除外部依赖&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>&lt;/h3>
+&lt;p>尽管使用 C 的实现后， &lt;code>JGibbs&lt;/code> 性能提升巨大，但依赖外部库多少有点让人感觉不爽，
+毕竟它和 Julia 所宣称的高性能关系不是很大（核心部分是 C 的贡献，而不是 Julia）。
+既然 Julia 也是高性能语言，何不拿纯 Julia 写一个 &lt;code>JGibbs&lt;/code> 来比比？&lt;/p>
+&lt;p>Julia 是为科学计算而生，它的社区维护了一个统计学库 &lt;code>Distributions&lt;/code> ，里面包含了
+&lt;code>gamma&lt;/code> 与 &lt;code>norm&lt;/code> 分布的函数，可以用来替换 &lt;code>rgamma&lt;/code> 和 &lt;code>rnorm&lt;/code> ，写完之后是这个样子：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-fallback" data-lang="fallback">using BenchmarkTools;
+using Distributions;
+function JGibbs3(N::Int, thin::Int)
+mat = zeros(Float64, N, 2)
+x = 0.
+y = 0.
+for i = 1:N
+for j = 1:thin
+x = rand(Gamma(3, 1/(y^2 + 4)), 1)[1]
+y = rand(Normal(1/(x + 1), 1/sqrt(2*(x + 1))), 1)[1]
+end
+mat[i,:] = [x,y]
+end
+mat
+end
+@btime JGibbs3(20000, 200);
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-text" data-lang="text">JGibbs3 (generic function with 1 method)
+550.624 ms (8020002 allocations: 734.56 MiB)
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>咦？看起来它还没有使用 R-ffi 的函数快！&lt;/p>
+&lt;p>那么问题出在哪呢？仔细看结果，除了时间之外还有两个数据，一个是执行一次该函数时所分配内存的次数，另一个是函数执行期间分配内存的总量。我们回头看一下使用 C-ffi 的版本，它的测试结果显示除了性能更强外，内存分配的次数和总量也更少！而且 8020002
+恰好是 20002 的 400 倍左右，正好是 &lt;code>thin=200&lt;/code> 的 2 倍。据此，我们可以猜想，在
+&lt;code>for j=1:thin ... end&lt;/code> 内部存在不必要的内存分配。&lt;/p>
+&lt;p>下面来进行验证。&lt;/p>
+&lt;h3 id="内存分配情况分析">内存分配情况分析&lt;/h3>
+&lt;p>取出循环内的一行代码，对它进行 profile ：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-fallback" data-lang="fallback">using BenchmarkTools;
+using Distributions;
+@btime rand(Gamma(1.0, 1.0), 1)[1];
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-text" data-lang="text"> 39.136 ns (1 allocation: 96 bytes)
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>奇怪，一个只返回一个 Float64 值的函数怎么会存在内存分配？仔细看 &lt;code>[1]&lt;/code> 这个细节，
+问题可能出在这里。通过查看文档，发现 &lt;code>rand(Gamma(...), 1)&lt;/code> 中最后一个参数表示返回一个一维的 Array ，并且 Array 的大小是 1 ：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-fallback" data-lang="fallback">using BenchmarkTools;
+using Distributions;
+@btime rand(Gamma(1.0, 1.0), 1)
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-text" data-lang="text"> 37.541 ns (1 allocation: 96 bytes)
+1-element Array{Float64,1}:
+0.2929698750637693
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>一个 Float64 的值有 64 位，共 4 字节（bytes），而刚刚代码中所返回只有一个
+Float64 元素的 Array 竟然有 96 字节！既然我们每次只需要返回一个值，那为什么要画蛇添足去生成一个 Array 呢，直接调用只生成一个值的原型不好吗？&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-fallback" data-lang="fallback">using BenchmarkTools;
+using Distributions;
+@btime rand(Gamma(1.0, 1.0), 1)
+@btime rand(Gamma(1.0, 1.0))
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-text" data-lang="text"> 37.217 ns (1 allocation: 96 bytes)
+1-element Array{Float64,1}:
+0.9938638399122478
+8.116 ns (0 allocations: 0 bytes)
+1.8038508272928604
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>看，直接使用 &lt;code>rand(Gamma(...))&lt;/code> 耗时只有 &lt;code>rand(Gamma(...), 1)&lt;/code> 的 22% ，并且内存的分配是 0 ！&lt;/p>
+&lt;p>有了这些结论，我们对 &lt;code>JGibbs3&lt;/code> 修改后，有了下面的代码。&lt;/p>
+&lt;h3 id="去除内层循环的内存分配">去除内层循环的内存分配&lt;/h3>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-fallback" data-lang="fallback">using BenchmarkTools;
+using Distributions;
+function JGibbs4(N::Int, thin::Int)
+mat = zeros(Float64, N, 2)
+x = 0.
+y = 0.
+for i = 1:N
+for j = 1:thin
+x = rand(Gamma(3, 1/(y*y + 4)))
+y = rand(Normal(1/(x + 1), 1/sqrt(2*(x + 1))))
+end
+mat[i,:] = [x,y]
+end
+mat
+end
+@btime JGibbs4(20000, 200);
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-text" data-lang="text">JGibbs4 (generic function with 1 method)
+251.144 ms (20002 allocations: 2.14 MiB)
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这个耗时结果就正常多了，而且比调用 C-ffi 的版本还快了一丢丢；内存的分配也没那么夸张了。&lt;/p>
+&lt;h3 id="去除外层循环的内存分配">去除外层循环的内存分配&lt;/h3>
+&lt;p>但这并不是它的性能极限：它依然有 20002 次的内存分配。仔细观察外层循环部分，只有一个 &lt;code>mat[i,:] = [x,y]&lt;/code> ，通常人们会认为编译器把它循环展开，不涉及内存分配，但事实并非如此：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-fallback" data-lang="fallback">using BenchmarkTools
+mat = zeros(Int, 2, 2);
+@btime mat[1, :] = [1, 2];
+@btime mat[:, 1] = [1, 2];
+@btime begin
+mat[1, 1] = 1;
+mat[1, 2] = 2;
+end;
+@btime begin
+mat[1, 1] = 1;
+mat[2, 1] = 2;
+end;
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-text" data-lang="text"> 259.485 ns (2 allocations: 112 bytes)
+220.621 ns (2 allocations: 112 bytes)
+28.665 ns (0 allocations: 0 bytes)
+27.603 ns (0 allocations: 0 bytes)
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>我们可以得出三个结论：&lt;/p>
+&lt;ol>
+&lt;li>在使用切片赋值时会涉及内存分配，直接使用循环则不会；&lt;/li>
+&lt;li>小矩阵赋值时使用循环甚至手动展开循环性能更高；&lt;/li>
+&lt;li>Julia 的 Array 使用列主序，对第一个维度操作比对其它维度操作性能更高，但提升幅
+度有限。&lt;/li>
+&lt;/ol>
+&lt;p>于是我们把 &lt;code>JGibbs4&lt;/code> 中外层循环的矩阵赋值展开，得到 &lt;code>JGibbs5&lt;/code>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-fallback" data-lang="fallback">using BenchmarkTools;
+using Distributions;
+function JGibbs5(N::Int, thin::Int)
+mat = zeros(Float64, N, 2)
+x = 0.
+y = 0.
+for i = 1:N
+for j = 1:thin
+x = rand(Gamma(3, 1/(y*y + 4)))
+y = rand(Normal(1/(x + 1), 1/sqrt(2*(x + 1))))
+end
+mat[i,1] = x;
+mat[i,2] = y;
+end
+mat
+end
+@btime JGibbs5(20000, 200);
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-text" data-lang="text">JGibbs5 (generic function with 1 method)
+229.861 ms (2 allocations: 312.58 KiB)
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>它比 &lt;code>JGibbs4&lt;/code> 又快了 20ms ！而且其中内存分配只有两次，已经相当令人满意了。如果要进一步压榨它的性能潜力，我们可以交换 &lt;code>mat&lt;/code> 的行列，使外层循环每次赋值时都在访问第一个维度，限于篇幅原因，这里就不展开了。&lt;/p>
+&lt;h3 id="使用多线程加速">使用多线程加速&lt;/h3>
+&lt;p>上面使用的方法都是在一个线程内操作，现在的机器普遍都用上的多核处理器，而超算上更是单节点上配备了数十个处理器，如此多的计算资源不利用好岂不是暴殄天物。&lt;/p>
+&lt;p>那么 &lt;code>JGibbs&lt;/code> 函数能被并行化吗？答案是肯定的。&lt;/p>
+&lt;p>它的内层循环粒度太小，线程切换的耗时占比太高，因此内层循环不适合并行化。而外层循环的粒度适中，我们试试将它并行化。&lt;/p>
+&lt;!-- raw HTML omitted -->
+&lt;ul>
+&lt;li>
+&lt;p>直接使用 &lt;code>Threads.@threads&lt;/code>&lt;/p>
+&lt;p>Julia 原生支持多线程编程，并且提供了 &lt;code>Threads.@threads&lt;/code> 宏来方便对循环并行化，于
+是就有了下面的代码&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-fallback" data-lang="fallback">println(&amp;#34;nthreads = &amp;#34;, Threads.nthreads())
+using BenchmarkTools;
+using Distributions;
+function JGibbs6(N::Int, thin::Int)
+mat = zeros(Float64, N, 2)
+x = 0.
+y = 0.
+Threads.@threads for i = 1:N
+for j = 1:thin
+x = rand(Gamma(3, 1/(y*y + 4)))
+y = rand(Normal(1/(x + 1), 1/sqrt(2*(x + 1))))
+end
+mat[i,1] = x;
+mat[i,2] = y;
+end
+mat
+end
+@btime JGibbs6(20000, 200);
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-text" data-lang="text">nthreads = 6
+JGibbs6 (generic function with 1 method)
+420.151 ms (52000035 allocations: 915.84 MiB)
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>&lt;sup id="fnref:4">&lt;a href="#fn:4" class="footnote-ref" role="doc-noteref">4&lt;/a>&lt;/sup>&lt;/p>
+&lt;p>这个结果很离谱。先不谈运行时间，单看它的内存分配量就知道它绝对是有问题的（至于为
+什么多出来这么多的内存分配，我也还在寻找原因，如果您有什么见解，请务必发邮件告诉
+我 ^_^）， &lt;code>Julia&lt;/code> 一共开了 6 个线程来加速，但结果显示它反而使运行效率降低了，问
+题出在哪呢？仔细看代码&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-fallback" data-lang="fallback"> x = 0.
+y = 0.
+Threads.@threads for i = 1:N
+for j = 1:thin
+x = rand(Gamma(3, 1/(y*y + 4)))
+y = rand(Normal(1/(x + 1), 1/sqrt(2*(x + 1))))
+end
+...
+end
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>每个线程内，都要对全局变量 &lt;code>x&lt;/code> 和 &lt;code>y&lt;/code> 进行修改，并且还要读取它们的值，这显然存在
+竞争的现象。那如果把 &lt;code>x&lt;/code> 和 &lt;code>y&lt;/code> 移动到每个线程内部定义呢？&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-fallback" data-lang="fallback">println(&amp;#34;nthreads = &amp;#34;, Threads.nthreads())
+using BenchmarkTools;
+using Distributions;
+function JGibbs6_1(N::Int, thin::Int)
+mat = zeros(Float64, N, 2)
+Threads.@threads for i = 1:N
+x = rand()
+y = rand()
+for j = 1:thin
+x = rand(Gamma(3, 1/(y*y + 4)))
+y = rand(Normal(1/(x + 1), 1/sqrt(2*(x + 1))))
+end
+mat[i,1] = x;
+mat[i,2] = y;
+end
+mat
+end
+@btime JGibbs6_1(20000, 200);
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-text" data-lang="text">nthreads = 6
+JGibbs6_1 (generic function with 1 method)
+39.926 ms (33 allocations: 316.75 KiB)
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这个结果相当令人满意了，内存的分配降低很多，看来读写全局的变量对并发程序性能影响
+还是不容忽略！&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;!-- raw HTML omitted -->
+&lt;ul>
+&lt;li>
+&lt;p>对外层循环分组后并行&lt;/p>
+&lt;p>除了直接用 &lt;code>@threads&lt;/code> ，我们还可以手动对外部循环分组嘛，然后每个线程分配到一小段
+连续的外层循环，相当于粒度更大。&lt;/p>
+&lt;p>&lt;code>Iterators&lt;/code> 提供了对 &lt;code>Array&lt;/code> 分组的方法：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-text" data-lang="text">help?&amp;gt; Iterators.partition
+partition(collection, n)
+Iterate over a collection n elements at a time.
+Examples
+≡≡≡≡≡≡≡≡≡≡
+julia&amp;gt; collect(Iterators.partition([1,2,3,4,5], 2))
+3-element Array{SubArray{Int64,1,Array{Int64,1},Tuple{UnitRange{Int64}},true},1}:
+[1, 2]
+[3, 4]
+[5]
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>利用这个函数，我们对外层循环的下标分组，然后每个线程只操作一组下标，这样有效避免了数据竞争发生。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-fallback" data-lang="fallback">using BenchmarkTools;
+using Distributions;
+println(&amp;#34;nthreads = &amp;#34;, Threads.nthreads())
+function JGibbs7(N::Int, thin::Int)
+nt = Threads.nthreads()
+# mat = zeros(Float64, N, 2)
+mat = zeros(Float64, N, 2)
+# partition
+parts = Iterators.partition(1:N, N ÷ Threads.nthreads() + 1) |&amp;gt; collect
+Threads.@threads for p in parts
+x = 0.
+y = 0.
+for i in p
+for j in 1:thin
+x = rand(Gamma(3, 1/(y^2 + 4)))
+y = rand(Normal(1/(x + 1), 1/sqrt(2*(x + 1))))
+end
+mat[i,1] = x
+mat[i,2] = y
+end
+end
+mat
+end
+@btime JGibbs7(20000, 200);
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-text" data-lang="text">nthreads = 6
+JGibbs7 (generic function with 1 method)
+41.631 ms (34 allocations: 316.91 KiB)
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这个结果和 &lt;code>JGibbs6_1&lt;/code> 相差不大，都是已经充分利用了 6 个线程的计算资源。&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="总结">总结&lt;/h2>
+&lt;p>本文从一名用户的角度，浅显地阐述了如何对一个函数进行优化，以及如何使用各类工具来帮助我们分析程序的运行状况。我得出以下几个结论，供大家参考：&lt;/p>
+&lt;ol>
+&lt;li>使用纯 Julia 编写的程序性能的 &lt;strong>上限&lt;/strong> 很高，完全不输于调用 FFI ，因此大家对此
+不应有过多的顾虑，直接用就完事了；&lt;/li>
+&lt;li>尽管我们认为处理器的计算是耗时大头，程序运行时的内存反复分配也可能成为程序运
+行的瓶颈；&lt;/li>
+&lt;li>在使用并发加速时应格外小心是否存在竞争的风险，能做到内聚就尽量做到内聚，否则
+将来总会掉到坑里；&lt;/li>
+&lt;li>想发挥出 Julia 真正的性能，还是需要下一些功夫的，随手一写还真不一定比其它语言
+快；好在 Julia 社区提供了实用的性能分析工具，大大简化了优化的流程，这一点我十
+分赞赏。&lt;/li>
+&lt;/ol>
+&lt;section class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1" role="doc-endnote">
+&lt;p>代码来自三爷的 gist : &lt;a href="https://gist.github.com/MitsuhaMiyamizu/5edf031a36cfb260381a70060a3fea4a">https://gist.github.com/MitsuhaMiyamizu/5edf031a36cfb260381a70060a3fea4a&lt;/a> &lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:2" role="doc-endnote">
+&lt;p>这里使用 BenchmarkTools 中的 &lt;code>@btime&lt;/code> 而不是 &lt;code>@time&lt;/code> 是因为后者并不能将代 码编译的时间去掉，前者则能多次执行，取耗时最小值，有效避免了 AOT 对计时的影响。 &lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:3" role="doc-endnote">
+&lt;p>ffi 即 Foreign function interface ，用于跨语言调函数，详见 &lt;a href="https://en.wikipedia.org/wiki/Foreign%5Ffunction%5Finterface">https://en.wikipedia.org/wiki/Foreign%5Ffunction%5Finterface&lt;/a> &lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:4" role="doc-endnote">
+&lt;p>我在启动 &lt;code>julia&lt;/code> 前对环境变量进行了修改 &lt;code>export JULIA_NUM_THREADS=6&lt;/code> ，这 样 Julia 在运行时支持最大 6 个线程操作。 &lt;a href="#fnref:4" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/section></description></item><item><title>新的旅程</title><link>http://ionizing.page/post/a-new-journey/</link><pubDate>Wed, 14 Apr 2021 16:15:00 +0800</pubDate><guid>http://ionizing.page/post/a-new-journey/</guid><description>&lt;!-- raw HTML omitted -->
 &lt;!-- raw HTML omitted -->
 &lt;ul>
 &lt;li>&lt;a href="#%E5%9B%9E%E5%BD%92">回归&lt;/a>&lt;/li>
@@ -152,7 +912,7 @@ displaystyle equation 。（冷知识&lt;sup id="fnref:3">&lt;a href="#fn:3" cla
 &lt;thead>
 &lt;tr>
 &lt;th>Abilities&lt;/th>
-&lt;th>&lt;a href="https://english.stackexchange.com/questions/83832/list-of-expertise-levels-from-beginner-to-expert">Level&lt;/a>&lt;/th>
+&lt;th>Level&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>&lt;/th>
 &lt;/tr>
 &lt;/thead>
 &lt;tbody>
@@ -177,4 +937,12 @@ displaystyle equation 。（冷知识&lt;sup id="fnref:3">&lt;a href="#fn:3" cla
 &lt;td>Beginner&lt;/td>
 &lt;/tr>
 &lt;/tbody>
-&lt;/table></description></item></channel></rss>
+&lt;/table>
+&lt;section class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1" role="doc-endnote">
+&lt;p>&lt;a href="https://english.stackexchange.com/questions/83832/list-of-expertise-levels-from-beginner-to-expert">https://english.stackexchange.com/questions/83832/list-of-expertise-levels-from-beginner-to-expert&lt;/a> &lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/section></description></item></channel></rss>
