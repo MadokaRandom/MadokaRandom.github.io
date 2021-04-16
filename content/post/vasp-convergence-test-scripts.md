@@ -21,8 +21,8 @@ draft: false
 </div>
 <!--endtoc-->
 
-一般而言，在使用 VASP 计算体系之前都需要对一些参数做收敛性测试，侯老师曾写过一本
-VASP 入门手册，里面给了一些测试计算参数的小脚本，这里我也给出一些我经常用的收敛性测试脚本，权当抛砖引玉了。
+一般而言，在使用 VASP 计算体系之前都需要对一些参数做收敛性测试，侯老师[^fn:1]
+曾写过一本VASP 入门手册，里面给了一些测试计算参数的小脚本，这里我也给出一些我经常用的收敛性测试脚本，权当抛砖引玉了。
 
 <!--more-->
 
@@ -119,7 +119,7 @@ echo -e "\n\n" >> a.txt#+end_src
 
 ### 晶格长度的测试 {#晶格长度的测试}
 
-在测试晶格的角度、长度时就不得不使用其它包了，Python 的 ASE 包提供了相对完善的基础设施，这里在使用它来辅助完成晶格测试的工作。另外，在测试 Slab 的真空层厚度时也可以使用这个脚本[^fn:1]。
+在测试晶格的角度、长度时就不得不使用其它包了，Python 的 ASE 包提供了相对完善的基础设施，这里在使用它来辅助完成晶格测试的工作。另外，在测试 Slab 的真空层厚度时也可以使用这个脚本[^fn:2]。
 
 ```python
 #!/usr/bin/env python3
@@ -145,7 +145,7 @@ for i in range(1, 7):
     pass
 ```
 
-用户可以根据自己需要随意更改晶格的参数，具体的需求可以通过阅读 ASE 的文档[^fn:2]来实现，这里就不一一列举了。
+用户可以根据自己需要随意更改晶格的参数，具体的需求可以通过阅读 ASE 的文档[^fn:3]来实现，这里就不一一列举了。
 
 
 ## Slab 衬底层数的测试 {#slab-衬底层数的测试}
@@ -184,8 +184,9 @@ for i in np.arange(1, 9):
     pass
 ```
 
-对于其它金属， ASE 也有支持，详细说明请看它的文档[^fn:3]。
+对于其它金属， ASE 也有支持，详细说明请看它的文档[^fn:4]。
 
-[^fn:1]: 这个脚本要求晶格的 c 轴垂直于 a 轴和 b 轴
-[^fn:2]: <https://wiki.fysik.dtu.dk/ase/ase/atoms.html> 和 <https://wiki.fysik.dtu.dk/ase/ase/geometry.html>
-[^fn:3]: <https://wiki.fysik.dtu.dk/ase/ase/build/build.html>
+[^fn:1]: <https://github.com/orivenlikon/vaspDoc/blob/master/%5Bmuchong.com%5Dvasp%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97-%E5%A4%8D%E6%97%A6-%E4%BE%AF%E6%9F%B1%E5%B3%B0.pdf>
+[^fn:2]: 这个脚本要求晶格的 c 轴垂直于 a 轴和 b 轴
+[^fn:3]: <https://wiki.fysik.dtu.dk/ase/ase/atoms.html> 和 <https://wiki.fysik.dtu.dk/ase/ase/geometry.html>
+[^fn:4]: <https://wiki.fysik.dtu.dk/ase/ase/build/build.html>
