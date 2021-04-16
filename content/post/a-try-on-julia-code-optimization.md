@@ -1,7 +1,7 @@
 ---
 title: "记一次 Julia 代码性能优化过程"
 date: 2021-04-16T13:06:00+08:00
-lastmod: 2021-04-16T13:06:58+08:00
+lastmod: 2021-04-16T13:11:39+08:00
 tags: ["Posts", "Julia", "Optimization", "ParallelProgramming"]
 categories: ["Programming"]
 draft: false
@@ -40,7 +40,7 @@ weight: 1
 
 | Processor | Intel Core i5 9600KF |
 |-----------|----------------------|
-| Memory    | 16GB 3200GMHz        |
+| Memory    | 16GB 3200MHz         |
 | OS        | macOS 10.15.6        |
 | Julia     | 1.5.1                |
 

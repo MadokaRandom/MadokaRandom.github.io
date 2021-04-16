@@ -176,7 +176,7 @@ CLOSED: [2021-04-16 Fri 13:06]
 *** 运行环境
 
 | Processor | Intel Core i5 9600KF |
-| Memory    | 16GB 3200GMHz        |
+| Memory    | 16GB 3200MHz         |
 | OS        | macOS 10.15.6        |
 | Julia     | 1.5.1                |
 
