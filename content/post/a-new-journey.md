@@ -4,7 +4,6 @@ date: 2021-04-14T16:15:00+08:00
 tags: ["Posts", "回归", "模板", "配置"]
 categories: ["杂项"]
 draft: false
-weight: 1
 katex: true
 markup: "goldmark"
 ---

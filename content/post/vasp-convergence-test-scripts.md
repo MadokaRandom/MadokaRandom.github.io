@@ -4,7 +4,6 @@ date: 2021-04-16T20:57:00+08:00
 tags: ["Posts", "VASP", "Shell", "ASE"]
 categories: ["PhysicalChemistry"]
 draft: false
-weight: 1
 ---
 
 <div class="ox-hugo-toc toc">

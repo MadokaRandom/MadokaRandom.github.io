@@ -3,7 +3,6 @@ title: "About"
 date: 2021-04-13T00:00:00+08:00
 tags: ["about"]
 draft: false
-weight: 1
 weight: 50
 menu:
   main:

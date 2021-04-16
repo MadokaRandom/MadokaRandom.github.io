@@ -1,9 +1,6 @@
 :CONFIG:
 #+HUGO_BASE_DIR: ../
-# #+HUGO_SECTION: ./
-#+HUGO_WEIGHT: 01
 #+HUGO_FRONT_MATTER_FORMAT: yaml
-# #+hugo_auto_set_lastmod: t
 #+SETQ_TODO: TODO DRAFT DONE
 #+PROPERTY: header-args :eval never-export
 #+OPTIONS: toc:2 author:nil

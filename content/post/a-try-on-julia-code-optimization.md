@@ -4,7 +4,6 @@ date: 2021-04-16T13:06:00+08:00
 tags: ["Posts", "Julia", "Optimization", "ParallelProgramming"]
 categories: ["Programming"]
 draft: false
-weight: 1
 ---
 
 <div class="ox-hugo-toc toc">
