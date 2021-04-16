@@ -1,4 +1,273 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Ionizing Radiation</title><link>http://ionizing.page/</link><description>Recent content on Ionizing Radiation</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Fri, 16 Apr 2021 13:06:00 +0800</lastBuildDate><atom:link href="http://ionizing.page/index.xml" rel="self" type="application/rss+xml"/><item><title>记一次 Julia 代码性能优化过程</title><link>http://ionizing.page/post/a-try-on-julia-code-optimization/</link><pubDate>Fri, 16 Apr 2021 13:06:00 +0800</pubDate><guid>http://ionizing.page/post/a-try-on-julia-code-optimization/</guid><description>&lt;!-- raw HTML omitted -->
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Ionizing Radiation</title><link>http://ionizing.page/</link><description>Recent content on Ionizing Radiation</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Fri, 16 Apr 2021 20:57:00 +0800</lastBuildDate><atom:link href="http://ionizing.page/index.xml" rel="self" type="application/rss+xml"/><item><title>VASP 收敛性测试的小脚本</title><link>http://ionizing.page/post/vasp-convergence-test-scripts/</link><pubDate>Fri, 16 Apr 2021 20:57:00 +0800</pubDate><guid>http://ionizing.page/post/vasp-convergence-test-scripts/</guid><description>&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;ul>
+&lt;li>&lt;a href="#sigma-%E7%9A%84%E6%B5%8B%E8%AF%95">&lt;code>SIGMA&lt;/code> 的测试&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#encut-%E7%9A%84%E6%B5%8B%E8%AF%95">&lt;code>ENCUT&lt;/code> 的测试&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E6%99%B6%E6%A0%BC%E5%8F%82%E6%95%B0%E7%9A%84%E6%B5%8B%E8%AF%95">晶格参数的测试&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#%E6%99%B6%E6%A0%BC%E5%B8%B8%E6%95%B0%E7%9A%84%E6%B5%8B%E8%AF%95">晶格常数的测试&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E6%99%B6%E6%A0%BC%E9%95%BF%E5%BA%A6%E7%9A%84%E6%B5%8B%E8%AF%95">晶格长度的测试&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#slab-%E8%A1%AC%E5%BA%95%E5%B1%82%E6%95%B0%E7%9A%84%E6%B5%8B%E8%AF%95">Slab 衬底层数的测试&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;!-- raw HTML omitted -->
+&lt;p>一般而言，在使用 VASP 计算体系之前都需要对一些参数做收敛性测试，侯老师曾写过一本
+VASP 入门手册，里面给了一些测试计算参数的小脚本，这里我也给出一些我经常用的收敛性测试脚本，权当抛砖引玉了。&lt;/p>
+&lt;p>本文提供的测试脚本可以写进提交任务的脚本中，进而充分利用超算上多核、多节点的计算资源。需要注意的是，这些脚本本身并不产生 VASP 的输入文件，而是在已有的文件基础上进行修改。&lt;/p>
+&lt;h2 id="sigma-的测试">&lt;code>SIGMA&lt;/code> 的测试&lt;/h2>
+&lt;p>和上面的使用前提一样， INCAR 应提前准备好。 SIGMA 收敛的标准通常是 dE 绝对值小于
+1.0meV/atom 。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="cp">#!/bin/bash
+&lt;/span>&lt;span class="cp">&lt;/span>&lt;span class="c1">#SBATCH xx&lt;/span>
+...
+&lt;span class="nb">set&lt;/span> -e
+&lt;span class="nb">set&lt;/span> -o pipefail
+&lt;span class="nv">VASP_EXEC&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;srun /path/to/vasp&amp;#34;&lt;/span> &lt;span class="c1"># &amp;#34;mpirun -np xxx&amp;#34; is also ok&lt;/span>
+date &amp;gt;&amp;gt; sigma.txt
+&lt;span class="k">for&lt;/span> i in 0.8 0.5 0.3 0.1 0.08 0.05 &lt;span class="p">;&lt;/span> &lt;span class="k">do&lt;/span>
+&lt;span class="nb">echo&lt;/span>
+sed -i &lt;span class="s2">&amp;#34;s/^.*\\bSIGMA\\b.*&lt;/span>$&lt;span class="s2">/ SIGMA = &lt;/span>&lt;span class="nv">$i&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span> INCAR
+&lt;span class="nb">eval&lt;/span> &lt;span class="si">${&lt;/span>&lt;span class="nv">VASP_EXEC&lt;/span>&lt;span class="si">}&lt;/span>
+&lt;span class="nv">TS&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="k">$(&lt;/span>grep &lt;span class="s2">&amp;#34;EENTRO&amp;#34;&lt;/span> OUTCAR &lt;span class="p">|&lt;/span> tail -1 &lt;span class="p">|&lt;/span> awk &lt;span class="s1">&amp;#39;{print $5}&amp;#39;&lt;/span>&lt;span class="k">)&lt;/span>
+&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="nv">$i&lt;/span>&lt;span class="s2"> &lt;/span>&lt;span class="nv">$TS&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span> &amp;gt;&amp;gt; sigma.txt
+&lt;span class="k">done&lt;/span>
+&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;NIONS = &amp;#34;&lt;/span> &lt;span class="k">$(&lt;/span>grep NIONS OUTCAR &lt;span class="p">|&lt;/span> awk &lt;span class="s1">&amp;#39;{print $12}&amp;#39;&lt;/span>&lt;span class="k">)&lt;/span> &amp;gt;&amp;gt; sigma.txt
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="encut-的测试">&lt;code>ENCUT&lt;/code> 的测试&lt;/h2>
+&lt;p>使用前请先写好一个 INCAR ，并确保里面包含 &lt;code>ENCUT&lt;/code> 字段，且 &lt;code>ENCUT&lt;/code> 单独占一行
+（否则同一行内的其它参数会被舍去）。通常而言，达到收敛的标志是相邻两次迭代的能量小于 1.0meV/atom 。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="cp">#!/bin/bash
+&lt;/span>&lt;span class="cp">&lt;/span>&lt;span class="c1">#SBATCH xx&lt;/span>
+...
+&lt;span class="nb">set&lt;/span> -e
+&lt;span class="nb">set&lt;/span> -o pipefail
+&lt;span class="nv">VASP_EXEC&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;srun /path/to/vasp&amp;#34;&lt;/span> &lt;span class="c1"># &amp;#34;mpirun -np xxx&amp;#34; is also ok&lt;/span>
+date &amp;gt;&amp;gt; encut.txt
+&lt;span class="k">for&lt;/span> i in &lt;span class="o">{&lt;/span>200..500..50&lt;span class="o">}&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="k">do&lt;/span>
+sed -i &lt;span class="s2">&amp;#34;s/^.*\\bENCUT\\b.*&lt;/span>$&lt;span class="s2">/ ENCUT = &lt;/span>&lt;span class="nv">$i&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span> INCAR
+&lt;span class="nb">eval&lt;/span> &lt;span class="si">${&lt;/span>&lt;span class="nv">VASP_EXEC&lt;/span>&lt;span class="si">}&lt;/span>
+&lt;span class="nv">E&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="k">$(&lt;/span>grep TOTEN OUTCAR &lt;span class="p">|&lt;/span> tail -1 &lt;span class="p">|&lt;/span> awk &lt;span class="s1">&amp;#39;{printf &amp;#34;%12.6f&amp;#34;, $5}&amp;#39;&lt;/span>&lt;span class="k">)&lt;/span> &lt;span class="c1"># Extract TOTEN from OUTCAR&lt;/span>
+&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="nv">$i&lt;/span>&lt;span class="s2"> &lt;/span>&lt;span class="nv">$E&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span> &amp;gt;&amp;gt; encut.txt
+&lt;span class="k">done&lt;/span>
+&lt;span class="nb">echo&lt;/span> &lt;span class="s2">&amp;#34;NIONS = &amp;#34;&lt;/span> &lt;span class="k">$(&lt;/span>grep NIONS OUTCAR &lt;span class="p">|&lt;/span> awk &lt;span class="s1">&amp;#39;{print $12}&amp;#39;&lt;/span>&lt;span class="k">)&lt;/span> &amp;gt;&amp;gt; encut.txt
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="晶格参数的测试">晶格参数的测试&lt;/h2>
+&lt;h3 id="晶格常数的测试">晶格常数的测试&lt;/h3>
+&lt;p>执行这个测试需要准备好 POSCAR ，这个测试不依赖 ASE 等包，因为它实质上是在更改
+POSCAR 第二行的 scale factor 。这个测试只是相对粗糙的测试，因此这里就直接在原位覆盖前一次的计算结果了。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="cp">#!/bin/bash
+&lt;/span>&lt;span class="cp">&lt;/span>&lt;span class="c1">#SBATCH xx&lt;/span>
+...
+&lt;span class="nb">set&lt;/span> -e
+&lt;span class="nb">set&lt;/span> -o pipefail
+&lt;span class="nv">VASP_EXEC&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;srun /path/to/vasp&amp;#34;&lt;/span> &lt;span class="c1"># &amp;#34;mpirun -np xxx&amp;#34; is also ok&lt;/span>
+date &amp;gt;&amp;gt; a.txt
+&lt;span class="k">for&lt;/span> i in &lt;span class="k">$(&lt;/span>seq 0.99 0.001 1.01&lt;span class="k">)&lt;/span>
+&lt;span class="k">do&lt;/span>
+sed -i &lt;span class="s2">&amp;#34;2c &lt;/span>&lt;span class="nv">$i&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span> POSCAR
+&lt;span class="nb">echo&lt;/span> -e &lt;span class="s2">&amp;#34;a = &lt;/span>&lt;span class="nv">$i&lt;/span>&lt;span class="s2"> angstrom&amp;#34;&lt;/span>
+&lt;span class="nb">eval&lt;/span> &lt;span class="si">${&lt;/span>&lt;span class="nv">VASP_EXEC&lt;/span>&lt;span class="si">}&lt;/span>
+&lt;span class="nv">E&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="sb">`&lt;/span>grep &lt;span class="s2">&amp;#34;TOTEN&amp;#34;&lt;/span> OUTCAR &lt;span class="p">|&lt;/span> tail -1 &lt;span class="p">|&lt;/span> awk &lt;span class="s1">&amp;#39;{printf &amp;#34;%12.6f&amp;#34;, $5 }&amp;#39;&lt;/span>&lt;span class="sb">`&lt;/span>
+&lt;span class="nv">V&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="sb">`&lt;/span>grep &lt;span class="s2">&amp;#34;volume&amp;#34;&lt;/span> OUTCAR &lt;span class="p">|&lt;/span> tail -1 &lt;span class="p">|&lt;/span> awk &lt;span class="s1">&amp;#39;{printf &amp;#34;%12.4f&amp;#34;, $5}&amp;#39;&lt;/span>&lt;span class="sb">`&lt;/span>
+&lt;span class="nb">printf&lt;/span> &lt;span class="s2">&amp;#34;a = %6.3f Vol = %10.4f Energy = %18.10f\n&amp;#34;&lt;/span> &lt;span class="nv">$i&lt;/span> &lt;span class="nv">$V&lt;/span> &lt;span class="nv">$E&lt;/span> &amp;gt;&amp;gt; a.txt
+tail -1 a.txt
+&lt;span class="k">done&lt;/span>
+&lt;span class="nb">echo&lt;/span> -e &lt;span class="s2">&amp;#34;\n\n&amp;#34;&lt;/span> &amp;gt;&amp;gt; a.txt#+end_src
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="晶格长度的测试">晶格长度的测试&lt;/h3>
+&lt;p>在测试晶格的角度、长度时就不得不使用其它包了，Python 的 ASE 包提供了相对完善的基础设施，这里在使用它来辅助完成晶格测试的工作。另外，在测试 Slab 的真空层厚度时也可以使用这个脚本&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="ch">#!/usr/bin/env python3&lt;/span>
+&lt;span class="kn">import&lt;/span> &lt;span class="nn">os&lt;/span>
+&lt;span class="kn">from&lt;/span> &lt;span class="nn">ase.io&lt;/span> &lt;span class="kn">import&lt;/span> &lt;span class="n">read&lt;/span> &lt;span class="k">as&lt;/span> &lt;span class="n">poscar_reader&lt;/span>
+&lt;span class="n">poscar&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">poscar_reader&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;POSCAR&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="n">cell&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">poscar&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">get_cell&lt;/span>&lt;span class="p">()&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">copy&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;span class="k">for&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="nb">range&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">7&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;span class="n">cell&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">+=&lt;/span> &lt;span class="mf">5.0&lt;/span> &lt;span class="c1"># Increase length along z axis by 5 angstroms each time&lt;/span>
+&lt;span class="n">poscar&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">set_cell&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">cell&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="n">dirname&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="s2">&amp;#34;{:02}&amp;#34;&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">format&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="mi">5&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="k">if&lt;/span> &lt;span class="ow">not&lt;/span> &lt;span class="n">os&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">path&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">exists&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">dirname&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;span class="n">os&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">mkdir&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">dirname&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c1"># create directories for each test&lt;/span>
+&lt;span class="n">poscar&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">write&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">dirname&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="s2">&amp;#34;/POSCAR&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">vasp5&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="bp">True&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">direct&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="bp">True&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="k">for&lt;/span> &lt;span class="n">infile&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="s1">&amp;#39;INCAR&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;POTCAR&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;KPOINTS&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;sub_vasp_tahoma&amp;#39;&lt;/span>&lt;span class="p">]:&lt;/span>
+&lt;span class="n">abspath&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">os&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">path&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">abspath&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">infile&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="n">os&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">symlink&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">abspath&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">dirname&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="s2">&amp;#34;/&amp;#34;&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">infile&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="k">pass&lt;/span>
+&lt;span class="k">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;POSCAR saved in {}&amp;#34;&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">format&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">dirname&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="s2">&amp;#34;/POSCAR&amp;#34;&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;span class="k">pass&lt;/span>
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>用户可以根据自己需要随意更改晶格的参数，具体的需求可以通过阅读 ASE 的文档&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup>来实现，这里就不一一列举了。&lt;/p>
+&lt;h2 id="slab-衬底层数的测试">Slab 衬底层数的测试&lt;/h2>
+&lt;p>一般而言，结构建模都是在 Materials Studio 上完成的（我现在也是如此），但如果有对
+Slab 衬底做收敛性测试的需求，还是要借助一下 ASE ，它也内置一了些常见的 Slab 。&lt;/p>
+&lt;p>下面是一个生成不同层数 Ag(111) Slab 的脚本：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-python" data-lang="python">&lt;span class="ch">#!/usr/bin/env python3&lt;/span>
+&lt;span class="kn">import&lt;/span> &lt;span class="nn">os&lt;/span>
+&lt;span class="kn">import&lt;/span> &lt;span class="nn">numpy&lt;/span> &lt;span class="kn">as&lt;/span> &lt;span class="nn">np&lt;/span>
+&lt;span class="kn">from&lt;/span> &lt;span class="nn">ase.build&lt;/span> &lt;span class="kn">import&lt;/span> &lt;span class="n">fcc111&lt;/span>
+&lt;span class="kn">from&lt;/span> &lt;span class="nn">ase.constraints&lt;/span> &lt;span class="kn">import&lt;/span> &lt;span class="n">FixAtoms&lt;/span>
+&lt;span class="k">for&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">np&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">arange&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">9&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;span class="n">numstr&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="nb">str&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="c1"># generate 1x1 slab along a and b axis, this slab has `i` layers&lt;/span>
+&lt;span class="c1"># vacuum is 20 angstrom&lt;/span>
+&lt;span class="n">slab&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">fcc111&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s2">&amp;#34;Ag&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">size&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="n">vacuum&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mi">20&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="c1"># Relax the first 2 layers and fix the others.&lt;/span>
+&lt;span class="n">c&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">FixAtoms&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">mask&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">atom&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">tag&lt;/span> &lt;span class="o">&amp;gt;&lt;/span> &lt;span class="mi">2&lt;/span> &lt;span class="k">for&lt;/span> &lt;span class="n">atom&lt;/span> &lt;span class="ow">in&lt;/span> &lt;span class="n">slab&lt;/span>&lt;span class="p">])&lt;/span>
+&lt;span class="c1"># Apply the constraint&lt;/span>
+&lt;span class="n">slab&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">set_constraint&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">c&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="k">print&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">slab&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="k">if&lt;/span> &lt;span class="ow">not&lt;/span> &lt;span class="n">os&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">path&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">exists&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">numstr&lt;/span>&lt;span class="p">):&lt;/span>
+&lt;span class="n">os&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">makedirs&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">numstr&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="s2">&amp;#34;/opt&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="n">os&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">makedirs&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">numstr&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="s2">&amp;#34;/band&amp;#34;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="k">pass&lt;/span>
+&lt;span class="n">slab&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">write&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">numstr&lt;/span>&lt;span class="o">+&lt;/span>&lt;span class="s2">&amp;#34;/opt/POSCAR&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">vasp5&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="bp">True&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">direct&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="bp">True&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="k">pass&lt;/span>
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>对于其它金属， ASE 也有支持，详细说明请看它的文档&lt;sup id="fnref:3">&lt;a href="#fn:3" class="footnote-ref" role="doc-noteref">3&lt;/a>&lt;/sup>。&lt;/p>
+&lt;section class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1" role="doc-endnote">
+&lt;p>这个脚本要求晶格的 c 轴垂直于 a 轴和 b 轴 &lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:2" role="doc-endnote">
+&lt;p>&lt;a href="https://wiki.fysik.dtu.dk/ase/ase/atoms.html">https://wiki.fysik.dtu.dk/ase/ase/atoms.html&lt;/a> 和 &lt;a href="https://wiki.fysik.dtu.dk/ase/ase/geometry.html">https://wiki.fysik.dtu.dk/ase/ase/geometry.html&lt;/a> &lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:3" role="doc-endnote">
+&lt;p>&lt;a href="https://wiki.fysik.dtu.dk/ase/ase/build/build.html">https://wiki.fysik.dtu.dk/ase/ase/build/build.html&lt;/a> &lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/section></description></item><item><title>记一次 Julia 代码性能优化过程</title><link>http://ionizing.page/post/a-try-on-julia-code-optimization/</link><pubDate>Fri, 16 Apr 2021 13:06:00 +0800</pubDate><guid>http://ionizing.page/post/a-try-on-julia-code-optimization/</guid><description>&lt;!-- raw HTML omitted -->
 &lt;!-- raw HTML omitted -->
 &lt;ul>
 &lt;li>&lt;a href="#%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83">运行环境&lt;/a>&lt;/li>
