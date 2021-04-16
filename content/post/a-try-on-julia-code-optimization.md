@@ -1,7 +1,7 @@
 ---
 title: "记一次 Julia 代码性能优化过程"
 date: 2021-04-16T13:06:00+08:00
-lastmod: 2021-04-16T13:11:39+08:00
+lastmod: 2021-04-16T13:29:43+08:00
 tags: ["Posts", "Julia", "Optimization", "ParallelProgramming"]
 categories: ["Programming"]
 draft: false
@@ -191,7 +191,7 @@ using Distributions;
  0.2929698750637693
 ```
 
-一个 Float64 的值有 64 位，共 4 字节（bytes），而刚刚代码中所返回只有一个
+一个 Float64 的值有 64 位，共 8 字节（bytes），而刚刚代码中所返回只有一个
 Float64 元素的 Array 竟然有 96 字节！既然我们每次只需要返回一个值，那为什么要画蛇添足去生成一个 Array 呢，直接调用只生成一个值的原型不好吗？
 
 ```ess-julia
