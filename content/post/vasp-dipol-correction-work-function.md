@@ -1,9 +1,9 @@
 ---
 title: "VASP 偶极校正及功函数的计算"
-date: 2021-04-23T00:00:00+08:00
+date: 2021-04-23T16:44:00+08:00
 tags: ["Posts", "VASP", "Python", "ASE", "DipoleCorrection", "Workfunction"]
 categories: ["PhysicalChemistry"]
-draft: true
+draft: false
 katex: true
 markup: "goldmark"
 ---
@@ -48,7 +48,7 @@ markup: "goldmark"
 因 VASP 所适用的体系是周期性体系，使用它来模拟实验中的 Slab 模型时会取一个相当大的真空层来隔绝相信两个周期中 Slab 的相互作用。理想情况下，真空层中的功函数应当是一条水平的直线（函数值为定值）。但如果表面的两侧并非对称，即其中一侧吸附了分子时，
 这两侧的功函数存在差异，此时如果不进行偶极校正，真空中的功函数会是一条斜线；而经过偶极校正后，功函数会出现一个阶梯，阶梯两侧附近的曲接近水平。
 
-<a id="orgf325f6c"></a>
+<a id="org3837645"></a>
 
 {{< figure src="/ox-hugo/VCL-2.png" caption="Figure 1: DFT 曲线为未经过偶极校正的功函数， DFT-DC 曲线是经过偶极校正后的功函数" >}}
 
@@ -138,7 +138,7 @@ def locpot_mean(fname="LOCPOT", axis='z', savefile='locpot.dat', outcar="OUTCAR"
 
 完整的脚本文件已经放 Gist[^fn:4] 上，当然你也可以直接点击[它](vasp-dipol-correction-work-function/plot-workfunc.py)来下载。运行这个脚本后得到的 Workfunction.pdf 和 locpot.dat 就是 \\(z\\) 方向上的功函数信息。
 
-<a id="orgb6748a1"></a>
+<a id="org8d719d6"></a>
 
 {{< figure src="/ox-hugo/Workfunction.png" caption="Figure 2: Workfunction.png 示例" >}}
 
@@ -146,16 +146,16 @@ def locpot_mean(fname="LOCPOT", axis='z', savefile='locpot.dat', outcar="OUTCAR"
 ## 真空能级 {#真空能级}
 
 前面已经提到，真空能级可以读取 locpot.dat 真空部分的数据得到，其实当你打开
-`LVHAR` 时，它也可以通过读取 VASP OUTCAR 得到，比如
+`LVHAR` 时，它也可以通过读取 OUTCAR 得到，比如
 
 ```sh
 $ grep vacuum OUTCAR
  vacuum level on the upper side and lower side of the slab         2.807         3.188
 ```
 
-这里的 upper side vacuum level 是指 Slab 上表面的真空能级（图 [2](#orgb6748a1)
+这里的 upper side vacuum level 是指 Slab 上表面的真空能级（图 [2](#org8d719d6)
 中 30A 处的平台）， lower side vacuum level 自然就是下表面的真空能级了
-（图 [2](#orgb6748a1) 中 35A 处的平台）。
+（图 [2](#org8d719d6) 中 35A 处的平台）。
 
 需要注意的是，从 OUTCAR 中 grep 出的真空能级没有经过费米能级修正，它需要减去
 OUTCAR 中的 E-fermi 才是实验中测得的真空能级的值。所幸的是 plot-workfunc.py 已经做了这个工作，用 locpot.dat 画出来的图就对应实验所测结果。

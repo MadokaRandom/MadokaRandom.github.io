@@ -17,7 +17,7 @@
   - [[#rsgrad-开发收获][Rsgrad 开发收获]]
   - [[#vasp-收敛性测试的小脚本][VASP 收敛性测试的小脚本]]
   - [[#组内集群折腾实录][组内集群折腾实录]]
-  - [[#proj-vasp-偶极校正及功函数的计算][PROJ VASP 偶极校正及功函数的计算]]
+  - [[#vasp-偶极校正及功函数的计算][VASP 偶极校正及功函数的计算]]
 
 * DONE About :about:
 CLOSED: [2021-4-13 Tue]
@@ -820,7 +820,8 @@ for i in np.arange(1, 9):
 https://wiki.fysik.dtu.dk/ase/ase/build/build.html]。
 
 ** TODO 组内集群折腾实录
-** PROJ VASP 偶极校正及功函数的计算 :@PhysicalChemistry:VASP:Python:ASE:DipoleCorrection:Workfunction:
+** DONE VASP 偶极校正及功函数的计算 :@PhysicalChemistry:VASP:Python:ASE:DipoleCorrection:Workfunction:
+CLOSED: [2021-04-23 Fri 16:44]
 :PROPERTIES:
 :EXPORT_FILE_NAME: vasp-dipol-correction-work-function
 :EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :katex true :markup goldmark
@@ -898,7 +899,7 @@ orthorhombic cells).
 
 *** 真空能级
 前面已经提到，真空能级可以读取 locpot.dat 真空部分的数据得到，其实当你打开
-=LVHAR= 时，它也可以通过读取 VASP OUTCAR 得到，比如
+=LVHAR= 时，它也可以通过读取 OUTCAR 得到，比如
 
 #+begin_src sh
 $ grep vacuum OUTCAR
