@@ -170,7 +170,6 @@ string)
 独建一个文件夹，然后使用相对路径引用。下面是效果展示（它使用了
 =[[./a-new-journey/himehina.jpeg]]= ）：[[./a-new-journey/himehina.jpeg]]
 
-
 ** DONE 记一次 Julia 代码性能优化过程 :@Programming:Julia:Optimization:ParallelProgramming:
 CLOSED: [2021-04-16 Fri 13:06]
 :PROPERTIES:
@@ -634,7 +633,6 @@ https://gist.github.com/MitsuhaMiyamizu/5edf031a36cfb260381a70060a3fea4a
 [fn:2] 这里使用 BenchmarkTools 中的 =@btime= 而不是 =@time= 是因为后者并不能将代 码编译的时间去掉，前者则能多次执行，取耗时最小值，有效避免了 AOT 对计时的影响。
 [fn:3] ffi 即 Foreign function interface ，用于跨语言调函数，详见
 https://en.wikipedia.org/wiki/Foreign_function_interface
-
 
 ** TODO 镜像态浅析--从 DFT 计算的角度
 :PROPERTIES:
