@@ -241,11 +241,11 @@ itemscope itemtype="http://schema.org/ImageObject" >
 vacuum level on the upper side and lower side of the slab 2.807 3.188
 &lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>这里的 upper side vacuum level 是指 Slab 上表面的真空能级（图 &lt;a href="#org8d719d6">2&lt;/a>
+&lt;/div>&lt;p>这里的 upper side vacuum level 是指 Slab 上表面的真空能级（图 &lt;a href="#orgfc52304">2&lt;/a>
 中 30A 处的平台）， lower side vacuum level 自然就是下表面的真空能级了
-（图 &lt;a href="#org8d719d6">2&lt;/a> 中 35A 处的平台）。&lt;/p>
+（图 &lt;a href="#orgfc52304">2&lt;/a> 中 35A 处的平台）。&lt;/p>
 &lt;p>需要注意的是，从 OUTCAR 中 grep 出的真空能级没有经过费米能级修正，它需要减去
-OUTCAR 中的 E-fermi 才是实验中测得的真空能级的值。所幸的是 plot-workfunc.py 已经做了这个工作，用 locpot.dat 画出来的图就对应实验所测结果。&lt;/p>
+OUTCAR 中的 E-fermi 才是实验中测得的功函数的值。所幸的是 plot-workfunc.py 已经做了这个工作，用 locpot.dat 画出来的图就对应实验所测结果。&lt;/p>
 &lt;section class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
