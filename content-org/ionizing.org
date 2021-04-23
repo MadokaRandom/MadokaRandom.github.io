@@ -911,7 +911,7 @@ $ grep vacuum OUTCAR
 （图 [[fig:Workfunction]] 中 35A 处的平台）。
 
 需要注意的是，从 OUTCAR 中 grep 出的真空能级没有经过费米能级修正，它需要减去
-OUTCAR 中的 E-fermi 才是实验中测得的真空能级的值。所幸的是 plot-workfunc.py 已经
+OUTCAR 中的 E-fermi 才是实验中测得的功函数的值。所幸的是 plot-workfunc.py 已经
 做了这个工作，用 locpot.dat 画出来的图就对应实验所测结果。
 
 [fn:1] 在 VASP 5.2.12 之前的版本中 =LVTOT= 输出的文件是静电势的贡献；但在 VASP
