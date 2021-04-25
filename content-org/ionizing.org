@@ -3,7 +3,7 @@
 #+HUGO_FRONT_MATTER_FORMAT: yaml
 #+SETQ_TODO: TODO DRAFT DONE
 #+PROPERTY: header-args :eval never-export
-#+OPTIONS: toc:2 author:nil
+#+OPTIONS: toc:3 author:nil
 :END:
 
 
@@ -13,11 +13,12 @@
 - [[#posts][Posts]]
   - [[#新的旅程][新的旅程]]
   - [[#记一次-julia-代码性能优化过程][记一次 Julia 代码性能优化过程]]
+  - [[#vasp-收敛性测试的小脚本][VASP 收敛性测试的小脚本]]
+  - [[#vasp-偶极校正及功函数的计算][VASP 偶极校正及功函数的计算]]
+  - [[#组内集群折腾实录][组内集群折腾实录]]
   - [[#镜像态浅析--从-dft-计算的角度][镜像态浅析--从 DFT 计算的角度]]
   - [[#rsgrad-开发收获][Rsgrad 开发收获]]
-  - [[#vasp-收敛性测试的小脚本][VASP 收敛性测试的小脚本]]
-  - [[#组内集群折腾实录][组内集群折腾实录]]
-  - [[#vasp-偶极校正及功函数的计算][VASP 偶极校正及功函数的计算]]
+  - [[#haskell-学习笔记][Haskell 学习笔记]]
 
 * DONE About :about:
 CLOSED: [2021-4-13 Tue]
@@ -634,18 +635,6 @@ https://gist.github.com/MitsuhaMiyamizu/5edf031a36cfb260381a70060a3fea4a
 [fn:3] ffi 即 Foreign function interface ，用于跨语言调函数，详见
 https://en.wikipedia.org/wiki/Foreign_function_interface
 
-** TODO 镜像态浅析--从 DFT 计算的角度
-:PROPERTIES:
-# :EXPORT_FILE_NAME: brief-analysis-of-ips-from-dft-perspective
-:EXPORT_HUGO_CUSTOM_FRONT_MATTER: :katex true :markup goldmark
-:END:
-
-本文将从 DFT 计算的角度谈谈
-
-#+hugo: more
-
-** TODO Rsgrad 开发收获
-
 ** DONE VASP 收敛性测试的小脚本 :@PhysicalChemistry:VASP:Shell:ASE:
 CLOSED: [2021-04-16 Fri 20:57]
 :PROPERTIES:
@@ -817,7 +806,6 @@ for i in np.arange(1, 9):
 对于其它金属， ASE 也有支持，详细说明请看它的文档[fn::
 https://wiki.fysik.dtu.dk/ase/ase/build/build.html]。
 
-** TODO 组内集群折腾实录
 ** DONE VASP 偶极校正及功函数的计算 :@PhysicalChemistry:VASP:Python:ASE:DipoleCorrection:Workfunction:
 CLOSED: [2021-04-23 Fri 16:44]
 :PROPERTIES:
@@ -844,7 +832,8 @@ CLOSED: [2021-04-23 Fri 16:44]
 的真空层来隔绝相信两个周期中 Slab 的相互作用。理想情况下，真空层中的功函数应当是
 一条水平的直线（函数值为定值）。但如果表面的两侧并非对称，即其中一侧吸附了分子时，
 这两侧的功函数存在差异，此时如果不进行偶极校正，真空中的功函数会是一条斜线；而经
-过偶极校正后，功函数会出现一个阶梯，阶梯两侧附近的曲接近水平。
+过偶极校正后，功函数会出现一个阶梯，阶梯两侧附近的曲接近水平。下图[fn:5]是一个例
+子。
 
 #+CAPTION:  DFT 曲线为未经过偶极校正的功函数， DFT-DC 曲线是经过偶极校正后的功函数
 #+NAME: fig:DFT-DC1
@@ -918,3 +907,18 @@ OUTCAR 中的 E-fermi 才是实验中测得的功函数的值。所幸的是 plo
 [fn:2] CHGCAR 的格式请见 VASP 手册 https://www.vasp.at/wiki/index.php/CHGCAR ；
 [fn:3] 完整脚本见 https://gist.github.com/Ionizing/1ac92f98e8b00a1cf6f16bd57694ff03 。
 [fn:4] https://www.vasp.at/wiki/index.php/DIPOL
+[fn:5] 图源： http://exciting-code.org/nitrogen-dipole-correction
+
+** TODO 组内集群折腾实录
+** TODO 镜像态浅析--从 DFT 计算的角度
+:PROPERTIES:
+# :EXPORT_FILE_NAME: brief-analysis-of-ips-from-dft-perspective
+:EXPORT_HUGO_CUSTOM_FRONT_MATTER: :katex true :markup goldmark
+:END:
+
+本文将从 DFT 计算的角度谈谈
+
+#+hugo: more
+
+** TODO Rsgrad 开发收获
+** TODO Haskell 学习笔记
