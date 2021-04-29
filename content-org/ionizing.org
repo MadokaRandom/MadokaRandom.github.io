@@ -171,6 +171,144 @@ string)
 独建一个文件夹，然后使用相对路径引用。下面是效果展示（它使用了
 =[[./a-new-journey/himehina.jpeg]]= ）：[[./a-new-journey/himehina.jpeg]]
 
+**** 使用 TikZ 配合 Orgmode 进行画图 [2021-04-29] 更新
+Orgmode 原生支持内嵌 \(\LaTeX\) 代码，自然也支持用 TikZ 画图。不过如果想要在利用
+TikZ 的输出嵌入到博客中，还需要一点工作要做。
+***** 输出 PNG 格式的图片
+- 确保机器上已经安装了 ImageMagick 和 \(\LaTeX\) ；
+- 在 config 中加入 =(setq org-latex-create-formula-image-program 'imagemagick)= ；
+
+接下来就可以愉快玩耍了：
+
+#+begin_src org
+,#+header: :headers '("\\usepackage{tikz}")
+,#+header: :results file graphics :file ./a-new-journey/test.png
+,#+header: :exports results
+,#+header: :fit yes :imoutoptions -geometry 400 :iminoptions -density 600
+,#+begin_src latex
+\begin{tikzpicture}
+\draw[->] (-3,0) -- (-2,0) arc[radius=0.5cm,start angle=-180,end angle=0]
+    (-1,0) -- (1,0) arc[radius=0.5cm,start angle=180,end angle=0] (2,0) -- (3,0);
+\filldraw (-1.5,0) circle[radius=1mm];
+\filldraw (1.5,0) circle[radius=1mm];
+\end{tikzpicture}
+,#+end_src
+
+,#+RESULTS:
+[[file:./a-new-journey/test.png]]
+#+end_src
+
+Eval 这个 source block 后即可得到：
+
+#+header: :headers '("\\usepackage{tikz}")
+#+header: :results file graphics :file ./a-new-journey/test.png
+#+header: :exports results :imagemagick yes
+#+header: :fit yes :imoutoptions -geometry 400 :iminoptions -density 600
+#+begin_src latex
+\begin{tikzpicture}
+\draw[->] (-3,0) -- (-2,0) arc[radius=0.5cm,start angle=-180,end angle=0]
+    (-1,0) -- (1,0) arc[radius=0.5cm,start angle=180,end angle=0] (2,0) -- (3,0);
+\filldraw (-1.5,0) circle[radius=1mm];
+\filldraw (1.5,0) circle[radius=1mm];
+\end{tikzpicture}
+#+end_src
+
+#+RESULTS:
+[[file:./a-new-journey/test.png]]
+
+
+***** 输出 SVG 格式的图片
+- 确保机器上已经安装了 \(\LaTeX\)
+
+接下来的工作不那么优雅，我们需要修改一下 =ob-latex.el= 。
+
+因为在 Orgmode 中 Eval 代码块时 Orgmode 会自动把代码块的内容加入预告写好的
+Preamble 里生成一个临时文件，但当使用 =.svg= 结尾的输出文件名时它的 Preamble 是
+这样的：
+
+#+begin_src latex :exports code
+\documentclass[preview]{standalone}
+\def\pgfsysdriver{pgfsys-tex4ht.def}
+%% Your \usepackage here
+\begin{document}
+%% Your code here
+\end{document}
+#+end_src
+
+第二行的 =\def\pgfsysdriver= 需要放在 =\usepackage{tikz}= 后，或者使用 =htlatex=
+才能编译，但 ob-latex 使用的是 =latex= ，而且这个过程只会提示 =PDF produced with
+errors= ，导致输出的 SVG 是乱码。
+
+查询 =ob-latex.el= 发现，这个 Preamble 是硬编码在 =org-babel-execute:latex= 里的：
+
+#+begin_src elisp :exports code
+ (defcustom org-babel-latex-preamble
+   (lambda (_)
+     "\\documentclass[preview]{standalone}
+\\def\\pgfsysdriver{pgfsys-tex4ht.def}
+ ")
+   "Closure which evaluates at runtime to the LaTeX preamble."
+
+...
+
+          (with-temp-file tex-file
+            (insert (concat
+                     "\\documentclass[preview]{standalone}
+\\def\\pgfsysdriver{pgfsys-tex4ht.def}
+ "
+                     (mapconcat (lambda (pkg)
+                                  (concat "\\usepackage" pkg))
+#+end_src
+
+那问题就好办了，直接删掉两处 =\\def\\pgfsysdriver{pgfsys-tex4ht.def}= ，并重新
+build （我使用的是 DoomEmacs ，运行 =~/.emacs.d/bin/doom build= ），然后就可以
+正常导出了。
+
+#+begin_src org
+,#+header: :headers '("\\usepackage{tikz}")
+,#+header: :results file graphics :file ./a-new-journey/test.svg
+,#+header: :exports results
+,#+header: :fit yes :imoutoptions -geometry 400 :iminoptions -density 600
+,#+begin_src latex
+\begin{tikzpicture}
+\draw[->] (-3,0) -- (-2,0) arc[radius=0.5cm,start angle=-180,end angle=0]
+    (-1,0) -- (1,0) arc[radius=0.5cm,start angle=180,end angle=0] (2,0) -- (3,0);
+\filldraw (-1.5,0) circle[radius=1mm];
+\filldraw (1.5,0) circle[radius=1mm];
+\end{tikzpicture}
+,#+end_src
+
+,#+RESULTS:
+[[file:./a-new-journey/test.svg]]
+#+end_src
+
+输出以下图形：
+
+#+header: :headers '("\\usepackage{tikz}")
+#+header: :results file graphics :file ./a-new-journey/test.svg
+#+header: :exports results
+#+header: :fit yes :imoutoptions -geometry 400 :iminoptions -density 600
+#+begin_src latex
+\begin{tikzpicture}
+\draw[->] (-3,0) -- (-2,0) arc[radius=0.5cm,start angle=-180,end angle=0]
+    (-1,0) -- (1,0) arc[radius=0.5cm,start angle=180,end angle=0] (2,0) -- (3,0);
+\filldraw (-1.5,0) circle[radius=1mm];
+\filldraw (1.5,0) circle[radius=1mm];
+\end{tikzpicture}
+#+end_src
+
+#+RESULTS:
+[[file:./a-new-journey/test.svg]]
+
+
+其实看 =ob-latex.el= 似乎可以通过用户定义 =org-babel-latex-preamble= 来绕过硬编
+码的 Preamble ，但经过测试发现并没有起作用，如果读者有更好方案，请务必联系我。
+
+上面测试用的 TikZ 代码圴来自 Jonny Evans[fn:8]，同时感谢群组内[fn:9]大佬们的帮助。
+
+[fn:8] https://www.homepages.ucl.ac.uk/~ucahjde/blog/tikz.html
+[fn:9] https://t.me/emacs_zh
+
 ** DONE 记一次 Julia 代码性能优化过程 :@Programming:Julia:Optimization:ParallelProgramming:
 CLOSED: [2021-04-16 Fri 13:06]
 :PROPERTIES:

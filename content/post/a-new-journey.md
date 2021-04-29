@@ -17,6 +17,9 @@ markup: "goldmark"
 - [博客相关](#博客相关)
     - [配置、模板](#配置-模板)
     - [图片等外部文件的引用](#图片等外部文件的引用)
+    - [使用 TikZ 配合 Orgmode 进行画图 <span class="timestamp-wrapper"><span class="timestamp">[2021-04-29 Thu] </span></span> 更新](#使用-tikz-配合-orgmode-进行画图-更新)
+        - [输出 PNG 格式的图片](#输出-png-格式的图片)
+        - [输出 SVG 格式的图片](#输出-svg-格式的图片)
 
 </div>
 <!--endtoc-->
@@ -126,9 +129,120 @@ string)
 因此我还是决定把图片等外部文件放在 `<HUGO_BASE_DIR>/content-org/` 里，每篇文章单独建一个文件夹，然后使用相对路径引用。下面是效果展示（它使用了
 `[[./a-new-journey/himehina.jpeg]]` ）：![](/ox-hugo/himehina.jpeg)
 
+
+### 使用 TikZ 配合 Orgmode 进行画图 <span class="timestamp-wrapper"><span class="timestamp">[2021-04-29 Thu] </span></span> 更新 {#使用-tikz-配合-orgmode-进行画图-更新}
+
+Orgmode 原生支持内嵌 \\(\LaTeX\\) 代码，自然也支持用 TikZ 画图。不过如果想要在利用
+TikZ 的输出嵌入到博客中，还需要一点工作要做。
+
+
+#### 输出 PNG 格式的图片 {#输出-png-格式的图片}
+
+-   确保机器上已经安装了 ImageMagick 和 \\(\LaTeX\\) ；
+-   在 config 中加入 `(setq org-latex-create-formula-image-program 'imagemagick)` ；
+
+接下来就可以愉快玩耍了：
+
+```org
+#+header: :headers '("\\usepackage{tikz}")
+#+header: :results file graphics :file ./a-new-journey/test.png
+#+header: :exports results
+#+header: :fit yes :imoutoptions -geometry 400 :iminoptions -density 600
+#+begin_src latex
+\begin{tikzpicture}
+\draw[->] (-3,0) -- (-2,0) arc[radius=0.5cm,start angle=-180,end angle=0]
+    (-1,0) -- (1,0) arc[radius=0.5cm,start angle=180,end angle=0] (2,0) -- (3,0);
+\filldraw (-1.5,0) circle[radius=1mm];
+\filldraw (1.5,0) circle[radius=1mm];
+\end{tikzpicture}
+#+end_src
+
+#+RESULTS:
+[[file:./a-new-journey/test.png]]
+```
+
+Eval 这个 source block 后即可得到：
+
+{{< figure src="/ox-hugo/test.png" >}}
+
+
+#### 输出 SVG 格式的图片 {#输出-svg-格式的图片}
+
+-   确保机器上已经安装了 \\(\LaTeX\\)
+
+接下来的工作不那么优雅，我们需要修改一下 `ob-latex.el` 。
+
+因为在 Orgmode 中 Eval 代码块时 Orgmode 会自动把代码块的内容加入预告写好的
+Preamble 里生成一个临时文件，但当使用 `.svg` 结尾的输出文件名时它的 Preamble 是这样的：
+
+```latex
+\documentclass[preview]{standalone}
+\def\pgfsysdriver{pgfsys-tex4ht.def}
+%% Your \usepackage here
+\begin{document}
+%% Your code here
+\end{document}
+```
+
+第二行的 `\def\pgfsysdriver` 需要放在 `\usepackage{tikz}` 后，或者使用 `htlatex`
+才能编译，但 ob-latex 使用的是 `latex` ，而且这个过程只会提示 `PDF produced with
+errors` ，导致输出的 SVG 是乱码。
+
+查询 `ob-latex.el` 发现，这个 Preamble 是硬编码在 `org-babel-execute:latex` 里的：
+
+```elisp
+ (defcustom org-babel-latex-preamble
+   (lambda (_)
+     "\\documentclass[preview]{standalone}
+\\def\\pgfsysdriver{pgfsys-tex4ht.def}
+ ")
+   "Closure which evaluates at runtime to the LaTeX preamble."
+
+...
+
+          (with-temp-file tex-file
+            (insert (concat
+                     "\\documentclass[preview]{standalone}
+\\def\\pgfsysdriver{pgfsys-tex4ht.def}
+ "
+                     (mapconcat (lambda (pkg)
+                                  (concat "\\usepackage" pkg))
+```
+
+那问题就好办了，直接删掉两处 `\\def\\pgfsysdriver{pgfsys-tex4ht.def}` ，并重新
+build （我使用的是 DoomEmacs ，运行 `~/.emacs.d/bin/doom build` ），然后就可以正常导出了。
+
+```org
+#+header: :headers '("\\usepackage{tikz}")
+#+header: :results file graphics :file ./a-new-journey/test.svg
+#+header: :exports results
+#+header: :fit yes :imoutoptions -geometry 400 :iminoptions -density 600
+#+begin_src latex
+\begin{tikzpicture}
+\draw[->] (-3,0) -- (-2,0) arc[radius=0.5cm,start angle=-180,end angle=0]
+    (-1,0) -- (1,0) arc[radius=0.5cm,start angle=180,end angle=0] (2,0) -- (3,0);
+\filldraw (-1.5,0) circle[radius=1mm];
+\filldraw (1.5,0) circle[radius=1mm];
+\end{tikzpicture}
+#+end_src
+
+#+RESULTS:
+[[file:./a-new-journey/test.svg]]
+```
+
+输出以下图形：
+
+{{< figure src="/ox-hugo/test.svg" >}}
+
+其实看 `ob-latex.el` 似乎可以通过用户定义 `org-babel-latex-preamble` 来绕过硬编码的 Preamble ，但经过测试发现并没有起作用，如果读者有更好方案，请务必联系我。
+
+上面测试用的 TikZ 代码圴来自 Jonny Evans[^fn:7]，同时感谢群组内[^fn:8]大佬们的帮助。
+
 [^fn:1]: <http://zwz.github.io>
 [^fn:2]: <https://stackoverflow.com/questions/16186843/inline-code-in-org-mode/16193498#16193498>
 [^fn:3]: <https://orgmode.org/worg/org-tutorials/org-latex-preview.html>
 [^fn:4]: <https://orgmode.org/manual/Creating-Footnotes.html>
 [^fn:5]: <https://ox-hugo.scripter.co>
 [^fn:6]: <https://github.com/Molunerfinn/PicGo>
+[^fn:7]: <https://www.homepages.ucl.ac.uk/~ucahjde/blog/tikz.html>
+[^fn:8]: <https://t.me/emacs%5Fzh>
