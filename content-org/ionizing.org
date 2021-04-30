@@ -1078,8 +1078,37 @@ IPS 的信息，于是即使 DFT 不能算准，也无大碍。在这个过程�
 将一个电荷放在无限大的导体表面（这里假设表面是平面），导体内部会发生极化，导致内
 部电荷重新分布，从而产生一个静电势。这个静电势等效于导体内一个带相反电性的镜像电
 荷产生的静电势，因而被称为镜像势。电子因镜像势会在导体表面 *外* 形成一些相对弥散
-的态，这些态就是镜像态。镜像势的势能曲线是反比例曲线：
+的态，这些态就是镜像态。
 
+#+header: :headers '("\\usepackage{tikz}")
+#+header: :results file graphics :file ./issues-with-ips/ips1.svg
+#+header: :exports results
+#+header: :fit yes :imoutoptions -geometry 800 :iminoptions -density 720
+#+begin_src latex
+\scalebox{2.0}{
+    \begin{tikzpicture}[thick]
+        \def\z{3}
+        % Axes
+        \draw[-stealth] (-\z-1/2,0) -- (\z+1/2,0) node[above left] {$z$};
+        \draw[thick,dashed] (0,-1) -- (0,2);
+
+        % Label charges
+        \draw[draw=black!0, fill=gray!50] (-\z/4*3,1) circle (0.15)
+        \draw[draw=black!0, fill=gray!50] (\z/4*3,1) circle (0.15)
+
+        % Dashed line between two charges
+        \draw[dashed] (-\z/4*3,1) node[above left] {$-\beta e$} -- (\z/4*3,1) node[above right] {$e$}
+    \end{tikzpicture}
+}
+#+end_src
+
+#+caption: 镜像电荷与镜像势
+#+RESULTS:
+[[file:./issues-with-ips/ips1.svg]]
+
+镜像势的势能曲线是反比例曲线：
+
+\[ V(z) = - \frac{\beta e^2}{4\pi \epsilon_{0} \cdot 4z} \]
 
 这里复用一下解氢原子的 Schrodinger 方程时用到的径向方程：
 
