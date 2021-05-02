@@ -1241,7 +1241,199 @@ IPS 在实空间的分布特征相当明显：
 
 *** 附录
 **** 镜像势表达式的推导
+这里我们更一般地推导两种介质界面处镜像势的表达式。
 
+假设有两种介质 1 和 2，它们的介电常数分别为 \(\epsilon_1\) 和 \(\epsilon_2\) ，有电荷
+\(q\) 在介质 1 中，如下图所示：
+
+#+header: :headers '("\\usepackage{tikz}")
+#+header: :results file graphics :file ./issues-with-ips/ips2.svg
+#+header: :exports results
+#+header: :fit yes :imoutoptions -geometry 800 :iminoptions -density 720
+#+begin_src latex
+\scalebox{2.0}{
+    \begin{tikzpicture}[thick]
+        \def\z{3}
+        \def\ze{\z/4*3}
+
+        %% Medias
+        \fill[blue!50,opacity=.3] (-\z-1/2,2) rectangle (0, -0.5);
+        \node at ( 3,1.5) {$\epsilon_1$};
+        \node at (-3,1.5) {$\epsilon_2$};
+
+        %% Axis
+        \node at (0,0) [below left] {$O$};
+        \draw[thick,-stealth] (-\z-1/2,0) -- (\z+1/2,0);
+        \draw[thin,dashed] (0, -0.5) -- (0,2);
+
+        %% Charges
+        \node[label=above right:$q$] (e1) at ( \ze,0) {};
+        % \node[label=above left:$\beta q$] (e2) at (-\ze,0) {};
+        \fill[black] (e1) circle (0.07);
+        % \fill[black] (e2) circle (0.07);
+
+    \end{tikzpicture}
+}
+#+end_src
+
+#+RESULTS:
+[[file:./issues-with-ips/ips2.svg]]
+
+现在将问题分成两部分来看：分别计算介质 1 和介质 2 中电场强度。
+
+在介质 1 中任取一点 \(P\) ，同时认为 \(q\) 的镜像电荷等效带电量为 \(q'\) ，则
+\(P\) 点的受力如下图所示
+
+#+header: :headers '("\\usepackage{tikz}")
+#+header: :results file graphics :file ./issues-with-ips/ips3.svg
+#+header: :exports results
+#+header: :fit yes :imoutoptions -geometry 800 :iminoptions -density 720
+#+begin_src latex
+\scalebox{2.0}{
+    \begin{tikzpicture}[thick,>=stealth]
+        \def\z{3}
+        \def\ze{\z/4*3}
+
+        %% Medias
+        % \fill[blue!50,opacity=.3] (-\z-1/2,2) rectangle (0, -0.5);
+        \node at ( 3,1.5) {$\epsilon_1$};
+        \node at (-3,1.5) {$\epsilon_1$};
+
+        %% Axis
+        \node at (0,0) [above left] {$O$};
+        \draw[thick,->] (-\z-1/2,0) -- (\z+1/2,0) node [above left] {$z$};
+        \draw[thin,dashed] (0, -0.5) -- (0,2);
+
+        %% Charges
+        \node[label=above:$q$] (e1) at ( \ze,0) {};
+        \node[label=above:$q'$] (e2) at (-\ze,0) {};
+        \fill[black] (e1) circle (0.05);
+        \fill[black] (e2) circle (0.05);
+
+        \draw (\ze, -0.1) -- (\ze, -0.3);
+        \draw (-\ze, -0.1) -- (-\ze, -0.3);
+
+        \draw[<->] (-\ze,-0.2) -- node[below] {$d$} (0,-0.2);
+        \draw[<->] (\ze,-0.2) -- node[below] {$d$} (0,-0.2);
+        \draw[<->] (0, 0.2) -- node[above] {$z$} (1,0.2);
+
+        %% P point
+        \node[label=above:$P$] (p) at (1,1.5) {};
+        \fill[black] (p) circle (0.05);
+        \draw[dashed] (p) -- node[above right] {$R_1$} (e1);
+        \draw[dashed] (p) -- node[above left] {$R_2$} (e2);
+
+        \draw[dashed] (p) -- node[right]{$r$} (1,0);
+        \draw (1,0.15) -| (1.15,0);
+    \end{tikzpicture}
+}
+#+end_src
+
+#+RESULTS:
+[[file:./issues-with-ips/ips3.svg]]
+
+此处的电场强度为
+
+\[\begin{aligned}
+V_1 &={} \frac{1}{4\pi \epsilon_1} \left( \frac{q}{R_1} + \frac{q'}{R_2} \right) \newline
+R_1 &={} \sqrt{(z-d)^2 + r^2} \newline
+R_2 &={} \sqrt{(z+d)^2 + r^2} \newline
+E_z &={} -\frac{\partial V_1}{\partial z} = \frac{1}{4\pi\epsilon_1}
+        \left[ \frac{q(z-d)}{R_1^3} + \frac{q'(z-d)}{R_2^3} \right] \newline
+E_r &={} -\frac{\partial V_1}{\partial r} = \frac{1}{4\pi\epsilon_1}
+        \left[ \frac{qr}{R_1^3} + \frac{q' r}{R_2^3} \right] \newline
+\end{aligned}\]
+
+现在考虑介质 2 中的电场强度，由于经过一个介面，介电常数分布发生了改变，所以在介
+质 2 中所感受到的原来电荷的等效电荷为 \(q''\) 。
+
+#+header: :headers '("\\usepackage{tikz}")
+#+header: :results file graphics :file ./issues-with-ips/ips4.svg
+#+header: :exports results
+#+header: :fit yes :imoutoptions -geometry 800 :iminoptions -density 720
+#+begin_src latex
+\scalebox{2.0}{
+    \begin{tikzpicture}[thick,>=stealth]
+        \def\z{3}
+        \def\ze{\z/4*3}
+
+        %% Medias
+        \fill[blue!50,opacity=.3] (-\z-1/2,2) rectangle (\z+1/2, -0.6);
+        \node at ( 3,1.5) {$\epsilon_2$};
+        \node at (-3,1.5) {$\epsilon_2$};
+
+        %% Axis
+        \node at (0,0) [above right] {$O$};
+        \draw[thick,->] (-\z-1/2,0) -- (\z+1/2,0) node [above left] {$z$};
+        \draw[thin,dashed] (0, -0.5) -- (0,2);
+
+        %% Charge q''
+        \node[label=above:$q''$] (e3) at (\ze,0);
+        \fill[black] (e3) circle (0.05);
+
+        \draw (\ze, -0.1) -- (\ze, -0.3);
+        \draw[<->] (\ze, -0.2) -- node[below] {$d$} (0,-0.2);
+
+        %% P point
+        \node[label=left:$P$] (p) at (-1,1.5);
+        \fill[black] (p) circle (0.05);
+        \draw[dashed] (p) -- node[above right] {$R_3$} (e3);
+        \draw[dashed] (p) -- node[right] {$r$} (-1,0);
+        \draw (-1,0.15) -| (-0.85,0);
+
+        \draw (-1,-0.1) -- (-1,-0.3);
+        \draw[<->] (-1,-0.2) -- node[below] {$z$} (0,-0.2);
+    \end{tikzpicture}
+}
+#+end_src
+
+#+RESULTS:
+[[file:./issues-with-ips/ips4.svg]]
+
+P 点的电场强度可以计算出来：
+
+\[\begin{aligned}
+V_2 &={} \frac{1}{4\pi\epsilon_2} \frac{q''}{R_3} \newline
+R_3 &={} \sqrt{(z-d)^2 + r^2} \newline
+E_z^{(2)} &={} -\frac{\partial V_2}{\partial z} =
+                \frac{1}{4\pi\epsilon_2} \frac{q'' (z-d)}{R_3^3} \newline
+E_r^{(2)} &={} -\frac{\partial V_2}{\partial r} =
+                \frac{1}{4\pi\epsilon_2} \frac{q'' r}{R_3^3} \newline
+\end{aligned}\]
+
+
+在界面处应用导体介质界面上的边界条件：
+
+\[\begin{cases}
+z = 0 \implies R_1 = R_2 = R_3 = R \newline
+D_z^{(1)} = D_z^{(2)} \newline
+E_r^{(1)} = E_r^{(2)} \newline
+\end{cases}\]
+
+即：
+
+\[\begin{aligned}
+\epsilon_1 E_z^{(1)} & = {} \epsilon_2 E_z^{(2)} \newline
+\implies \epsilon_1 \frac{1}{4\pi\epsilon_1} \frac{(q-q')d}{R^3} & = {}
+         \epsilon_2 \frac{1}{4\pi\epsilon_2} \frac{q'' d}{R^3} \newline
+\implies q - q' &={} q''
+\end{aligned}\]
+
+\[\begin{aligned}
+E_r^{(1)} &={} E_r^{(2)} \newline
+\implies \frac{1}{4\pi\epsilon_1} \frac{(q+q')r}{R^3} &={}
+         \frac{1}{4\pi\epsilon_2} \frac{q'' r}{R^2} \newline
+\implies \frac{q+q'}{\epsilon_1} &={} \frac{q''}{\epsilon_2}
+\end{aligned}\]
+
+联立上面两式，可以得到
+
+\[ q' = -\frac{\epsilon_2 - \epsilon_1}{\epsilon_2 + \epsilon_1} q \]
+
+如果用相对介电常数 \(\epsilon_r = \dfrac{\epsilon_2}{\epsilon_1}\) ，上面式子还
+能简化为
+
+\[ q' = -\frac{\epsilon_r - 1}{\epsilon_r + 1} q = -\beta q \]
 
 [fn:1] Wikipedia Surface States item https://en.wikipedia.org/wiki/Surface_states
 [fn:2] Image potential surface states
