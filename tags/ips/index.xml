@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>IPS on Ionizing Radiation</title><link>http://ionizing.page/tags/ips/</link><description>Recent content in IPS on Ionizing Radiation</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Thu, 06 May 2021 00:18:00 +0800</lastBuildDate><atom:link href="http://ionizing.page/tags/ips/index.xml" rel="self" type="application/rss+xml"/><item><title>镜像态的那些坑</title><link>http://ionizing.page/post/issues-with-ips/</link><pubDate>Thu, 06 May 2021 00:18:00 +0800</pubDate><guid>http://ionizing.page/post/issues-with-ips/</guid><description>&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;ul>
+&lt;li>&lt;a href="#%E8%A1%A8%E9%9D%A2%E6%80%81%E4%B8%8E%E9%95%9C%E5%83%8F%E6%80%81">表面态与镜像态&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#%E8%A1%A8%E9%9D%A2%E6%80%81--surface-states-ss">表面态(Surface States, SS)&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E9%95%9C%E5%83%8F%E6%80%81--image-potential-states-ips">镜像态(Image Potential States, IPS)&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#%E8%AE%A1%E7%AE%97%E8%BF%87%E7%A8%8B">计算过程&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#%E8%AE%A1%E7%AE%97%E5%8F%82%E6%95%B0">计算参数&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#%E8%B6%B3%E5%A4%9F%E7%9A%84%E7%A9%BA%E5%B8%A6">足够的空带&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E8%B6%B3%E5%A4%9F%E7%9A%84%E7%9C%9F%E7%A9%BA%E5%B1%82">足够的真空层&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E5%81%B6%E6%9E%81%E6%A0%A1%E6%AD%A3">偶极校正&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#%E9%AA%8C%E8%AF%81%E8%AE%A1%E7%AE%97%E7%BB%93%E6%9E%9C">验证计算结果&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#pdos-%E6%B3%95">PDOS 法&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E5%AE%9E%E7%A9%BA%E9%97%B4%E5%88%86%E5%B8%83%E6%B3%95">实空间分布法&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E8%83%BD%E5%B8%A6%E6%B3%95">能带法&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#%E9%99%84%E5%BD%95">附录&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#%E9%95%9C%E5%83%8F%E5%8A%BF%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%9A%84%E6%8E%A8%E5%AF%BC">镜像势表达式的推导&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;!-- raw HTML omitted -->
+&lt;p>本文是帮实验组计算表面态与镜像态相关性质时所遇到一些坑的总结。&lt;/p></description></item></channel></rss>

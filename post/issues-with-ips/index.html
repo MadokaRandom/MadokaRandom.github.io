@@ -1,0 +1,191 @@
+<!doctype html><html lang=en itemscope itemtype=http://schema.org/WebPage><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><title>镜像态的那些坑 - Ionizing Radiation</title><meta name=renderer content="webkit"><meta name=viewport content="width=device-width,initial-scale=1,user-scalable=yes"><meta name=MobileOptimized content="width"><meta name=HandheldFriendly content="true"><meta name=applicable-device content="pc,mobile"><meta name=theme-color content="#f8f5ec"><meta name=msapplication-navbutton-color content="#f8f5ec"><meta name=apple-mobile-web-app-capable content="yes"><meta name=apple-mobile-web-app-status-bar-style content="#f8f5ec"><meta name=mobile-web-app-capable content="yes"><meta name=author content="Ionizing"><meta name=description content=" 表面态与镜像态  表面态(Surface States, SS) 镜像态(Image Potential States, IPS)   计算过程  计算参数  足够的空带 足够的真空层 偶极校正   验证计算结果  PDOS 法 实空间分布法 能带法     附录  镜像势表达式的推导    本文是帮实验组计算表面态与镜像态相关性质时所遇到一些坑的总结。
+"><meta name=keywords content="PhysicalChemistry,ComputerScience"><meta name=generator content="Hugo 0.82.0"><link rel=canonical href=http://ionizing.page/post/issues-with-ips/><link rel=icon href=/favicon.ico><link rel=stylesheet href=/sass/jane.min.f7440b5c0d223f47a09bf5853465434e6f91d80a591c2f8d2d5e8220e5db0580.css integrity="sha256-90QLXA0iP0egm/WFNGVDTm+R2ApZHC+NLV6CIOXbBYA=" media=screen crossorigin=anonymous><meta property="og:title" content="镜像态的那些坑"><meta property="og:description" content="
+
+
+表面态与镜像态
+
+表面态(Surface States, SS)
+镜像态(Image Potential States, IPS)
+
+
+计算过程
+
+计算参数
+
+足够的空带
+足够的真空层
+偶极校正
+
+
+验证计算结果
+
+PDOS 法
+实空间分布法
+能带法
+
+
+
+
+附录
+
+镜像势表达式的推导
+
+
+
+
+本文是帮实验组计算表面态与镜像态相关性质时所遇到一些坑的总结。"><meta property="og:type" content="article"><meta property="og:url" content="http://ionizing.page/post/issues-with-ips/"><meta property="article:section" content="post"><meta property="article:published_time" content="2021-05-06T00:18:00+08:00"><meta property="article:modified_time" content="2021-05-06T00:18:00+08:00"><meta itemprop=name content="镜像态的那些坑"><meta itemprop=description content="
+
+
+表面态与镜像态
+
+表面态(Surface States, SS)
+镜像态(Image Potential States, IPS)
+
+
+计算过程
+
+计算参数
+
+足够的空带
+足够的真空层
+偶极校正
+
+
+验证计算结果
+
+PDOS 法
+实空间分布法
+能带法
+
+
+
+
+附录
+
+镜像势表达式的推导
+
+
+
+
+本文是帮实验组计算表面态与镜像态相关性质时所遇到一些坑的总结。"><meta itemprop=datePublished content="2021-05-06T00:18:00+08:00"><meta itemprop=dateModified content="2021-05-06T00:18:00+08:00"><meta itemprop=wordCount content="3343"><meta itemprop=keywords content="Posts,VASP,IPS,ImagePotentialStates,"><meta name=twitter:card content="summary"><meta name=twitter:title content="镜像态的那些坑"><meta name=twitter:description content="
+
+
+表面态与镜像态
+
+表面态(Surface States, SS)
+镜像态(Image Potential States, IPS)
+
+
+计算过程
+
+计算参数
+
+足够的空带
+足够的真空层
+偶极校正
+
+
+验证计算结果
+
+PDOS 法
+实空间分布法
+能带法
+
+
+
+
+附录
+
+镜像势表达式的推导
+
+
+
+
+本文是帮实验组计算表面态与镜像态相关性质时所遇到一些坑的总结。"><!--[if lte IE 9]><script src=https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js></script><![endif]--><!--[if lt IE 9]><script src=https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js></script><script src=https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js></script><![endif]--></head><body><div id=mobile-navbar class=mobile-navbar><div class=mobile-header-logo><a href=/ class=logo>IonizingRadiation</a></div><div class=mobile-navbar-icon><span></span><span></span><span></span></div></div><nav id=mobile-menu class="mobile-menu slideout-menu"><ul class=mobile-menu-list><li class=mobile-menu-item><a class=menu-item-link href=http://ionizing.page/>Home</a></li><li class=mobile-menu-item><a class=menu-item-link href=http://ionizing.page/post/>Archives</a></li><li class=mobile-menu-item><a class=menu-item-link href=http://ionizing.page/tags/>Tags</a></li><li class=mobile-menu-item><a class=menu-item-link href=http://ionizing.page/categories/>Categories</a></li><li class=mobile-menu-item><a class=menu-item-link href=http://ionizing.page/about/>About</a></li><li class=mobile-menu-item><a class=menu-item-link href=http://ionizing.page/external-link/>External-link</a></li></ul></nav><link rel=stylesheet href=/lib/photoswipe/photoswipe.min.css><link rel=stylesheet href=/lib/photoswipe/default-skin/default-skin.min.css><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><header id=header class="header container"><div class=logo-wrapper><a href=/ class=logo>IonizingRadiation</a></div><nav class=site-navbar><ul id=menu class=menu><li class=menu-item><a class=menu-item-link href=http://ionizing.page/>Home</a></li><li class=menu-item><a class=menu-item-link href=http://ionizing.page/post/>Archives</a></li><li class=menu-item><a class=menu-item-link href=http://ionizing.page/tags/>Tags</a></li><li class=menu-item><a class=menu-item-link href=http://ionizing.page/categories/>Categories</a></li><li class=menu-item><a class=menu-item-link href=http://ionizing.page/about/>About</a></li><li class=menu-item><a class=menu-item-link href=http://ionizing.page/external-link/>External-link</a></li></ul></nav></header><div id=mobile-panel><main id=main class="main bg-llight"><div class=content-wrapper><div id=content class="content container"><article class="post bg-white"><header class=post-header><h1 class=post-title>镜像态的那些坑</h1><div class=post-meta><time datetime=2021-05-06 class=post-time>2021-05-06</time><div class=post-category><a href=http://ionizing.page/categories/physicalchemistry/>PhysicalChemistry</a></div></div></header><div class=post-toc id=post-toc><h2 class=post-toc-title>文章目录</h2><div class=post-toc-content><nav id=TableOfContents><ul><li><a href=#表面态与镜像态>表面态与镜像态</a><ul><li><a href=#表面态--surface-states-ss>表面态(Surface States, SS)</a></li><li><a href=#镜像态--image-potential-states-ips>镜像态(Image Potential States, IPS)</a></li></ul></li><li><a href=#计算过程>计算过程</a><ul><li><a href=#计算参数>计算参数</a></li><li><a href=#验证计算结果>验证计算结果</a></li></ul></li><li><a href=#附录>附录</a><ul><li><a href=#镜像势表达式的推导>镜像势表达式的推导</a></li></ul></li></ul></nav></div></div><div class=post-content><ul><li><a href=#%E8%A1%A8%E9%9D%A2%E6%80%81%E4%B8%8E%E9%95%9C%E5%83%8F%E6%80%81>表面态与镜像态</a><ul><li><a href=#%E8%A1%A8%E9%9D%A2%E6%80%81--surface-states-ss>表面态(Surface States, SS)</a></li><li><a href=#%E9%95%9C%E5%83%8F%E6%80%81--image-potential-states-ips>镜像态(Image Potential States, IPS)</a></li></ul></li><li><a href=#%E8%AE%A1%E7%AE%97%E8%BF%87%E7%A8%8B>计算过程</a><ul><li><a href=#%E8%AE%A1%E7%AE%97%E5%8F%82%E6%95%B0>计算参数</a><ul><li><a href=#%E8%B6%B3%E5%A4%9F%E7%9A%84%E7%A9%BA%E5%B8%A6>足够的空带</a></li><li><a href=#%E8%B6%B3%E5%A4%9F%E7%9A%84%E7%9C%9F%E7%A9%BA%E5%B1%82>足够的真空层</a></li><li><a href=#%E5%81%B6%E6%9E%81%E6%A0%A1%E6%AD%A3>偶极校正</a></li></ul></li><li><a href=#%E9%AA%8C%E8%AF%81%E8%AE%A1%E7%AE%97%E7%BB%93%E6%9E%9C>验证计算结果</a><ul><li><a href=#pdos-%E6%B3%95>PDOS 法</a></li><li><a href=#%E5%AE%9E%E7%A9%BA%E9%97%B4%E5%88%86%E5%B8%83%E6%B3%95>实空间分布法</a></li><li><a href=#%E8%83%BD%E5%B8%A6%E6%B3%95>能带法</a></li></ul></li></ul></li><li><a href=#%E9%99%84%E5%BD%95>附录</a><ul><li><a href=#%E9%95%9C%E5%83%8F%E5%8A%BF%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%9A%84%E6%8E%A8%E5%AF%BC>镜像势表达式的推导</a></li></ul></li></ul><p>本文是帮实验组计算表面态与镜像态相关性质时所遇到一些坑的总结。</p><blockquote><p>限于 DFT 理论上的缺陷（使用指数函数逼近库仑势，从而加速收敛）， DFT 并不能算准
+IPS 的能级（误差在 \(\pm 0.3eV\)左右），但有的实验又需要从 DFT 计算获得一些关于
+IPS 的信息，于是即使 DFT 不能算准，也无大碍。在这个过程中本人似乎不止一次掉入坑
+中，于是把这个过程记录下来，即便对后人没什么帮助，也算是对自己学习印迹的一丝收藏
+吧。</p></blockquote><h2 id=表面态与镜像态>表面态与镜像态</h2><h3 id=表面态--surface-states-ss>表面态(Surface States, SS)</h3><p>顾名思义，表面态就是在物体 <strong>表面</strong> 附近存在的电子态<sup id=fnref:1><a href=#fn:1 class=footnote-ref role=doc-noteref>1</a></sup>。表面意味着边界的存在，
+边界外是真空，边界内是原子。正因为存在从体相到真空的剧烈变化，表面的原子存在不饱和键，即悬挂键。这些悬挂键由那些在体相内本应成键的电子贡献，受这些电子影响，物体的 <strong>表面</strong> 会出现一些新的、相对弥散的电子态，这些电子态被称为表面态。</p><h3 id=镜像态--image-potential-states-ips>镜像态(Image Potential States, IPS)</h3><p>将一个电荷放在无限大的导体表面（这里假设表面是平面），导体内部会发生极化，导致内部电荷重新分布，从而产生一个静电势。这个静电势等效于导体内一个带相反电性的镜像电荷产生的静电势，因而被称为镜像势。电子因镜像势会在导体表面 <strong>外</strong> 形成一些相对弥散的态，这些态就是镜像态。</p><link rel=stylesheet href=/css/hugo-easy-gallery.css><div class=box><figure itemprop=associatedMedia itemscope itemtype=http://schema.org/ImageObject><div class=img><img itemprop=thumbnail src=/ox-hugo/ips1.svg alt="Figure 1: 镜像电荷示意图， 0+ 侧是真空， 0- 侧是相对介电常数为 epsilon\_r 的导体内部"></div><a href=/ox-hugo/ips1.svg itemprop=contentUrl></a><figcaption><p>Figure 1: 镜像电荷示意图， 0+ 侧是真空， 0- 侧是相对介电常数为 epsilon\_r 的导体内部</p></figcaption></figure></div><p>镜像势的势能曲线是反比例曲线：</p><p>\[ V(z) = - \frac{\beta e^2}{4\pi \epsilon_{0} \cdot 4z} \]</p><p>上式中 \(\beta = \displaystyle\frac{\epsilon_r-1}{\epsilon_r+1}\)</p><p>所以电子满足方程：</p><p>\[ \begin{aligned}
+\frac{\hbar^2}{2m_e} \nabla^2 \Psi + V(z)\Psi &={} E\Psi \newline
+\frac{\hbar^2}{2m_e} \nabla^2 \Psi - \frac{\beta e^2}{4\pi \epsilon_{0} \cdot 4z} \Psi &={} E\Psi
+\end{aligned} \]</p><p>这个方程看起来很眼熟，它十分类似于氢原子 Schrodinger 方程。由于这个电子只在
+\(z\) 方向上受镜像电荷作用，因而在 \(xy\) 方向上是自由的，所以它能量可以通过求解一维氢原子 Schrodinger 方程得到：</p><p>\[ E_n = -\frac{0.85}{n^2}\frac{(\epsilon_r-1)^2}{(\epsilon_r+1)^2} \quad \text{eV} \]</p><p>其中 \(n\) 是主量子数，分子 0.85eV 正好是氢原子基态能量的 \(\dfrac{1}{4^2}\) 。
+所以镜像态也可以根据主量子数的不同来区分出不同的能级。求解过程可以在一篇文章中查到；镜像势的表达式的推导过程详见附录。</p><p>严格地说，镜像态也是表面态的一种<sup id=fnref:2><a href=#fn:2 class=footnote-ref role=doc-noteref>2</a></sup>。一般而言，镜像态在真空能级以下 1eV 以内，
+DFT 算出的 IPS 能级可能会超过真空能级，但在实际上是不太可能的，即使真的有，实验上也不大能测得到。</p><h2 id=计算过程>计算过程</h2><p>事实上计算出镜像态，并不需要改太多的东西。下面在介绍如何设置计算参数的同时以
+Ag(111) 上吸附苯分子为例阐述如何从结果中分析是否存在 IPS 。</p><h3 id=计算参数>计算参数</h3><p>这里使用的晶格是 Ag(111) 的 \(3\times3\) 表面，上表面放置了一个苯分子，结构如图：</p><div class=box><figure itemprop=associatedMedia itemscope itemtype=http://schema.org/ImageObject><div class=img><img itemprop=thumbnail src=/ox-hugo/AgBenzene-structure.png alt="Figure 2: Benzene on Ag(111)"></div><a href=/ox-hugo/AgBenzene-structure.png itemprop=contentUrl></a><figcaption><p>Figure 2: Benzene on Ag(111)</p></figcaption></figure></div><h4 id=足够的空带>足够的空带</h4><p>如果体系比较小， VASP 默认取的 <code>NBANDS</code> 是足够找到 IPS 的；但当体系特别大的时候，
+默认的 <code>NBANDS</code> 可能不太会覆盖到 IPS ，这时需要增加 <code>NBANDS</code> ，一般加到真空能级以上 3eV 就足够了，实际上这里只是需要 VASP 能较为 <em>精确</em> 地算对真空能级附近的态，
+而标号接近 NBANDS 的能带不准确，表现在能带图上就是色散关系就像被生生截断了一样，
+且呈锯齿状；此外，如果在实空间展开这个态会发现这个它像是随机生成的一样，没用使用价值分布。关于真空能级怎么算，详见之前的博文。</p><p>这里使用的体系里因为原子数比较适中，不用额外增加 <code>NBANDS</code> 。</p><h4 id=足够的真空层>足够的真空层</h4><p>镜像态在真空层中，因此需要足够的真空层来容纳它，一般而言 30A 真空层可能还不算够。
+但要注意 VASP 在算高度超过 70A 的晶格时会很难收敛。</p><p>这里使用的体系加了 50A 的真空层，已经足够放下上表面的 IPS 。</p><h4 id=偶极校正>偶极校正</h4><p>如果 Slab 表面没有吸附其它原子/分子，则不必对体系进行偶极校正，否则需要校正，具体过程参见之前的博文。</p><p>偶极校正效果如图：</p><div class=box><figure itemprop=associatedMedia itemscope itemtype=http://schema.org/ImageObject><div class=img><img itemprop=thumbnail src=/ox-hugo/AgBenzene-workfunc.png alt="Figure 3: Benzene on Ag111 偶极校正后功函数图像"></div><a href=/ox-hugo/AgBenzene-workfunc.png itemprop=contentUrl></a><figcaption><p>Figure 3: Benzene on Ag111 偶极校正后功函数图像</p></figcaption></figure></div><h3 id=验证计算结果>验证计算结果</h3><p>这里的「验证」与其说是验证，不如说是寻找。前面提到， IPS 是一种相对「弥散」的态，
+它「弥散」的性质决定了怎么去 Identify IPS 。这里总结了几种「找」 IPS 的方法。</p><h4 id=pdos-法>PDOS 法</h4><p>一个态比较「弥散」说明它的局域性（locality）比较低，反映在物理图像里就是它投影在原子上的态比较少。因此我们可以在通过不同能带在原子上的投影大小来判断它是否是 IPS。</p><p>幸运地是 VASP 可以通过 <code>LORBIT = .TRUE.</code> 来输出 <code>PROCAR</code> 文件，它包含了每个能带在所有原子上的投影大小，顺便说一句， <code>PROCAR</code> 还包含不同角动量的投影大小。</p><p>先结构弛豫，再进行自恰计算得到 <code>PROCAR</code> 后，可以通过以下方法查看这个态在所有原子上的投影之和：</p><p>打开 <code>PROCAR</code> ，定位到真空能级 <sup id=fnref:3><a href=#fn:3 class=footnote-ref role=doc-noteref>3</a></sup> 附近 \(\Gamma\) 点的能带</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-fallback data-lang=fallback>band    35 # energy    3.23957699 # occ.  0.00000000
+
+ion      s     py     pz     px    dxy    dyz    dz2    dxz  x2-y2    tot
+    1  0.002  0.000  0.000  0.000  0.000  0.000  0.002  0.000  0.000  0.004
+    2  0.001  0.000  0.001  0.000  0.000  0.000  0.000  0.000  0.000  0.002
+    ......
+tot    0.005  0.000  0.004  0.000  0.000  0.000  0.004  0.000  0.000  0.013
+</code></pre></td></tr></table></div></div><p>看最后一行 <code>tot 0.005 ...</code> ，最右边也有一个 <code>tot</code> ，两者交叉的的值 <code>0.013</code> 即为这条能带在整个系统上的投影大小，换言之，局域度的大小。那么这个值越小则它是 IPS
+的可能性越高。比如上面的能带 PDOS 中整体的 PDOS 之和只有 0.013 ，说明它的局域度很小，那么这个态非常弥散，有可能是 IPS 。</p><h4 id=实空间分布法>实空间分布法</h4><p>仅仅是通过能带的 PDOS 还不足以确认这条带是不是 IPS ，有些费米能级附近的带总体
+PDOS 也很小，但不是 IPS 。这时就需要其它方法来看了，比如本节要介绍的实空间分布法。</p><p>IPS 在实空间的分布特征相当明显：</p><ol><li>它们在表面以外，并且随着主量子数的升高有着对应个数的波包；</li><li>每个波包对应的空间分布呈明显的近自由电子态的特征。</li></ol><p>如下图<sup id=fnref:4><a href=#fn:4 class=footnote-ref role=doc-noteref>4</a></sup>所示：</p><p></p><div class=box><figure itemprop=associatedMedia itemscope itemtype=http://schema.org/ImageObject><div class=img><img itemprop=thumbnail src=/ox-hugo/ips_ref1.jpg alt="Figure 4: IPS 的实空间分布曲线，最下面的曲线是镜像势的曲线。"></div><a href=/ox-hugo/ips_ref1.jpg itemprop=contentUrl></a><figcaption><p>Figure 4: IPS 的实空间分布曲线，最下面的曲线是镜像势的曲线。</p></figcaption></figure></div><p>上面图中 \(n=1\) 的 IPS 只有一个波包， \(n=2\) 时有两个波包， \(n=3\) 时有三个，
+以此类推下去……</p><p>对于第一个特征，我们可以对波函数的模平方作 \(z\) 方向上的分布，数出表面外有多少个峰，注意区分 Slab 的上表面和下表面，只有上表面的波包应该被计入在内。</p><p>在 Benzene on Ag(111) 体系中，对应的 IPS 实空间分布曲线如下：</p><p></p><div class=box><figure itemprop=associatedMedia itemscope itemtype=http://schema.org/ImageObject><div class=img><img itemprop=thumbnail src=/ox-hugo/AgBenzene-ips1.png alt="Figure 5: Benzene on Ag(111) 表面 IPS 的实空间分布曲线"></div><a href=/ox-hugo/AgBenzene-ips1.png itemprop=contentUrl></a><figcaption><p>Figure 5: Benzene on Ag(111) 表面 IPS 的实空间分布曲线</p></figcaption></figure></div><p>如果只看 \(z\) 方向上的波函数觉得不放心，可以把某条带在实空间的分布画出来，如果它在真空中，并且上下表面近似为平面，即在水平方向上为近自由电子，也就可认为它是
+IPS ，如下图所示：</p><p></p><div class=box><figure itemprop=associatedMedia itemscope itemtype=http://schema.org/ImageObject><div class=img><img itemprop=thumbnail src=/ox-hugo/AgBenzene-ipsrealspace.png alt="Figure 6: Benzene on Ag(111) 体系 IPS 的实空间分布，这里每张图的等值面 Level 不同，以体现出对应数量的波包"></div><a href=/ox-hugo/AgBenzene-ipsrealspace.png itemprop=contentUrl></a><figcaption><p>Figure 6: Benzene on Ag(111) 体系 IPS 的实空间分布，这里每张图的等值面 Level 不同，以体现出对应数量的波包</p></figcaption></figure></div><p>实际上，图上所标 \(n=4\) 的曲线并不真的是 IPS ，它的能量在真空能级以上，并且它的能量也不符合 \(\dfrac{1}{n^2}\) 的规律。如果仔细验证的话， \(n=1,2,3\) 的能量也并不符合这个规律，这就是 DFT 理论的局限所致，想要再算得更准，需要更大的代价。</p><h4 id=能带法>能带法</h4><p>以上是在单点能静态计算的基础上进行的分析，如果已经画出了这个体系的能带图，从能带图上可以更加清晰地反映出 IPS 的特征。</p><p>能带图的横坐标量纲是动量，纵坐标是能量。一个自由电子的能量全部由动能贡献，因此它的能量与动量的关系就是</p><p>\[ E = E_k = \frac{p^2}{2m} = \frac{g^2}{2m_e} \]</p><p>\(E\) 与 \(g\) 呈二次函数式色散关系，那么只要某个带的色散关系与抛物线相似，就有理由认为某能带可能是 IPS ，比如下面的图中 4 eV 附近 \(\Gamma\) 点的能带明显呈抛物线色散关系，而它们也确实算是 IPS 。</p><div class=box><figure itemprop=associatedMedia itemscope itemtype=http://schema.org/ImageObject><div class=img><img itemprop=thumbnail src=/ox-hugo/AgBenzene-band.png></div><a href=/ox-hugo/AgBenzene-band.png itemprop=contentUrl></a></figure></div><p>如果更有耐心的话，可以算一下那几条带的相对有效质量，如果接近 1 ，就可以很明确地说明这几条带是 IPS ，可惜本人不太想再算这个（实际就是懒），这个就算作「读者自证不难」吧2333。</p><h2 id=附录>附录</h2><h3 id=镜像势表达式的推导>镜像势表达式的推导</h3><p>这里更一般地推导一下两种介质界面处镜像势的表达式，过程参考自<sup id=fnref:5><a href=#fn:5 class=footnote-ref role=doc-noteref>5</a></sup>。</p><p>假设有两种介质 1 和 2，它们的介电常数分别为 \(\epsilon_1\) 和 \(\epsilon_2\) ，有电荷
+\(q\) 在介质 1 中，如下图所示：</p><div class=box><figure itemprop=associatedMedia itemscope itemtype=http://schema.org/ImageObject><div class=img><img itemprop=thumbnail src=/ox-hugo/ips2.svg></div><a href=/ox-hugo/ips2.svg itemprop=contentUrl></a></figure></div><p>现在将问题分成两部分来看：分别计算介质 1 和介质 2 中电场强度。</p><p>在介质 1 中任取一点 \(P\) ，同时认为 \(q\) 的镜像电荷等效带电量为 \(q'\) ，则
+\(P\) 点的受力如下图所示</p><div class=box><figure itemprop=associatedMedia itemscope itemtype=http://schema.org/ImageObject><div class=img><img itemprop=thumbnail src=/ox-hugo/ips3.svg></div><a href=/ox-hugo/ips3.svg itemprop=contentUrl></a></figure></div><p>此处的电场强度为</p><p>\[\begin{aligned}
+V_1 &={} \frac{1}{4\pi \epsilon_1} \left( \frac{q}{R_1} + \frac{q'}{R_2} \right) \newline
+R_1 &={} \sqrt{(z-d)^2 + r^2} \newline
+R_2 &={} \sqrt{(z+d)^2 + r^2} \newline
+E_z &={} -\frac{\partial V_1}{\partial z} = \frac{1}{4\pi\epsilon_1}
+\left[ \frac{q(z-d)}{R_1^3} + \frac{q'(z-d)}{R_2^3} \right] \newline
+E_r &={} -\frac{\partial V_1}{\partial r} = \frac{1}{4\pi\epsilon_1}
+\left[ \frac{qr}{R_1^3} + \frac{q' r}{R_2^3} \right] \newline
+\end{aligned}\]</p><p>现在考虑介质 2 中的电场强度，由于经过一个介面，介电常数分布发生了改变，所以在介质 2 中所感受到的原来电荷的等效电荷为 \(q''\) 。</p><div class=box><figure itemprop=associatedMedia itemscope itemtype=http://schema.org/ImageObject><div class=img><img itemprop=thumbnail src=/ox-hugo/ips4.svg></div><a href=/ox-hugo/ips4.svg itemprop=contentUrl></a></figure></div><p>P 点的电场强度可以计算出来：</p><p>\[\begin{aligned}
+V_2 &={} \frac{1}{4\pi\epsilon_2} \frac{q''}{R_3} \newline
+R_3 &={} \sqrt{(z-d)^2 + r^2} \newline
+E_z^{(2)} &={} -\frac{\partial V_2}{\partial z} =
+\frac{1}{4\pi\epsilon_2} \frac{q'' (z-d)}{R_3^3} \newline
+E_r^{(2)} &={} -\frac{\partial V_2}{\partial r} =
+\frac{1}{4\pi\epsilon_2} \frac{q'' r}{R_3^3} \newline
+\end{aligned}\]</p><p>在界面处应用导体介质界面上的边界条件：</p><p>\[\begin{cases}
+z = 0 \implies R_1 = R_2 = R_3 = R \newline
+D_z^{(1)} = D_z^{(2)} \newline
+E_r^{(1)} = E_r^{(2)} \newline
+\end{cases}\]</p><p>即：</p><p>\[\begin{aligned}
+\epsilon_1 E_z^{(1)} & = {} \epsilon_2 E_z^{(2)} \newline
+\implies \epsilon_1 \frac{1}{4\pi\epsilon_1} \frac{(q-q')d}{R^3} & = {}
+\epsilon_2 \frac{1}{4\pi\epsilon_2} \frac{q'' d}{R^3} \newline
+\implies q - q' &={} q''
+\end{aligned}\]</p><p>\[\begin{aligned}
+E_r^{(1)} &={} E_r^{(2)} \newline
+\implies \frac{1}{4\pi\epsilon_1} \frac{(q+q')r}{R^3} &={}
+\frac{1}{4\pi\epsilon_2} \frac{q'' r}{R^2} \newline
+\implies \frac{q+q'}{\epsilon_1} &={} \frac{q''}{\epsilon_2}
+\end{aligned}\]</p><p>联立上面两式，可以得到</p><p>\[ q' = -\frac{\epsilon_2 - \epsilon_1}{\epsilon_2 + \epsilon_1} q \]</p><p>如果用相对介电常数 \(\epsilon_r = \dfrac{\epsilon_2}{\epsilon_1}\) ，上面式子还能简化为</p><p>\[ q' = -\frac{\epsilon_r - 1}{\epsilon_r + 1} q = -\beta q \]</p><p>这就是前文中镜像电荷表达式中 \(\beta\) 的来源。可以看出，如果 \(\epsilon_r &lt; 1\)
+，镜像电荷的符号与原来电荷相同。</p><p>电荷 \(q\) 的受力以及势能表达式：</p><p>\[\begin{aligned}
+F(z) &={} -\frac{\beta q^2}{4\pi \epsilon_0 (2z)^2} \quad \beta = \frac{\epsilon_r-1}{\epsilon_r+1} \newline
+V(z) &={} -\frac{\beta q^2}{4\pi \epsilon_r \cdot 4z}
+\end{aligned}\]</p><p>文中第一节的表达式得证。</p><section class=footnotes role=doc-endnotes><hr><ol><li id=fn:1 role=doc-endnote><p>Wikipedia Surface States item <a href=https://en.wikipedia.org/wiki/Surface%5Fstates>https://en.wikipedia.org/wiki/Surface%5Fstates</a> <a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:2 role=doc-endnote><p>Image potential surface states <a href=https://iopscience.iop.org/article/10.1088/0031-8949/36/4/009/pdf>https://iopscience.iop.org/article/10.1088/0031-8949/36/4/009/pdf</a> <a href=#fnref:2 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:3 role=doc-endnote><p>真空能级可以在 <code>OUTCAR</code> 里找到（ <code>grep vacuum OUTCAR</code> ） <a href=#fnref:3 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:4 role=doc-endnote><p>图片来自 Image-potential-induced states at metal surfaces <a href=https://www.sciencedirect.com/science/article/pii/S0368204802001500>https://www.sciencedirect.com/science/article/pii/S0368204802001500</a> <a href=#fnref:4 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:5 role=doc-endnote><p>Classical Electrodynamics, From Image Charges to the Photon Mass and Magnetic monopoles, Francesco Lacava <a href=https://www.springer.com/gp/book/9783319394732>https://www.springer.com/gp/book/9783319394732</a> <a href=#fnref:5 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></section></div><div class=post-copyright><p class=copyright-item><span class=item-title>文章作者</span>
+<span class=item-content>Ionizing</span></p><p class=copyright-item><span class=item-title>上次更新</span>
+<span class=item-content>2021-05-06</span></p><p class=copyright-item><span class=item-title>许可协议</span>
+<span class=item-content><a rel="license noopener" href=https://creativecommons.org/licenses/by-nc-nd/4.0/ target=_blank>CC BY-NC-ND 4.0</a></span></p></div><footer class=post-footer><div class=post-tags><a href=http://ionizing.page/tags/posts/>Posts</a>
+<a href=http://ionizing.page/tags/vasp/>VASP</a>
+<a href=http://ionizing.page/tags/ips/>IPS</a>
+<a href=http://ionizing.page/tags/imagepotentialstates/>ImagePotentialStates</a></div><nav class=post-nav><a class=next href=/post/vasp-dipol-correction-work-function/><span class="next-text nav-default">VASP 偶极校正及功函数的计算</span>
+<span class="prev-text nav-mobile">下一篇</span>
+<i class=iconfont><svg class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="18" height="18"><path d="M332.091514 74.487481l-75.369571 89.491197c-10.963703 12.998035-10.285251 32.864502 1.499144 44.378743l286.278095 300.375162L266.565125 819.058374c-11.338233 12.190647-11.035334 32.285311.638543 44.850487l80.46666 86.564541c11.680017 12.583596 30.356378 12.893658 41.662889.716314l377.434212-421.426145c11.332093-12.183484 11.041474-32.266891-.657986-44.844348l-80.46666-86.564541c-1.772366-1.910513-3.706415-3.533476-5.750981-4.877077L373.270379 71.774697c-11.777231-11.500939-30.216186-10.304694-41.178865 2.712784z"/></svg></i></a></nav></footer></article></div></div></main><footer id=footer class=footer><div class=icon-links><a href=mailto:petersmith_9@outlook.com rel="me noopener" class=iconfont title=email><svg class="icon" viewBox="0 0 1451 1024" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="36" height="36"><path d="M664.781909 681.472759.0 97.881301C0 3.997201 71.046997.0 71.046997.0H474.477909 961.649408h399.992405s71.046998 3.997201 71.046998 97.881301L771.345323 681.472759S764.482731 685.154773 753.594283 688.65053V688.664858C741.602731 693.493018 729.424896 695.068979 718.077952 694.839748 706.731093 695.068979 694.553173 693.493018 682.561621 688.664858V688.65053C671.644501 685.140446 664.781909 681.472759 664.781909 681.472759zm53.281707 130.131124C693.779541 811.016482 658.879232 802.205449 619.10784 767.734955 542.989056 701.759633.0 212.052267.0 212.052267V942.809523S0 1024 83.726336 1024H682.532949 753.579947h595.368192C1432.688811 1024 1432.688811 942.809523 1432.688811 942.809523V212.052267S893.138176 701.759633 817.019477 767.734955c-39.771477 34.470494-74.671786 43.295855-98.955861 43.868928z"/></svg></a><a href=http://github.com/Ionizing rel="me noopener" class=iconfont title=github target=_blank><svg class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="36" height="36"><path d="M512 12.672c-282.88.0-512 229.248-512 512 0 226.261333 146.688 418.133333 350.08 485.76 25.6 4.821333 34.986667-11.008 34.986667-24.618667.0-12.16-.426667-44.373333-.64-87.04C242.005334 929.664 211.968 830.08 211.968 830.08 188.672 770.986667 155.008 755.2 155.008 755.2c-46.378667-31.744 3.584-31.104 3.584-31.104 51.413333 3.584 78.421333 52.736 78.421333 52.736 45.653333 78.293333 119.850667 55.68 149.12 42.581333 4.608-33.109333 17.792-55.68 32.426667-68.48-113.706667-12.8-233.216-56.832-233.216-253.013333.0-55.893333 19.84-101.546667 52.693333-137.386667-5.76-12.928-23.04-64.981333 4.48-135.509333.0.0 42.88-13.738667 140.8 52.48 40.96-11.392 84.48-17.024 128-17.28 43.52.256 87.04 5.888 128 17.28 97.28-66.218667 140.16-52.48 140.16-52.48 27.52 70.528 10.24 122.581333 5.12 135.509333 32.64 35.84 52.48 81.493333 52.48 137.386667.0 196.693333-119.68 240-233.6 252.586667 17.92 15.36 34.56 46.762667 34.56 94.72.0 68.522667-.64 123.562667-.64 140.202666.0 13.44 8.96 29.44 35.2 24.32C877.44 942.592 1024 750.592 1024 524.672c0-282.752-229.248-512-512-512"/></svg></a><a href=http://ionizing.page/index.xml rel="noopener alternate" type=application/rss+xml class=iconfont title=rss target=_blank><svg class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30" height="30"><path d="M819.157333 1024C819.157333 574.592 449.408 204.8.0 204.8V0c561.706667.0 1024 462.293333 1024 1024H819.157333zM140.416 743.04a140.8 140.8.0 01140.501333 140.586667A140.928 140.928.0 01140.074667 1024C62.72 1024 0 961.109333.0 883.626667S62.933333 743.082667 140.416 743.04zM678.784 1024h-199.04c0-263.210667-216.533333-479.786667-479.744-479.786667v-199.04c372.352.0 678.784 306.517333 678.784 678.826667z"/></svg></a></div><div class=copyright><span class=power-by>Powered by <a class=hexo-link href=https://gohugo.io>Hugo</a></span>
+<span class=division>|</span>
+<span class=theme-info>Theme - <a class=theme-link href=https://github.com/xianmin/hugo-theme-jane>Jane</a></span>
+<span class=copyright-year>&copy;
+2021
+<span class=heart><i class=iconfont><svg class="icon" viewBox="0 0 1025 1024" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="14" height="14"><path d="M1000.1 247.9c-15.5-37.3-37.6-70.6-65.7-98.9-54.4-54.8-125.8-85-201-85-85.7.0-166 39-221.4 107.4C456.6 103 376.3 64 290.6 64c-75.1.0-146.5 30.4-201.1 85.6-28.2 28.5-50.4 61.9-65.8 99.3-16 38.8-24 79.9-23.6 122.2.7 91.7 40.1 177.2 108.1 234.8 3.1 2.6 6 5.1 8.9 7.8 14.9 13.4 58 52.8 112.6 102.7 93.5 85.5 209.9 191.9 257.5 234.2 7 6.1 15.8 9.5 24.9 9.5 9.2.0 18.1-3.4 24.9-9.5 34.5-30.7 105.8-95.9 181.4-165 74.2-67.8 150.9-138 195.8-178.2 69.5-57.9 109.6-144.4 109.9-237.3.1-42.5-8-83.6-24-122.2z" fill="#8a8a8a"/></svg></i></span><span class=author>Ionizing</span></span></div></footer><div class=back-to-top id=back-to-top><i class=iconfont><svg class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="35" height="35"><path d="M510.866688 227.694839 95.449397 629.218702h235.761562L329.15309 958.01517h362.40389L691.55698 628.188232l241.942331-3.089361L510.866688 227.694839zM63.840492 63.962777h894.052392v131.813095H63.840492V63.962777zm0 0"/></svg></i></div></div><script type=text/javascript src=/lib/jquery/jquery-3.2.1.min.js></script><script type=text/javascript src=/lib/slideout/slideout-1.0.1.min.js></script><script type=text/javascript src=/js/main.638251f4230630f0335d8c6748e53a96f94b72670920b60c09a56fdc8bece214.js integrity="sha256-Y4JR9CMGMPAzXYxnSOU6lvlLcmcJILYMCaVv3Ivs4hQ=" crossorigin=anonymous></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.13.2/dist/katex.min.css integrity=sha384-Cqd8ihRLum0CCg8rz0hYKPoLZ3uw+gES2rXQXycqnL5pgVQIflxAUDS7ZSjITLb5 crossorigin=anonymous><script defer src=https://cdn.jsdelivr.net/npm/katex@0.13.2/dist/katex.min.js integrity=sha384-1Or6BdeNQb0ezrmtGeqQHFpppNd7a/gw29xeiSikBbsb44xu3uAo8c7FwbF5jhbd crossorigin=anonymous></script><script defer src=https://cdn.jsdelivr.net/npm/katex@0.13.2/dist/contrib/auto-render.min.js integrity=sha384-vZTG03m+2yp6N6BNi5iM4rW4oIwk5DfcNdFfxkk9ZWpDriOkXX8voJBFrAO7MpVl crossorigin=anonymous></script><script>document.addEventListener("DOMContentLoaded",function(){renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:!0},{left:'$',right:'$',display:!1},{left:'\\(',right:'\\)',display:!1},{left:"\\begin{equation}",right:"\\end{equation}",display:!0},{left:"\\begin{align}",right:"\\end{align}",display:!0},{left:"\\begin{alignat}",right:"\\end{alignat}",display:!0},{left:"\\begin{gather}",right:"\\end{gather}",display:!0},{left:"\\begin{CD}",right:"\\end{CD}",display:!0},{left:'\\[',right:'\\]',display:!0}],throwOnError:!1})})</script><script type=text/javascript src=/js/load-photoswipe.js></script><script type=text/javascript src=/lib/photoswipe/photoswipe.min.js></script><script type=text/javascript src=/lib/photoswipe/photoswipe-ui-default.min.js></script></body></html>
