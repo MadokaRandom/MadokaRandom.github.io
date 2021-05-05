@@ -19,6 +19,7 @@
   - [[#镜像态的那些坑][镜像态的那些坑]]
   - [[#rsgrad-开发收获][Rsgrad 开发收获]]
   - [[#haskell-学习笔记][Haskell 学习笔记]]
+  - [[#二维-ising-model-的-julia-实现][二维 Ising Model 的 Julia 实现]]
 
 * DONE About :about:
 CLOSED: [2021-4-13 Tue]
@@ -1048,11 +1049,12 @@ OUTCAR 中的 E-fermi 才是实验中测得的功函数的值。所幸的是 plo
 [fn:5] 图源： http://exciting-code.org/nitrogen-dipole-correction
 
 ** TODO 组内集群折腾实录
-** TODO 镜像态的那些坑 :@PhysicalChemistry:VASP:IPS:ImagePotentialStates:
+** DONE 镜像态的那些坑 :@PhysicalChemistry:VASP:IPS:ImagePotentialStates:
+CLOSED: [2021-05-06 Thu 00:18]
 :PROPERTIES:
 :EXPORT_FILE_NAME: issues-with-ips
 :EXPORT_HUGO_CUSTOM_FRONT_MATTER: :katex true :markup goldmark
-:EXPORT_DATE: [2021-04-28]
+:EXPORT_DATE: [2021-05-06]
 :END:
 
 本文是帮实验组计算表面态与镜像态相关性质时所遇到一些坑的总结。
@@ -1141,32 +1143,50 @@ IPS 的信息，于是即使 DFT 不能算准，也无大碍。在这个过程�
 \(z\) 方向上受镜像电荷作用，因而在 \(xy\) 方向上是自由的，所以它能量可以通过求解
 一维氢原子 Schrodinger 方程得到：
 
-\[ E_n = -\frac{m\beta^2 e^4}{2\hbar^2 n^2}\\;, \quad n=1,2, ... \]
+\[ E_n = -\frac{0.85}{n^2}\frac{(\epsilon_r-1)^2}{(\epsilon_r+1)^2} \quad \text{eV} \]
 
-其中 \(n\) 是主量子数。所以镜像态也可以根据主量子数的不同来区分出不同的能级。求
-解过程可以在一篇文章中查到；镜像势的表达式的推导过程详见附录。
+其中 \(n\) 是主量子数，分子 0.85eV 正好是氢原子基态能量的 \(\dfrac{1}{4^2}\) 。
+所以镜像态也可以根据主量子数的不同来区分出不同的能级。求解过程可以在一篇文章中查
+到；镜像势的表达式的推导过程详见附录。
 
 严格地说，镜像态也是表面态的一种[fn:2]。一般而言，镜像态在真空能级以下 1eV 以内，
 DFT 算出的 IPS 能级可能会超过真空能级，但在实际上是不太可能的，即使真的有，实验
 上也不大能测得到。
 
 *** 计算过程
-事实上计算出镜像态，并不需要改太多的东西。之后我们会结合 Ag(111) 的例子来分别阐
-述这些过程。
+事实上计算出镜像态，并不需要改太多的东西。下面在介绍如何设置计算参数的同时以
+Ag(111) 上吸附苯分子为例阐述如何从结果中分析是否存在 IPS 。
 
 **** 计算参数
 
+这里使用的晶格是 Ag(111) 的 \(3\times3\) 表面，上表面放置了一个苯分子，结构如图：
+
+#+caption: Benzene on Ag(111)
+[[./issues-with-ips/AgBenzene-structure.png]]
+
 ***** 足够的空带
-如果体系比较小， VASP 默认取的 =NBANDS= 是足够找到 IPS 的；但如果体系有超胞，默
-认的 =NBANDS= 可能不太会覆盖到 IPS ，这时需要增加 =NBANDS= ，一般加到真空能级以
-上 2eV 就足够了。关于真空能级怎么算，详见之前的博文。
+如果体系比较小， VASP 默认取的 =NBANDS= 是足够找到 IPS 的；但当体系特别大的时候，
+默认的 =NBANDS= 可能不太会覆盖到 IPS ，这时需要增加 =NBANDS= ，一般加到真空能级
+以上 3eV 就足够了，实际上这里只是需要 VASP 能较为 /精确/ 地算对真空能级附近的态，
+而标号接近 NBANDS 的能带不准确，表现在能带图上就是色散关系就像被生生截断了一样，
+且呈锯齿状；此外，如果在实空间展开这个态会发现这个它像是随机生成的一样，没用使用
+价值分布。关于真空能级怎么算，详见之前的博文。
+
+这里使用的体系里因为原子数比较适中，不用额外增加 =NBANDS= 。
 
 ***** 足够的真空层
-这一点毋庸置疑，但真空层究竟取多少算「足够」呢？这里做了一个收敛性测试：
+镜像态在真空层中，因此需要足够的真空层来容纳它，一般而言 30A 真空层可能还不算够。
+但要注意 VASP 在算高度超过 70A 的晶格时会很难收敛。
+
+这里使用的体系加了 50A 的真空层，已经足够放下上表面的 IPS 。
 
 ***** 偶极校正
 如果 Slab 表面没有吸附其它原子/分子，则不必对体系进行偶极校正，否则需要校正，具
 体过程参见之前的博文。
+
+偶极校正效果如图：
+#+caption: Benzene on Ag111 偶极校正后功函数图像
+[[./issues-with-ips/AgBenzene-workfunc.png]]
 
 **** 验证计算结果
 这里的「验证」与其说是验证，不如说是寻找。前面提到， IPS 是一种相对「弥散」的态，
@@ -1189,9 +1209,7 @@ band    35 # energy    3.23957699 # occ.  0.00000000
 ion      s     py     pz     px    dxy    dyz    dz2    dxz  x2-y2    tot
     1  0.002  0.000  0.000  0.000  0.000  0.000  0.002  0.000  0.000  0.004
     2  0.001  0.000  0.001  0.000  0.000  0.000  0.000  0.000  0.000  0.002
-    3  0.000  0.000  0.001  0.000  0.000  0.000  0.000  0.000  0.000  0.001
-    4  0.001  0.000  0.001  0.000  0.000  0.000  0.001  0.000  0.000  0.002
-    5  0.002  0.000  0.000  0.000  0.000  0.000  0.002  0.000  0.000  0.004
+    ......
 tot    0.005  0.000  0.004  0.000  0.000  0.000  0.004  0.000  0.000  0.013
 #+end_src
 看最后一行 =tot 0.005 ...= ，最右边也有一个 =tot= ，两者交叉的的值 =0.013= 即为
@@ -1207,19 +1225,35 @@ IPS 在实空间的分布特征相当明显：
 1. 它们在表面以外，并且随着主量子数的升高有着对应个数的波包；
 2. 每个波包对应的空间分布呈明显的近自由电子态的特征。
 
-如下图中 A [fn:4]所示：
+如下图[fn:4]所示：
 
-#+CAPTION: 左上：镜像势的原理示意图；A: Cu(100) 表面的镜像势曲线与 z 方向上镜像态波包分布 (n=1,2,3)；B: 2PPE 实验信号图。
-#+NAME: fig:ips-en-cu100
-[[./issues-with-ips/ips-en-cu100.png]]
+#+CAPTION: IPS 的实空间分布曲线，最下面的曲线是镜像势的曲线。
+#+NAME: fig:ips-ref1
+[[./issues-with-ips/ips_ref1.jpg]]
+
+上面图中 \(n=1\) 的 IPS 只有一个波包， \(n=2\) 时有两个波包， \(n=3\) 时有三个，
+以此类推下去……
 
 对于第一个特征，我们可以对波函数的模平方作 \(z\) 方向上的分布，数出表面外有多少
 个峰，注意区分 Slab 的上表面和下表面，只有上表面的波包应该被计入在内。
 
+在 Benzene on Ag(111) 体系中，对应的 IPS 实空间分布曲线如下：
+
+#+CAPTION: Benzene on Ag(111) 表面 IPS 的实空间分布曲线
+#+NAME: fig:ips-AgBenzene-ips1
+[[./issues-with-ips/AgBenzene-ips1.png]]
+
 如果只看 \(z\) 方向上的波函数觉得不放心，可以把某条带在实空间的分布画出来，如果
-它在真空中，并且上下表面近似为平面，即可认为它是 IPS ，如下图所示。
+它在真空中，并且上下表面近似为平面，即在水平方向上为近自由电子，也就可认为它是
+IPS ，如下图所示：
 
+#+caption: Benzene on Ag(111) 体系 IPS 的实空间分布，这里每张图的等值面 Level 不同，以体现出对应数量的波包
+#+name: fig:ips-AgBenzene-realspace
+[[./issues-with-ips/AgBenzene-ipsrealspace.png]]
 
+实际上，图上所标 \(n=4\) 的曲线并不真的是 IPS ，它的能量在真空能级以上，并且它的
+能量也不符合 \(\dfrac{1}{n^2}\) 的规律。如果仔细验证的话， \(n=1,2,3\) 的能量也
+并不符合这个规律，这就是 DFT 理论的局限所致，想要再算得更准，需要更大的代价。
 
 ***** 能带法
 以上是在单点能静态计算的基础上进行的分析，如果已经画出了这个体系的能带图，从能带
@@ -1231,17 +1265,17 @@ IPS 在实空间的分布特征相当明显：
 \[ E = E_k = \frac{p^2}{2m} = \frac{g^2}{2m_e} \]
 
 \(E\) 与 \(g\) 呈二次函数式色散关系，那么只要某个带的色散关系与抛物线相似，就有
-理由认为某能带可能是 IPS ，比如下面的图中 4 eV 附近的能带明显呈抛物线色散关系，
-而它们也确实是 IPS 。
+理由认为某能带可能是 IPS ，比如下面的图中 4 eV 附近 \(\Gamma\) 点的能带明显呈抛
+物线色散关系，而它们也确实算是 IPS 。
 
+[[./issues-with-ips/AgBenzene-band.png]]
 
-**** 一个例子
-这里将以一个 Ag(111) 体系为例，将上述过程走一遍，以便大家对上面的描述有个直观的
-印象。
-
+如果更有耐心的话，可以算一下那几条带的相对有效质量，如果接近 1 ，就可以很明确地
+说明这几条带是 IPS ，可惜本人不太想再算这个（实际就是懒），这个就算作「读者自证
+不难」吧2333。
 *** 附录
 **** 镜像势表达式的推导
-这里我们更一般地推导两种介质界面处镜像势的表达式。
+这里更一般地推导一下两种介质界面处镜像势的表达式，过程参考自[fn:6]。
 
 假设有两种介质 1 和 2，它们的介电常数分别为 \(\epsilon_1\) 和 \(\epsilon_2\) ，有电荷
 \(q\) 在介质 1 中，如下图所示：
@@ -1435,12 +1469,27 @@ E_r^{(1)} &={} E_r^{(2)} \newline
 
 \[ q' = -\frac{\epsilon_r - 1}{\epsilon_r + 1} q = -\beta q \]
 
+这就是前文中镜像电荷表达式中 \(\beta\) 的来源。可以看出，如果 \(\epsilon_r < 1\)
+，镜像电荷的符号与原来电荷相同。
+
+电荷 \(q\) 的受力以及势能表达式：
+
+\[\begin{aligned}
+F(z) &={} -\frac{\beta q^2}{4\pi \epsilon_0 (2z)^2} \quad \beta = \frac{\epsilon_r-1}{\epsilon_r+1} \newline
+V(z) &={} -\frac{\beta q^2}{4\pi \epsilon_r \cdot 4z}
+\end{aligned}\]
+
+文中第一节的表达式得证。
+
 [fn:1] Wikipedia Surface States item https://en.wikipedia.org/wiki/Surface_states
 [fn:2] Image potential surface states
 https://iopscience.iop.org/article/10.1088/0031-8949/36/4/009/pdf
 [fn:3] 真空能级可以在 =OUTCAR= 里找到（ =grep vacuum OUTCAR= ）
-[fn:4] 图片来自 https://www.uni-marburg.de/fb13/researchgroups/of/dynamics/impot.html
+[fn:4] 图片来自 Image-potential-induced states at metal surfaces https://www.sciencedirect.com/science/article/pii/S0368204802001500
 [fn:5] 2PPE: Two-photon photoemission spectroscopy of image states. Photonic
 Probes of Surfaces, P. Halevi, Ed. (Elsevier, Amsterdam, 1995), pp. 347-411
+[fn:6] Classical Electrodynamics, From Image Charges to the Photon Mass and
+Magnetic monopoles, Francesco Lacava https://www.springer.com/gp/book/9783319394732
 ** TODO Rsgrad 开发收获
 ** TODO Haskell 学习笔记
+** TODO 二维 Ising Model 的 Julia 实现
