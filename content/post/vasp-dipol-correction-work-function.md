@@ -48,7 +48,7 @@ markup: "goldmark"
 因 VASP 所适用的体系是周期性体系，使用它来模拟实验中的 Slab 模型时会取一个相当大的真空层来隔绝相信两个周期中 Slab 的相互作用。理想情况下，真空层中的功函数应当是一条水平的直线（函数值为定值）。但如果表面的两侧并非对称，即其中一侧吸附了分子时，
 这两侧的功函数存在差异，此时如果不进行偶极校正，真空中的功函数会是一条斜线；而经过偶极校正后，功函数会出现一个阶梯，阶梯两侧附近的曲接近水平。下图[^fn:1]是一个例子。
 
-<a id="org7fed8e2"></a>
+<a id="org76daa32"></a>
 
 {{< figure src="/ox-hugo/VCL-2.png" caption="Figure 1: DFT 曲线为未经过偶极校正的功函数， DFT-DC 曲线是经过偶极校正后的功函数" >}}
 
@@ -138,7 +138,7 @@ def locpot_mean(fname="LOCPOT", axis='z', savefile='locpot.dat', outcar="OUTCAR"
 
 完整的脚本文件已经放 Gist[^fn:5] 上，当然你也可以直接点击[它](vasp-dipol-correction-work-function/plot-workfunc.py)来下载。运行这个脚本后得到的 Workfunction.pdf 和 locpot.dat 就是 \\(z\\) 方向上的功函数信息。
 
-<a id="orgd8c50ab"></a>
+<a id="org755ef8c"></a>
 
 {{< figure src="/ox-hugo/Workfunction.png" caption="Figure 2: Workfunction.png 示例" >}}
 
@@ -153,9 +153,9 @@ $ grep vacuum OUTCAR
  vacuum level on the upper side and lower side of the slab         2.807         3.188
 ```
 
-这里的 upper side vacuum level 是指 Slab 上表面的真空能级（图 [2](#orgd8c50ab)
+这里的 upper side vacuum level 是指 Slab 上表面的真空能级（图 [2](#org755ef8c)
 中 30A 处的平台）， lower side vacuum level 自然就是下表面的真空能级了
-（图 [2](#orgd8c50ab) 中 35A 处的平台）。
+（图 [2](#org755ef8c) 中 35A 处的平台）。
 
 需要注意的是，从 OUTCAR 中 grep 出的真空能级没有经过费米能级修正，它需要减去
 OUTCAR 中的 E-fermi 才是实验中测得的功函数的值。所幸的是 plot-workfunc.py 已经做了这个工作，用 locpot.dat 画出来的图就对应实验所测结果。
