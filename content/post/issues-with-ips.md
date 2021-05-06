@@ -76,9 +76,9 @@ markup: "goldmark"
 \\[ E\_n = -\frac{0.85}{n^2}\frac{(\epsilon\_r-1)^2}{(\epsilon\_r+1)^2} \quad \text{eV} \\]
 
 其中 \\(n\\) 是主量子数，分子 0.85eV 正好是氢原子基态能量的 \\(\dfrac{1}{4^2}\\) 。
-所以镜像态也可以根据主量子数的不同来区分出不同的能级。求解过程可以在一篇文章中查到；镜像势的表达式的推导过程详见附录。
+所以镜像态也可以根据主量子数的不同来区分出不同的能级。求解过程可以在一篇文章[^fn:2]中查到；镜像势的表达式的推导过程详见附录。
 
-严格地说，镜像态也是表面态的一种[^fn:2]。一般而言，镜像态在真空能级以下 1eV 以内，
+严格地说，镜像态也是表面态的一种[^fn:3]。一般而言，镜像态在真空能级以下 1eV 以内，
 DFT 算出的 IPS 能级可能会超过真空能级，但在实际上是不太可能的，即使真的有，实验上也不大能测得到。
 
 
@@ -136,7 +136,7 @@ Ag(111) 上吸附苯分子为例阐述如何从结果中分析是否存在 IPS �
 
 先结构弛豫，再进行自恰计算得到 `PROCAR` 后，可以通过以下方法查看这个态在所有原子上的投影之和：
 
-打开 `PROCAR` ，定位到真空能级&nbsp;[^fn:3] 附近 \\(\Gamma\\) 点的能带
+打开 `PROCAR` ，定位到真空能级&nbsp;[^fn:4] 附近 \\(\Gamma\\) 点的能带
 
 ```nil
 band    35 # energy    3.23957699 # occ.  0.00000000
@@ -162,9 +162,9 @@ IPS 在实空间的分布特征相当明显：
 1.  它们在表面以外，并且随着主量子数的升高有着对应个数的波包；
 2.  每个波包对应的空间分布呈明显的近自由电子态的特征。
 
-如下图[^fn:4]所示：
+如下图[^fn:5]所示：
 
-<a id="org89ec0e9"></a>
+<a id="org7bc9ad7"></a>
 
 {{< figure src="/ox-hugo/ips_ref1.jpg" caption="Figure 4: IPS 的实空间分布曲线，最下面的曲线是镜像势的曲线。" >}}
 
@@ -175,14 +175,14 @@ IPS 在实空间的分布特征相当明显：
 
 在 Benzene on Ag(111) 体系中，对应的 IPS 实空间分布曲线如下：
 
-<a id="orgae1ab44"></a>
+<a id="org9c1f5a9"></a>
 
 {{< figure src="/ox-hugo/AgBenzene-ips1.png" caption="Figure 5: Benzene on Ag(111) 表面 IPS 的实空间分布曲线" >}}
 
 如果只看 \\(z\\) 方向上的波函数觉得不放心，可以把某条带在实空间的分布画出来，如果它在真空中，并且上下表面近似为平面，即在水平方向上为近自由电子，也就可认为它是
 IPS ，如下图所示：
 
-<a id="orge4a4ce4"></a>
+<a id="org049b836"></a>
 
 {{< figure src="/ox-hugo/AgBenzene-ipsrealspace.png" caption="Figure 6: Benzene on Ag(111) 体系 IPS 的实空间分布，这里每张图的等值面 Level 不同，以体现出对应数量的波包" >}}
 
@@ -209,7 +209,7 @@ IPS ，如下图所示：
 
 ### 镜像势表达式的推导 {#镜像势表达式的推导}
 
-这里更一般地推导一下两种介质界面处镜像势的表达式，过程参考自[^fn:5]。
+这里更一般地推导一下两种介质界面处镜像势的表达式，过程参考自[^fn:6]。
 
 假设有两种介质 1 和 2，它们的介电常数分别为 \\(\epsilon\_1\\) 和 \\(\epsilon\_2\\) ，有电荷
 \\(q\\) 在介质 1 中，如下图所示：
@@ -295,7 +295,8 @@ V(z) &={} -\frac{\beta q^2}{4\pi \epsilon\_r \cdot 4z}
 文中第一节的表达式得证。
 
 [^fn:1]: Wikipedia Surface States item <https://en.wikipedia.org/wiki/Surface%5Fstates>
-[^fn:2]: Image potential surface states <https://iopscience.iop.org/article/10.1088/0031-8949/36/4/009/pdf>
-[^fn:3]: 真空能级可以在 `OUTCAR` 里找到（ `grep vacuum OUTCAR` ）
-[^fn:4]: 图片来自 Image-potential-induced states at metal surfaces <https://www.sciencedirect.com/science/article/pii/S0368204802001500>
-[^fn:5]: Classical Electrodynamics, From Image Charges to the Photon Mass and Magnetic monopoles, Francesco Lacava <https://www.springer.com/gp/book/9783319394732>
+[^fn:2]: One-dimensional hydrogen atom <https://royalsocietypublishing.org/doi/10.1098/rspa.2015.0534>
+[^fn:3]: Image potential surface states <https://iopscience.iop.org/article/10.1088/0031-8949/36/4/009/pdf>
+[^fn:4]: 真空能级可以在 `OUTCAR` 里找到（ `grep vacuum OUTCAR` ）
+[^fn:5]: 图片来自 Image-potential-induced states at metal surfaces <https://www.sciencedirect.com/science/article/pii/S0368204802001500>
+[^fn:6]: Classical Electrodynamics, From Image Charges to the Photon Mass and Magnetic monopoles, Francesco Lacava <https://www.springer.com/gp/book/9783319394732>

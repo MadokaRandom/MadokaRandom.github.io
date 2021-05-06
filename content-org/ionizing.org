@@ -1146,7 +1146,7 @@ IPS 的信息，于是即使 DFT 不能算准，也无大碍。在这个过程�
 \[ E_n = -\frac{0.85}{n^2}\frac{(\epsilon_r-1)^2}{(\epsilon_r+1)^2} \quad \text{eV} \]
 
 其中 \(n\) 是主量子数，分子 0.85eV 正好是氢原子基态能量的 \(\dfrac{1}{4^2}\) 。
-所以镜像态也可以根据主量子数的不同来区分出不同的能级。求解过程可以在一篇文章中查
+所以镜像态也可以根据主量子数的不同来区分出不同的能级。求解过程可以在一篇文章[fn:7]中查
 到；镜像势的表达式的推导过程详见附录。
 
 严格地说，镜像态也是表面态的一种[fn:2]。一般而言，镜像态在真空能级以下 1eV 以内，
@@ -1490,6 +1490,7 @@ https://iopscience.iop.org/article/10.1088/0031-8949/36/4/009/pdf
 Probes of Surfaces, P. Halevi, Ed. (Elsevier, Amsterdam, 1995), pp. 347-411
 [fn:6] Classical Electrodynamics, From Image Charges to the Photon Mass and
 Magnetic monopoles, Francesco Lacava https://www.springer.com/gp/book/9783319394732
+[fn:7] One-dimensional hydrogen atom https://royalsocietypublishing.org/doi/10.1098/rspa.2015.0534
 ** TODO Rsgrad 开发收获
 ** TODO Haskell 学习笔记
 ** TODO 二维 Ising Model 的 Julia 实现
