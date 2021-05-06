@@ -126,8 +126,8 @@ itemscope itemtype="http://schema.org/ImageObject" >
 \(z\) 方向上受镜像电荷作用，因而在 \(xy\) 方向上是自由的，所以它能量可以通过求解一维氢原子 Schrodinger 方程得到：&lt;/p>
 &lt;p>\[ E_n = -\frac{0.85}{n^2}\frac{(\epsilon_r-1)^2}{(\epsilon_r+1)^2} \quad \text{eV} \]&lt;/p>
 &lt;p>其中 \(n\) 是主量子数，分子 0.85eV 正好是氢原子基态能量的 \(\dfrac{1}{4^2}\) 。
-所以镜像态也可以根据主量子数的不同来区分出不同的能级。求解过程可以在一篇文章中查到；镜像势的表达式的推导过程详见附录。&lt;/p>
-&lt;p>严格地说，镜像态也是表面态的一种&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup>。一般而言，镜像态在真空能级以下 1eV 以内，
+所以镜像态也可以根据主量子数的不同来区分出不同的能级。求解过程可以在一篇文章&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup>中查到；镜像势的表达式的推导过程详见附录。&lt;/p>
+&lt;p>严格地说，镜像态也是表面态的一种&lt;sup id="fnref:3">&lt;a href="#fn:3" class="footnote-ref" role="doc-noteref">3&lt;/a>&lt;/sup>。一般而言，镜像态在真空能级以下 1eV 以内，
 DFT 算出的 IPS 能级可能会超过真空能级，但在实际上是不太可能的，即使真的有，实验上也不大能测得到。&lt;/p>
 &lt;h2 id="计算过程">计算过程&lt;/h2>
 &lt;p>事实上计算出镜像态，并不需要改太多的东西。下面在介绍如何设置计算参数的同时以
@@ -178,7 +178,7 @@ itemscope itemtype="http://schema.org/ImageObject" >
 &lt;p>一个态比较「弥散」说明它的局域性（locality）比较低，反映在物理图像里就是它投影在原子上的态比较少。因此我们可以在通过不同能带在原子上的投影大小来判断它是否是 IPS。&lt;/p>
 &lt;p>幸运地是 VASP 可以通过 &lt;code>LORBIT = .TRUE.&lt;/code> 来输出 &lt;code>PROCAR&lt;/code> 文件，它包含了每个能带在所有原子上的投影大小，顺便说一句， &lt;code>PROCAR&lt;/code> 还包含不同角动量的投影大小。&lt;/p>
 &lt;p>先结构弛豫，再进行自恰计算得到 &lt;code>PROCAR&lt;/code> 后，可以通过以下方法查看这个态在所有原子上的投影之和：&lt;/p>
-&lt;p>打开 &lt;code>PROCAR&lt;/code> ，定位到真空能级 &lt;sup id="fnref:3">&lt;a href="#fn:3" class="footnote-ref" role="doc-noteref">3&lt;/a>&lt;/sup> 附近 \(\Gamma\) 点的能带&lt;/p>
+&lt;p>打开 &lt;code>PROCAR&lt;/code> ，定位到真空能级 &lt;sup id="fnref:4">&lt;a href="#fn:4" class="footnote-ref" role="doc-noteref">4&lt;/a>&lt;/sup> 附近 \(\Gamma\) 点的能带&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
 &lt;table class="lntable">&lt;tr>&lt;td class="lntd">
 &lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
@@ -208,7 +208,7 @@ PDOS 也很小，但不是 IPS 。这时就需要其它方法来看了，比如�
 &lt;li>它们在表面以外，并且随着主量子数的升高有着对应个数的波包；&lt;/li>
 &lt;li>每个波包对应的空间分布呈明显的近自由电子态的特征。&lt;/li>
 &lt;/ol>
-&lt;p>如下图&lt;sup id="fnref:4">&lt;a href="#fn:4" class="footnote-ref" role="doc-noteref">4&lt;/a>&lt;/sup>所示：&lt;/p>
+&lt;p>如下图&lt;sup id="fnref:5">&lt;a href="#fn:5" class="footnote-ref" role="doc-noteref">5&lt;/a>&lt;/sup>所示：&lt;/p>
 &lt;p>&lt;!-- raw HTML omitted -->&lt;!-- raw HTML omitted -->&lt;/p>
 &lt;div class="box">
 &lt;figure itemprop="associatedMedia"
@@ -272,7 +272,7 @@ itemscope itemtype="http://schema.org/ImageObject" >
 &lt;p>如果更有耐心的话，可以算一下那几条带的相对有效质量，如果接近 1 ，就可以很明确地说明这几条带是 IPS ，可惜本人不太想再算这个（实际就是懒），这个就算作「读者自证不难」吧2333。&lt;/p>
 &lt;h2 id="附录">附录&lt;/h2>
 &lt;h3 id="镜像势表达式的推导">镜像势表达式的推导&lt;/h3>
-&lt;p>这里更一般地推导一下两种介质界面处镜像势的表达式，过程参考自&lt;sup id="fnref:5">&lt;a href="#fn:5" class="footnote-ref" role="doc-noteref">5&lt;/a>&lt;/sup>。&lt;/p>
+&lt;p>这里更一般地推导一下两种介质界面处镜像势的表达式，过程参考自&lt;sup id="fnref:6">&lt;a href="#fn:6" class="footnote-ref" role="doc-noteref">6&lt;/a>&lt;/sup>。&lt;/p>
 &lt;p>假设有两种介质 1 和 2，它们的介电常数分别为 \(\epsilon_1\) 和 \(\epsilon_2\) ，有电荷
 \(q\) 在介质 1 中，如下图所示：&lt;/p>
 &lt;div class="box">
@@ -363,16 +363,19 @@ V(z) &amp;amp;={} -\frac{\beta q^2}{4\pi \epsilon_r \cdot 4z}
 &lt;p>Wikipedia Surface States item &lt;a href="https://en.wikipedia.org/wiki/Surface%5Fstates">https://en.wikipedia.org/wiki/Surface%5Fstates&lt;/a> &lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;li id="fn:2" role="doc-endnote">
-&lt;p>Image potential surface states &lt;a href="https://iopscience.iop.org/article/10.1088/0031-8949/36/4/009/pdf">https://iopscience.iop.org/article/10.1088/0031-8949/36/4/009/pdf&lt;/a> &lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;p>One-dimensional hydrogen atom &lt;a href="https://royalsocietypublishing.org/doi/10.1098/rspa.2015.0534">https://royalsocietypublishing.org/doi/10.1098/rspa.2015.0534&lt;/a> &lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;li id="fn:3" role="doc-endnote">
-&lt;p>真空能级可以在 &lt;code>OUTCAR&lt;/code> 里找到（ &lt;code>grep vacuum OUTCAR&lt;/code> ） &lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;p>Image potential surface states &lt;a href="https://iopscience.iop.org/article/10.1088/0031-8949/36/4/009/pdf">https://iopscience.iop.org/article/10.1088/0031-8949/36/4/009/pdf&lt;/a> &lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;li id="fn:4" role="doc-endnote">
-&lt;p>图片来自 Image-potential-induced states at metal surfaces &lt;a href="https://www.sciencedirect.com/science/article/pii/S0368204802001500">https://www.sciencedirect.com/science/article/pii/S0368204802001500&lt;/a> &lt;a href="#fnref:4" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;p>真空能级可以在 &lt;code>OUTCAR&lt;/code> 里找到（ &lt;code>grep vacuum OUTCAR&lt;/code> ） &lt;a href="#fnref:4" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;li id="fn:5" role="doc-endnote">
-&lt;p>Classical Electrodynamics, From Image Charges to the Photon Mass and Magnetic monopoles, Francesco Lacava &lt;a href="https://www.springer.com/gp/book/9783319394732">https://www.springer.com/gp/book/9783319394732&lt;/a> &lt;a href="#fnref:5" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;p>图片来自 Image-potential-induced states at metal surfaces &lt;a href="https://www.sciencedirect.com/science/article/pii/S0368204802001500">https://www.sciencedirect.com/science/article/pii/S0368204802001500&lt;/a> &lt;a href="#fnref:5" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:6" role="doc-endnote">
+&lt;p>Classical Electrodynamics, From Image Charges to the Photon Mass and Magnetic monopoles, Francesco Lacava &lt;a href="https://www.springer.com/gp/book/9783319394732">https://www.springer.com/gp/book/9783319394732&lt;/a> &lt;a href="#fnref:6" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
 &lt;/section></description></item><item><title>VASP 偶极校正及功函数的计算</title><link>http://ionizing.page/post/vasp-dipol-correction-work-function/</link><pubDate>Fri, 23 Apr 2021 16:44:00 +0800</pubDate><guid>http://ionizing.page/post/vasp-dipol-correction-work-function/</guid><description>&lt;!-- raw HTML omitted -->
