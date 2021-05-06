@@ -164,7 +164,7 @@ IPS 在实空间的分布特征相当明显：
 
 如下图[^fn:4]所示：
 
-<a id="orga641b92"></a>
+<a id="org89ec0e9"></a>
 
 {{< figure src="/ox-hugo/ips_ref1.jpg" caption="Figure 4: IPS 的实空间分布曲线，最下面的曲线是镜像势的曲线。" >}}
 
@@ -175,14 +175,14 @@ IPS 在实空间的分布特征相当明显：
 
 在 Benzene on Ag(111) 体系中，对应的 IPS 实空间分布曲线如下：
 
-<a id="orge3160b9"></a>
+<a id="orgae1ab44"></a>
 
 {{< figure src="/ox-hugo/AgBenzene-ips1.png" caption="Figure 5: Benzene on Ag(111) 表面 IPS 的实空间分布曲线" >}}
 
 如果只看 \\(z\\) 方向上的波函数觉得不放心，可以把某条带在实空间的分布画出来，如果它在真空中，并且上下表面近似为平面，即在水平方向上为近自由电子，也就可认为它是
 IPS ，如下图所示：
 
-<a id="org78364c4"></a>
+<a id="orge4a4ce4"></a>
 
 {{< figure src="/ox-hugo/AgBenzene-ipsrealspace.png" caption="Figure 6: Benzene on Ag(111) 体系 IPS 的实空间分布，这里每张图的等值面 Level 不同，以体现出对应数量的波包" >}}
 
