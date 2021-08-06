@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Julia on Ionizing Radiation</title><link>http://ionizing.page/tags/julia/</link><description>Recent content in Julia on Ionizing Radiation</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Fri, 06 Aug 2021 14:44:00 +0800</lastBuildDate><atom:link href="http://ionizing.page/tags/julia/index.xml" rel="self" type="application/rss+xml"/><item><title>使用数值方法求解单电子 Schrodinger 方程</title><link>http://ionizing.page/post/schrodinger-equation-numerical-methods/</link><pubDate>Fri, 06 Aug 2021 14:44:00 +0800</pubDate><guid>http://ionizing.page/post/schrodinger-equation-numerical-methods/</guid><description>&lt;!-- raw HTML omitted -->
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Physics on Ionizing Radiation</title><link>http://ionizing.page/categories/physics/</link><description>Recent content in Physics on Ionizing Radiation</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Fri, 06 Aug 2021 14:44:00 +0800</lastBuildDate><atom:link href="http://ionizing.page/categories/physics/index.xml" rel="self" type="application/rss+xml"/><item><title>使用数值方法求解单电子 Schrodinger 方程</title><link>http://ionizing.page/post/schrodinger-equation-numerical-methods/</link><pubDate>Fri, 06 Aug 2021 14:44:00 +0800</pubDate><guid>http://ionizing.page/post/schrodinger-equation-numerical-methods/</guid><description>&lt;!-- raw HTML omitted -->
 &lt;!-- raw HTML omitted -->
 &lt;ul>
 &lt;li>&lt;a href="#%E5%8D%95%E7%B2%92%E5%AD%90%E5%AE%9A%E6%80%81-schrodinger-%E6%96%B9%E7%A8%8B">单粒子定态 Schrodinger 方程&lt;/a>&lt;/li>
@@ -39,22 +39,4 @@
 不过在这里我们不考虑多个粒子的情况，也不考虑什么相对论效应 blabla ，
 我们只考虑一个电子在一个任意势场下的定态 Schrodinger 方程，
 然后来用数值方法求解这个方程，得到电子的波函数并可视化，
-顺便验证一下教材上各种电子轨道的分布图，体验一把亲手解 Schrodinger 方程的感觉。&lt;/p></description></item><item><title>记一次 Julia 代码性能优化过程</title><link>http://ionizing.page/post/a-try-on-julia-code-optimization/</link><pubDate>Fri, 16 Apr 2021 13:06:00 +0800</pubDate><guid>http://ionizing.page/post/a-try-on-julia-code-optimization/</guid><description>&lt;!-- raw HTML omitted -->
-&lt;!-- raw HTML omitted -->
-&lt;ul>
-&lt;li>&lt;a href="#%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83">运行环境&lt;/a>&lt;/li>
-&lt;li>&lt;a href="#%E4%BC%98%E5%8C%96%E8%BF%87%E7%A8%8B">优化过程&lt;/a>
-&lt;ul>
-&lt;li>&lt;a href="#%E5%8E%9F%E5%A7%8B%E7%89%88%E6%9C%AC">原始版本&lt;/a>&lt;/li>
-&lt;li>&lt;a href="#%E4%BD%BF%E7%94%A8-c-ffi-%E7%9A%84-rgamma-%E4%B8%8E-rnorm">使用 C-ffi 的 &lt;code>rgamma&lt;/code> 与 &lt;code>rnorm&lt;/code>&lt;/a>&lt;/li>
-&lt;li>&lt;a href="#%E5%8E%BB%E9%99%A4%E5%A4%96%E9%83%A8%E4%BE%9D%E8%B5%96">去除外部依赖&lt;/a>&lt;/li>
-&lt;li>&lt;a href="#%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E6%83%85%E5%86%B5%E5%88%86%E6%9E%90">内存分配情况分析&lt;/a>&lt;/li>
-&lt;li>&lt;a href="#%E5%8E%BB%E9%99%A4%E5%86%85%E5%B1%82%E5%BE%AA%E7%8E%AF%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D">去除内层循环的内存分配&lt;/a>&lt;/li>
-&lt;li>&lt;a href="#%E5%8E%BB%E9%99%A4%E5%A4%96%E5%B1%82%E5%BE%AA%E7%8E%AF%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D">去除外层循环的内存分配&lt;/a>&lt;/li>
-&lt;li>&lt;a href="#%E4%BD%BF%E7%94%A8%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%8A%A0%E9%80%9F">使用多线程加速&lt;/a>&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>&lt;a href="#%E6%80%BB%E7%BB%93">总结&lt;/a>&lt;/li>
-&lt;/ul>
-&lt;!-- raw HTML omitted -->
-&lt;p>这是和某三爷讨论后对交流内容的整理。&lt;/p></description></item></channel></rss>
+顺便验证一下教材上各种电子轨道的分布图，体验一把亲手解 Schrodinger 方程的感觉。&lt;/p></description></item></channel></rss>

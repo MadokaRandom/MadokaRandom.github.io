@@ -1,4 +1,45 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Ionizing Radiation</title><link>http://ionizing.page/post/</link><description>Recent content in Posts on Ionizing Radiation</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Thu, 06 May 2021 00:18:00 +0800</lastBuildDate><atom:link href="http://ionizing.page/post/index.xml" rel="self" type="application/rss+xml"/><item><title>镜像态的那些坑</title><link>http://ionizing.page/post/issues-with-ips/</link><pubDate>Thu, 06 May 2021 00:18:00 +0800</pubDate><guid>http://ionizing.page/post/issues-with-ips/</guid><description>&lt;!-- raw HTML omitted -->
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Ionizing Radiation</title><link>http://ionizing.page/post/</link><description>Recent content in Posts on Ionizing Radiation</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Fri, 06 Aug 2021 14:44:00 +0800</lastBuildDate><atom:link href="http://ionizing.page/post/index.xml" rel="self" type="application/rss+xml"/><item><title>使用数值方法求解单电子 Schrodinger 方程</title><link>http://ionizing.page/post/schrodinger-equation-numerical-methods/</link><pubDate>Fri, 06 Aug 2021 14:44:00 +0800</pubDate><guid>http://ionizing.page/post/schrodinger-equation-numerical-methods/</guid><description>&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;ul>
+&lt;li>&lt;a href="#%E5%8D%95%E7%B2%92%E5%AD%90%E5%AE%9A%E6%80%81-schrodinger-%E6%96%B9%E7%A8%8B">单粒子定态 Schrodinger 方程&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E6%9C%89%E9%99%90%E5%B7%AE%E5%88%86%E6%B3%95">有限差分法&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#%E4%B8%80%E9%98%B6%E5%AF%BC%E6%95%B0%E7%9A%84%E7%A6%BB%E6%95%A3%E5%8C%96">一阶导数的离散化&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E4%BA%8C%E9%98%B6%E5%AF%BC%E6%95%B0%E7%9A%84%E7%A6%BB%E6%95%A3%E5%8C%96">二阶导数的离散化&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E4%B8%80%E7%BB%B4%E7%B3%BB%E7%BB%9F-hamiltonian-%E7%9A%84%E6%9E%84%E9%80%A0%E5%8F%8A%E6%B1%82%E8%A7%A3">一维系统 Hamiltonian 的构造及求解&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#%E4%B8%80%E7%BB%B4%E5%8A%BF%E7%AE%B1%E6%A8%A1%E5%9E%8B%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%B1%82%E8%A7%A3">一维势箱模型系统的求解&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E5%B8%A6%E6%9C%89-chulkov-%E5%8A%BF%E7%9A%84%E4%B8%80%E7%BB%B4%E5%8A%BF%E7%AE%B1%E7%B3%BB%E7%BB%9F%E6%B1%82%E8%A7%A3">带有 Chulkov 势的一维势箱系统求解&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#%E4%BA%8C%E7%BB%B4%E5%8F%8A%E6%9B%B4%E9%AB%98%E7%BB%B4%E7%B3%BB%E7%BB%9F%E7%9A%84-hamiltonian-%E6%9E%84%E9%80%A0%E4%B8%8E%E6%B1%82%E8%A7%A3">二维及更高维系统的 Hamiltonian 构造与求解&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#%E9%AB%98%E7%BB%B4-laplacian-%E7%9A%84%E7%A6%BB%E6%95%A3%E5%8C%96">高维 Laplacian 的离散化&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E9%AB%98%E7%BB%B4-hamiltonian-%E7%9A%84%E6%9E%84%E9%80%A0%E4%B8%8E%E6%B1%82%E8%A7%A3">高维 Hamiltonian 的构造与求解&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#%E6%9C%89%E9%99%90%E5%85%83%E6%B3%95">有限元法&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#%E5%AE%9A%E6%80%81-schrodinger-%E6%96%B9%E7%A8%8B%E7%9A%84%E5%8F%98%E5%88%86%E5%BC%B1%E8%A7%A3%E5%BD%A2%E5%BC%8F">定态 Schrodinger 方程的变分弱解形式&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0%E5%8F%8A%E7%BB%93%E6%9E%9C%E9%AA%8C%E8%AF%81">程序实现及结果验证&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#%E6%80%BB%E7%BB%93%E5%8F%8A%E5%90%90%E6%A7%BD">总结及吐槽&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#%E5%90%90%E6%A7%BD">吐槽&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;!-- raw HTML omitted -->
+&lt;p>经常有人觉得会解薛定谔方程会给人一种很厉害的感觉（尤其是对还没学过 QM QC 等课程中学生小朋友而言），
+确实，现在能写出解析解的 Schrodinger 方程屈指可数；
+而且仅仅增加粒子数量不考虑各种修正就足以使求解的难度上升一大截。
+不过在这里我们不考虑多个粒子的情况，也不考虑什么相对论效应 blabla ，
+我们只考虑一个电子在一个任意势场下的定态 Schrodinger 方程，
+然后来用数值方法求解这个方程，得到电子的波函数并可视化，
+顺便验证一下教材上各种电子轨道的分布图，体验一把亲手解 Schrodinger 方程的感觉。&lt;/p></description></item><item><title>镜像态的那些坑</title><link>http://ionizing.page/post/issues-with-ips/</link><pubDate>Thu, 06 May 2021 00:18:00 +0800</pubDate><guid>http://ionizing.page/post/issues-with-ips/</guid><description>&lt;!-- raw HTML omitted -->
 &lt;!-- raw HTML omitted -->
 &lt;ul>
 &lt;li>&lt;a href="#%E8%A1%A8%E9%9D%A2%E6%80%81%E4%B8%8E%E9%95%9C%E5%83%8F%E6%80%81">表面态与镜像态&lt;/a>

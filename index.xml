@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Ionizing Radiation</title><link>http://ionizing.page/</link><description>Recent content on Ionizing Radiation</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Thu, 06 May 2021 00:18:00 +0800</lastBuildDate><atom:link href="http://ionizing.page/index.xml" rel="self" type="application/rss+xml"/><item><title>About</title><link>http://ionizing.page/about/</link><pubDate>Tue, 13 Apr 2021 00:00:00 +0800</pubDate><guid>http://ionizing.page/about/</guid><description>&lt;p>A Ph.D candidate who majors in physical chemistry.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Ionizing Radiation</title><link>http://ionizing.page/</link><description>Recent content on Ionizing Radiation</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Fri, 06 Aug 2021 14:44:00 +0800</lastBuildDate><atom:link href="http://ionizing.page/index.xml" rel="self" type="application/rss+xml"/><item><title>About</title><link>http://ionizing.page/about/</link><pubDate>Tue, 13 Apr 2021 00:00:00 +0800</pubDate><guid>http://ionizing.page/about/</guid><description>&lt;p>A Ph.D candidate who majors in physical chemistry.&lt;/p>
 &lt;table>
 &lt;thead>
 &lt;tr>
@@ -53,7 +53,1408 @@
 &lt;td>&lt;a href="https://mrjokersince1997.gitee.io">https://mrjokersince1997.gitee.io&lt;/a>&lt;/td>
 &lt;/tr>
 &lt;/tbody>
-&lt;/table></description></item><item><title>镜像态的那些坑</title><link>http://ionizing.page/post/issues-with-ips/</link><pubDate>Thu, 06 May 2021 00:18:00 +0800</pubDate><guid>http://ionizing.page/post/issues-with-ips/</guid><description>&lt;!-- raw HTML omitted -->
+&lt;/table></description></item><item><title>使用数值方法求解单电子 Schrodinger 方程</title><link>http://ionizing.page/post/schrodinger-equation-numerical-methods/</link><pubDate>Fri, 06 Aug 2021 14:44:00 +0800</pubDate><guid>http://ionizing.page/post/schrodinger-equation-numerical-methods/</guid><description>&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;ul>
+&lt;li>&lt;a href="#%E5%8D%95%E7%B2%92%E5%AD%90%E5%AE%9A%E6%80%81-schrodinger-%E6%96%B9%E7%A8%8B">单粒子定态 Schrodinger 方程&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E6%9C%89%E9%99%90%E5%B7%AE%E5%88%86%E6%B3%95">有限差分法&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#%E4%B8%80%E9%98%B6%E5%AF%BC%E6%95%B0%E7%9A%84%E7%A6%BB%E6%95%A3%E5%8C%96">一阶导数的离散化&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E4%BA%8C%E9%98%B6%E5%AF%BC%E6%95%B0%E7%9A%84%E7%A6%BB%E6%95%A3%E5%8C%96">二阶导数的离散化&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E4%B8%80%E7%BB%B4%E7%B3%BB%E7%BB%9F-hamiltonian-%E7%9A%84%E6%9E%84%E9%80%A0%E5%8F%8A%E6%B1%82%E8%A7%A3">一维系统 Hamiltonian 的构造及求解&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#%E4%B8%80%E7%BB%B4%E5%8A%BF%E7%AE%B1%E6%A8%A1%E5%9E%8B%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%B1%82%E8%A7%A3">一维势箱模型系统的求解&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E5%B8%A6%E6%9C%89-chulkov-%E5%8A%BF%E7%9A%84%E4%B8%80%E7%BB%B4%E5%8A%BF%E7%AE%B1%E7%B3%BB%E7%BB%9F%E6%B1%82%E8%A7%A3">带有 Chulkov 势的一维势箱系统求解&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#%E4%BA%8C%E7%BB%B4%E5%8F%8A%E6%9B%B4%E9%AB%98%E7%BB%B4%E7%B3%BB%E7%BB%9F%E7%9A%84-hamiltonian-%E6%9E%84%E9%80%A0%E4%B8%8E%E6%B1%82%E8%A7%A3">二维及更高维系统的 Hamiltonian 构造与求解&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#%E9%AB%98%E7%BB%B4-laplacian-%E7%9A%84%E7%A6%BB%E6%95%A3%E5%8C%96">高维 Laplacian 的离散化&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E9%AB%98%E7%BB%B4-hamiltonian-%E7%9A%84%E6%9E%84%E9%80%A0%E4%B8%8E%E6%B1%82%E8%A7%A3">高维 Hamiltonian 的构造与求解&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#%E6%9C%89%E9%99%90%E5%85%83%E6%B3%95">有限元法&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#%E5%AE%9A%E6%80%81-schrodinger-%E6%96%B9%E7%A8%8B%E7%9A%84%E5%8F%98%E5%88%86%E5%BC%B1%E8%A7%A3%E5%BD%A2%E5%BC%8F">定态 Schrodinger 方程的变分弱解形式&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0%E5%8F%8A%E7%BB%93%E6%9E%9C%E9%AA%8C%E8%AF%81">程序实现及结果验证&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#%E6%80%BB%E7%BB%93%E5%8F%8A%E5%90%90%E6%A7%BD">总结及吐槽&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#%E5%90%90%E6%A7%BD">吐槽&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;!-- raw HTML omitted -->
+&lt;p>经常有人觉得会解薛定谔方程会给人一种很厉害的感觉（尤其是对还没学过 QM QC 等课程中学生小朋友而言），
+确实，现在能写出解析解的 Schrodinger 方程屈指可数；
+而且仅仅增加粒子数量不考虑各种修正就足以使求解的难度上升一大截。
+不过在这里我们不考虑多个粒子的情况，也不考虑什么相对论效应 blabla ，
+我们只考虑一个电子在一个任意势场下的定态 Schrodinger 方程，
+然后来用数值方法求解这个方程，得到电子的波函数并可视化，
+顺便验证一下教材上各种电子轨道的分布图，体验一把亲手解 Schrodinger 方程的感觉。&lt;/p>
+&lt;p>这里本文是在实空间的笛卡尔坐标系进行求解。&lt;/p>
+&lt;h2 id="单粒子定态-schrodinger-方程">单粒子定态 Schrodinger 方程&lt;/h2>
+&lt;p>考虑一个电子在势场 \(V\) 中，它的定态 Schrodinger 方程是&lt;/p>
+&lt;p>\begin{equation}
+\hat{H} \Psi(x, y, z) = E\Psi(x, y, z)
+\end{equation}&lt;/p>
+&lt;p>如果这个势场是 \(V = 0\) ，并且限定这个电子在一个边长为 \(a\) 的箱子内，此时 Schrodinger 方程就变成了&lt;/p>
+&lt;p>\begin{equation}
+-\frac{\hbar^2}{2m} \left( \frac{\partial^2}{\partial x^2} +
+\frac{\partial^2}{\partial y^2} +
+\frac{\partial^2}{\partial z^2} \right)
+\Psi(x, y, z) = E\Psi(x, y, z)
+\end{equation}&lt;/p>
+&lt;p>这个方程可以写出解析解&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>
+（参加过考试的同学应该能默写这个公式了）：&lt;/p>
+&lt;p>\[E = (n_x^2 + n_y^2 + n_z^2) \frac{h^2}{8ma^2}\]&lt;/p>
+&lt;p>\[ \begin{aligned}
+\Psi(x, y, z) &amp;amp;={} X(x)Y(y)Z(z) \newline
+&amp;amp;={} \sqrt{\frac{8}{a^3}}\sin(\frac{n_x \pi x}{a})\sin(\frac{n_y \pi y}{a})\sin(\frac{n_z \pi z}{a})
+\end{aligned} \]&lt;/p>
+&lt;p>这是三维情况下的解，如果体系只有一维，它的能级表达式是&lt;/p>
+&lt;p>\[
+E = \frac{n^2 h^2}{8ma^2} \newline
+\Psi(x) = \sqrt{\frac{2}{a}} \sin(\frac{n \pi x}{a})
+\]&lt;/p>
+&lt;p>这是它们的解析解，也是我们后面验证结果正确性的参考。
+以上结果的推导请参考任意一本《量子力学》或《量子化学》或者《结构化学》。&lt;/p>
+&lt;h2 id="有限差分法">有限差分法&lt;/h2>
+&lt;p>所谓有限差分法，就是有限差分来近似导数，从而寻求微分方程近似解的方法。针对导数的有限差分操作可以参考 &lt;a href="https://en.wikipedia.org/wiki/Finite%5Fdifference%5Fcoefficient">Wikipedia&lt;/a> &lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup>，
+简单来说就是用各种近似方法来逼近导数的值。&lt;/p>
+&lt;p>假设存在一个离散的函数 \(f(x), x = x_1, x_2, &amp;hellip; , x_n\) ，并且 \(x_{i+1} - x_{i} = \Delta x\) 为一定值，
+根据有限差分的推导，可以得到下面的结论：&lt;/p>
+&lt;h3 id="一阶导数的离散化">一阶导数的离散化&lt;/h3>
+&lt;p>这里使用一种最为常见的离散化方法来近似一阶导数：&lt;/p>
+&lt;p>\begin{equation}
+f'(x_i) \approx \frac{f(x_i+\Delta x) - f(x_i - \Delta x)}{2\Delta x}
+= \frac{f(x_{i+1}) - f(x_{i-1})}{2\Delta x}
+\end{equation}&lt;/p>
+&lt;p>再假设 \(f(x)\) 可以写成一个列向量 \(\ket{f} = \begin{bmatrix} f(x_1), f(x_2),
+\cdots, f(x_n) \end{bmatrix}^T\) ，那么一阶导数算符 \(\dfrac{d}{dx}\) 可以写成&lt;/p>
+&lt;p>\[\frac{d}{dx}
+\begin{bmatrix} f(x_1)\newline f(x_2) \newline \vdots \newline f(x_n) \end{bmatrix} =
+\frac{1}{2\Delta x}
+\begin{bmatrix}
+0 &amp;amp; 1 &amp;amp; &amp;amp; &amp;amp; \newline
+-1 &amp;amp; 0 &amp;amp; 1 &amp;amp; &amp;amp; \newline
+&amp;amp; -1 &amp;amp; 0 &amp;amp; \ddots &amp;amp; \newline
+&amp;amp; &amp;amp; \ddots &amp;amp; \ddots &amp;amp; 1 \newline
+&amp;amp; &amp;amp; &amp;amp; -1 &amp;amp; 0
+\end{bmatrix} \cdot
+\begin{bmatrix} f(x_1)\newline f(x_2) \newline \vdots \newline f(x_n) \end{bmatrix} \]&lt;/p>
+&lt;p>这是在没有处理边界条件的情况下的一阶导数算符，
+如果考虑周期性边界条件，上式矩阵的左下角和右上角分别为 1 和 -1 。
+此外这种方法近似得到的一阶导的精度是 \(O((\Delta x)^2)\) ，
+更高阶的近似及其它非对称的方法请参考本节之前提到的 Wikipedia 。&lt;/p>
+&lt;h3 id="二阶导数的离散化">二阶导数的离散化&lt;/h3>
+&lt;p>比较常见的二阶导数离散化方法如下：&lt;/p>
+&lt;p>\begin{equation}\begin{aligned}
+f'(x_i+\frac{1}{2} \Delta x) &amp;amp;\approx{} \frac{f(x_i + \Delta x) - f(x_i)}{\Delta x}
+= \frac{f(x_{i+1}) - f(x_i)}{\Delta x} \newline
+f'(x_i-\frac{1}{2} \Delta x) &amp;amp;\approx{} \frac{f(x_i) - f(x_i - \Delta x)}{\Delta x}
+= \frac{f(x_i) - f(x_{i-1})}{\Delta x} \newline
+f''(x_i) &amp;amp;\approx{} \frac{ f'(x_i+\frac{1}{2} \Delta x) - f'(x_i-\frac{1}{2} \Delta x) }{\Delta x} \newline
+&amp;amp;={} \frac{ f(x_{i+1}) + f(x_{i-1}) - 2f(x_i) }{(\Delta x)^2}
+\end{aligned}\end{equation}&lt;/p>
+&lt;p>同样，它也可以用矩阵的形式表达出来：&lt;/p>
+&lt;p>\[ \frac{d^2}{dx^2}
+\begin{bmatrix} f(x_1)\newline f(x_2) \newline \vdots \newline f(x_n) \end{bmatrix} =
+\frac{1}{(\Delta x)^2}
+\begin{bmatrix}
+-2 &amp;amp; 1 &amp;amp; &amp;amp; &amp;amp; \newline
+1 &amp;amp; -2 &amp;amp; 1 &amp;amp; &amp;amp; \newline
+&amp;amp; 1 &amp;amp; -2 &amp;amp; \ddots &amp;amp; \newline
+&amp;amp; &amp;amp; \ddots &amp;amp; \ddots &amp;amp; 1 \newline
+&amp;amp; &amp;amp; &amp;amp; 1 &amp;amp; -2
+\end{bmatrix} \cdot
+\begin{bmatrix} f(x_1)\newline f(x_2) \newline \vdots \newline f(x_n) \end{bmatrix} \]&lt;/p>
+&lt;p>如果需要考虑周期性边界条件，矩阵的左下角和右上角都应为 1 。
+这种方法近似的精度是 \(O((\Delta x)^2)\) 。&lt;/p>
+&lt;h3 id="一维系统-hamiltonian-的构造及求解">一维系统 Hamiltonian 的构造及求解&lt;/h3>
+&lt;h4 id="一维势箱模型系统的求解">一维势箱模型系统的求解&lt;/h4>
+&lt;p>Hamiltonian 的整体表达式为&lt;/p>
+&lt;p>\[ H = T + V \]&lt;/p>
+&lt;p>如果系统只有一维，那么 Hamiltonian 很好构造，直接在 \(T\) 的基础上加上势能即可&lt;/p>
+&lt;p>\[H = \frac{1}{(\Delta x)^2}
+\begin{bmatrix}
+-2 &amp;amp; 1 &amp;amp; &amp;amp; &amp;amp; \newline
+1 &amp;amp; -2 &amp;amp; 1 &amp;amp; &amp;amp; \newline
+&amp;amp; 1 &amp;amp; -2 &amp;amp; \ddots &amp;amp; \newline
+&amp;amp; &amp;amp; \ddots &amp;amp; \ddots &amp;amp; 1 \newline
+&amp;amp; &amp;amp; &amp;amp; 1 &amp;amp; -2
+\end{bmatrix} +
+\begin{bmatrix}
+V_1 &amp;amp; &amp;amp; &amp;amp; \newline
+&amp;amp; V_2 &amp;amp; &amp;amp; \newline
+&amp;amp; &amp;amp; \ddots &amp;amp; \newline
+&amp;amp; &amp;amp; &amp;amp; V_n
+\end{bmatrix} \]&lt;/p>
+&lt;p>然后我们的问题就变成了&lt;/p>
+&lt;p>\[
+H \ket{\psi} = E\ket{\psi}
+\]&lt;/p>
+&lt;p>这是一个典型的本征值问题，只要对 \(H\) 进行对角化就可以得到我们想到的能量 \(E\) 和波函数 \(\ket{\psi}\) 。
+下面是它的程序实现（本文使用 Julia 作为有限差分法的实现语言）&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-julia" data-lang="julia">&lt;span class="c">#!/usr/bin/env julia&lt;/span>
+&lt;span class="k">using&lt;/span> &lt;span class="n">LinearAlgebra&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="k">using&lt;/span> &lt;span class="n">SparseArrays&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="k">using&lt;/span> &lt;span class="n">Arpack&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="k">using&lt;/span> &lt;span class="n">Plots&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="c">################################################################################&lt;/span>
+&lt;span class="c">#&lt;/span>
+&lt;span class="c"># Constants Part&lt;/span>
+&lt;span class="c">#&lt;/span>
+&lt;span class="c">################################################################################&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">N&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">5000&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c"># sample points&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">len&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">1.0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c"># box length&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">k&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">3.8099821161548593&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c"># hbar^2 / (2*m_e) = (Å^2) / eV&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">m&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">1.0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c"># relative mass of electron&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">nev&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">4&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c"># number of eigen values to be covered&lt;/span>
+&lt;span class="n">x&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">LinRange&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">0.0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">len&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">dx&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">len&lt;/span> &lt;span class="o">/&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="c">################################################################################&lt;/span>
+&lt;span class="c">#&lt;/span>
+&lt;span class="c"># Hamiltonian Part&lt;/span>
+&lt;span class="c">#&lt;/span>
+&lt;span class="c">################################################################################&lt;/span>
+&lt;span class="n">T_&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">sparse&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mf">2.0&lt;/span>&lt;span class="nb">I&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="n">T_&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">diagind&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">T_&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">)]&lt;/span> &lt;span class="o">.=&lt;/span> &lt;span class="mf">1.0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="n">T_&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">diagind&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">T_&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">)]&lt;/span> &lt;span class="o">.=&lt;/span> &lt;span class="mf">1.0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="n">T_&lt;/span> &lt;span class="o">*=&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">k&lt;/span> &lt;span class="o">/&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">m&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">dx&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">dx&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="n">T&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">deepcopy&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">T_&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="n">H&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="n">println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Hamiltonian constructed, start solving ...&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="nd">@time&lt;/span> &lt;span class="n">λ&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">ϕ&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">eigs&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">H&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">nev&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">nev&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">which&lt;/span>&lt;span class="o">=:&lt;/span>&lt;span class="n">LM&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">sigma&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mf">0.0&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="nd">@show&lt;/span> &lt;span class="n">λ&lt;/span>
+&lt;span class="c">################################################################################&lt;/span>
+&lt;span class="c">#&lt;/span>
+&lt;span class="c"># Hamiltonian Part&lt;/span>
+&lt;span class="c">#&lt;/span>
+&lt;span class="c">################################################################################&lt;/span>
+&lt;span class="k">for&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="kp">in&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="n">nev&lt;/span>
+&lt;span class="n">ϕ&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">./=&lt;/span> &lt;span class="n">norm&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ϕ&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="p">])&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">sqrt&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">dx&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c"># Normalization&lt;/span>
+&lt;span class="nd">@assert&lt;/span> &lt;span class="n">sum&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ϕ&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">.^&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">dx&lt;/span> &lt;span class="n">≈&lt;/span> &lt;span class="mf">1.0&lt;/span> &lt;span class="c"># verify the norm: ∫ |ϕ|² dx == 1&lt;/span>
+&lt;span class="k">end&lt;/span>
+&lt;span class="nd">@show&lt;/span> &lt;span class="n">maximum&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ϕ&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">])&lt;/span>
+&lt;span class="n">p&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">plot&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">ϕ&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">layout&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="n">size&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">800&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">600&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;span class="n">savefig&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;./1D-particle-in-a-box-eigvec.svg&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-text" data-lang="text">Hamiltonian ready, start solving ...
+1.991257 seconds (7.25 M allocations: 439.625 MiB, 8.56% gc time, 99.53% compilation time)
+λ = [37.58797833051402, 150.3518984879221, 338.29171597315013, 601.4073566198176]
+maximum(ϕ[:, 1]) = 1.4140720924720651
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>下面我们来验证一下程序的结果：&lt;/p>
+&lt;p>程序中有 \(k = \hbar^2 / 2m_e = 3.80998 (\mathrm{Å^2/eV})\) ，它把一些物理常数打包处理并化为原子单位制，
+因此在和解析解对比时也要以此为准，此外程序中定义 \(a=1Å\) ，没有显式处理边界条件。势箱模型中解析解为&lt;/p>
+&lt;p>\[
+E = \frac{n^2 h^2}{8ma^2} = \frac{\hbar^2}{2m} \cdot \frac{4\pi^2 n^2}{4a^2} = \frac{kn^2\pi^2}{a^2}
+\]&lt;/p>
+&lt;p>代入 \(k\) 和 \(a\) ，得到 \(E_1 = 37.6029953761\) ，与数值解 \(\lambda_1=37.58797833051402\) 对比相当接近，
+继续验证 \(\lambda_2\) 、 \(\lambda_3\) 等可以发现它们也符合 \(n^2\) 的增长曲线（读者可自行验证）。&lt;/p>
+&lt;p>再来验证一下波函数：
+&lt;img src="http://ionizing.page/ox-hugo/1D-particle-in-a-box-eigvec.svg" alt="">&lt;/p>
+&lt;p>它显然符合正弦曲线的特征，并且在边界处为 0 ，最大值为 1.414072 与归一化因子 \(\sqrt{2} = 1.414213\)
+相差也在允许范围内，因此现在可以放心地说，如果 \(T\) 没有特殊边界条件处理，
+它的边界条件就是使边界处的波函数为 0 ，这在后面的计算中可以得到进一步验证。&lt;/p>
+&lt;h4 id="带有-chulkov-势的一维势箱系统求解">带有 Chulkov 势的一维势箱系统求解&lt;/h4>
+&lt;p>上面的系统中电子不受束缚， Hamiltonian 里没有势能这一项，这也就没有验证势能项加在对角线上的合理性，
+下面我们使用一种于二十年前被提出的势能函数来验证这一点。&lt;/p>
+&lt;p>Chulkov &lt;sup id="fnref:3">&lt;a href="#fn:3" class="footnote-ref" role="doc-noteref">3&lt;/a>&lt;/sup>
+等于 1997 年提出一种势能用于模拟出金属表面的镜像态。它以金属表面为 0 点， 0 以下使用正弦函数模拟金属的体相内的势能， 0 及以上使用正弦及指数函数等模拟金属表面以外的镜像势，它有如下形式：&lt;/p>
+&lt;p>\[
+V_m(z) = \begin{cases}
+-A_{10} + A_1 \cos \left( \frac{2\pi}{d_m} z \right) &amp;amp; z \le 0 \newline
+-A_{20} + A_2 \cos(\beta z) &amp;amp; 0 &amp;lt; z \le z_1 \newline
+-A_3 \exp\left[-\alpha(z-z_1)\right] &amp;amp; z_1 &amp;lt; z \le z_\mathrm{im} \newline
+\dfrac{\exp\left[ -\lambda (z-z_\mathrm{im}) \right]-1}{4(z-z_\mathrm{im})} &amp;amp; z &amp;gt; z_\mathrm{im}
+\end{cases}
+\]&lt;/p>
+&lt;p>体现在图像上是这个样子的：&lt;/p>
+&lt;link rel="stylesheet" href="http://ionizing.page/css/hugo-easy-gallery.css" />
+&lt;div class="box">
+&lt;figure itemprop="associatedMedia"
+itemscope itemtype="http://schema.org/ImageObject" >
+&lt;div class="img">
+&lt;img itemprop="thumbnail" src="http://ionizing.page/ox-hugo/1D-chulkov-pot.png" />
+&lt;/div>
+&lt;a href="http://ionizing.page/ox-hugo/1D-chulkov-pot.png" itemprop="contentUrl">&lt;/a>
+&lt;/figure>
+&lt;/div>
+&lt;p>这里选择用于 Ag(111) 表面的各参数，代码如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;span class="lnt">58
+&lt;/span>&lt;span class="lnt">59
+&lt;/span>&lt;span class="lnt">60
+&lt;/span>&lt;span class="lnt">61
+&lt;/span>&lt;span class="lnt">62
+&lt;/span>&lt;span class="lnt">63
+&lt;/span>&lt;span class="lnt">64
+&lt;/span>&lt;span class="lnt">65
+&lt;/span>&lt;span class="lnt">66
+&lt;/span>&lt;span class="lnt">67
+&lt;/span>&lt;span class="lnt">68
+&lt;/span>&lt;span class="lnt">69
+&lt;/span>&lt;span class="lnt">70
+&lt;/span>&lt;span class="lnt">71
+&lt;/span>&lt;span class="lnt">72
+&lt;/span>&lt;span class="lnt">73
+&lt;/span>&lt;span class="lnt">74
+&lt;/span>&lt;span class="lnt">75
+&lt;/span>&lt;span class="lnt">76
+&lt;/span>&lt;span class="lnt">77
+&lt;/span>&lt;span class="lnt">78
+&lt;/span>&lt;span class="lnt">79
+&lt;/span>&lt;span class="lnt">80
+&lt;/span>&lt;span class="lnt">81
+&lt;/span>&lt;span class="lnt">82
+&lt;/span>&lt;span class="lnt">83
+&lt;/span>&lt;span class="lnt">84
+&lt;/span>&lt;span class="lnt">85
+&lt;/span>&lt;span class="lnt">86
+&lt;/span>&lt;span class="lnt">87
+&lt;/span>&lt;span class="lnt">88
+&lt;/span>&lt;span class="lnt">89
+&lt;/span>&lt;span class="lnt">90
+&lt;/span>&lt;span class="lnt">91
+&lt;/span>&lt;span class="lnt">92
+&lt;/span>&lt;span class="lnt">93
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-julia" data-lang="julia">&lt;span class="c">#!/usr/bin/env julia&lt;/span>
+&lt;span class="c"># Reference: Image potential states on metal surfaces: binding energies and wave functions&lt;/span>
+&lt;span class="c"># https://www.sciencedirect.com/science/article/pii/S0039602899006688&lt;/span>
+&lt;span class="k">using&lt;/span> &lt;span class="n">LinearAlgebra&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="k">using&lt;/span> &lt;span class="n">SparseArrays&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="k">using&lt;/span> &lt;span class="n">Arpack&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="k">using&lt;/span> &lt;span class="n">Plots&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">N&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">15000&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">len&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">150.0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">k&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">3.8099821161548593&lt;/span> &lt;span class="c"># hbar^2 / (2*m_e) /(Å^2) / eV&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">k_c&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">14.39964547842567&lt;/span> &lt;span class="c"># (e*e / (4 * np.pi * epsilon_0)) # measured in eV / Å&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">m&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">1.0&lt;/span> &lt;span class="c"># mass of electron&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">dx&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">len&lt;/span> &lt;span class="o">/&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">nev&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">8&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="c">################################################################################&lt;/span>
+&lt;span class="c">#&lt;/span>
+&lt;span class="c"># Potential Part&lt;/span>
+&lt;span class="c">#&lt;/span>
+&lt;span class="c">################################################################################&lt;/span>
+&lt;span class="cm">#=
+&lt;/span>&lt;span class="cm">#
+&lt;/span>&lt;span class="cm"># V1(z) = -A10 + A1*cos(2pi*z/dm) z &amp;lt;= 0
+&lt;/span>&lt;span class="cm"># V2(z) = -A20 + A2*cos(beta*z) 0 &amp;lt; z &amp;lt;= z1
+&lt;/span>&lt;span class="cm"># V3(z) = -A3 * exp(-alpha*(z-z1)) z1 &amp;lt; z &amp;lt;= zim
+&lt;/span>&lt;span class="cm"># V4(z) = (exp(-lambda*(z-zim))-1.0) / (4.0*(z-zim)) z &amp;gt; zim
+&lt;/span>&lt;span class="cm">#
+&lt;/span>&lt;span class="cm">=#&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">a0&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">0.529&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="c"># A, bohr raidus&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">as&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">4.43&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c"># a.u.&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">A10&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">9.64&lt;/span>&lt;span class="p">;&lt;/span>&lt;span class="c"># eV&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">A1&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">4.30&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c"># eV&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">A2&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">3.8442&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c"># eV&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">beta0&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">2.5649&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c"># 1/a.u.&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">zim0&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">2.35&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c"># a.u.&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">dm&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">as&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">a0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c"># A&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">A20&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">A10&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">A2&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">A1&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c"># eV&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">beta&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">beta0&lt;/span> &lt;span class="o">/&lt;/span> &lt;span class="n">a0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c"># A^-1&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">zim&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">zim0&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">a0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c"># A&lt;/span>
+&lt;span class="c"># const A3 = A2 / sqrt(2); # eV&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">z1&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">5&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="nb">pi&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">4&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="n">beta&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c"># A&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">A3&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">A20&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">A2&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="n">cos&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">beta&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="n">z1&lt;/span>&lt;span class="p">);&lt;/span> &lt;span class="c"># eV&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">alpha&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">A2&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="n">beta&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="n">sin&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">beta&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">z1&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">/&lt;/span> &lt;span class="n">A3&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c"># A^-1&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">lambda&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">4&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="n">A3&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="n">exp&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">alpha&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">zim&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">z1&lt;/span>&lt;span class="p">))&lt;/span> &lt;span class="o">/&lt;/span> &lt;span class="n">k_c&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c"># A^-1&lt;/span>
+&lt;span class="nd">@show&lt;/span> &lt;span class="n">A10&lt;/span> &lt;span class="n">A1&lt;/span> &lt;span class="n">dm&lt;/span> &lt;span class="n">A20&lt;/span> &lt;span class="n">A2&lt;/span> &lt;span class="n">beta&lt;/span> &lt;span class="n">A3&lt;/span> &lt;span class="n">alpha&lt;/span> &lt;span class="n">z1&lt;/span> &lt;span class="n">lambda&lt;/span> &lt;span class="n">zim&lt;/span>
+&lt;span class="n">z&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">LinRange&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">len&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">len&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="n">V&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">similar&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">z&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="err">@&lt;/span>&lt;span class="o">.&lt;/span> &lt;span class="n">V&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">z&lt;/span>&lt;span class="o">&amp;lt;=&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">A10&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">A1&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">cos&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="nb">pi&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">z&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">z&lt;/span>&lt;span class="o">&amp;lt;=&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">/&lt;/span> &lt;span class="n">dm&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="err">@&lt;/span>&lt;span class="o">.&lt;/span> &lt;span class="n">V&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">z&lt;/span>&lt;span class="o">&amp;lt;=&lt;/span>&lt;span class="n">z1&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">A20&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">A2&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">cos&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">beta&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">z&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">z&lt;/span>&lt;span class="o">&amp;lt;=&lt;/span>&lt;span class="n">z1&lt;/span>&lt;span class="p">])&lt;/span>
+&lt;span class="err">@&lt;/span>&lt;span class="o">.&lt;/span> &lt;span class="n">V&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">z1&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">z&lt;/span>&lt;span class="o">&amp;lt;=&lt;/span>&lt;span class="n">zim&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">A3&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">exp&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">alpha&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">z&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">z1&lt;/span>&lt;span class="o">&amp;lt;&lt;/span>&lt;span class="n">z&lt;/span>&lt;span class="o">&amp;lt;=&lt;/span>&lt;span class="n">zim&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">z1&lt;/span>&lt;span class="p">))&lt;/span>
+&lt;span class="err">@&lt;/span>&lt;span class="o">.&lt;/span> &lt;span class="n">V&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">z&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="n">zim&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">exp&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">lambda&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">z&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">z&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="n">zim&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">zim&lt;/span>&lt;span class="p">))&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="mf">1.0&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">/&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="mf">4.0&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">z&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">z&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>&lt;span class="n">zim&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">zim&lt;/span>&lt;span class="p">))&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">k_c&lt;/span>
+&lt;span class="c">################################################################################&lt;/span>
+&lt;span class="c">#&lt;/span>
+&lt;span class="c"># Hamiltonian Part&lt;/span>
+&lt;span class="c">#&lt;/span>
+&lt;span class="c">################################################################################&lt;/span>
+&lt;span class="n">Ident&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">sparse&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">1.0&lt;/span>&lt;span class="nb">I&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="n">T_&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">sparse&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mf">2.0&lt;/span>&lt;span class="nb">I&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="n">T_&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">diagind&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">T_&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">)]&lt;/span> &lt;span class="o">.=&lt;/span> &lt;span class="mf">1.0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="n">T_&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">diagind&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">T_&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">)]&lt;/span> &lt;span class="o">.=&lt;/span> &lt;span class="mf">1.0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="n">T_&lt;/span> &lt;span class="o">*=&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">k&lt;/span> &lt;span class="o">/&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">m&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">dx&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">dx&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="n">T&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">deepcopy&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">T_&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="n">H&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="n">H&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">diagind&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">H&lt;/span>&lt;span class="p">)]&lt;/span> &lt;span class="o">.+=&lt;/span> &lt;span class="n">V&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="n">Vmin&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mf">1.0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="n">λ&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">ϕ&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">eigs&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">H&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">nev&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">nev&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">which&lt;/span>&lt;span class="o">=:&lt;/span>&lt;span class="n">LM&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">sigma&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">min&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Vmin&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;span class="nd">@show&lt;/span> &lt;span class="n">λ&lt;/span>
+&lt;span class="k">for&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="kp">in&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="n">nev&lt;/span>
+&lt;span class="n">ϕ&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">./=&lt;/span> &lt;span class="n">norm&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ϕ&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">])&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">sqrt&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">dx&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="c"># normalization&lt;/span>
+&lt;span class="nd">@assert&lt;/span> &lt;span class="n">sum&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ϕ&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">.^&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">dx&lt;/span> &lt;span class="n">≈&lt;/span> &lt;span class="mf">1.0&lt;/span> &lt;span class="c"># test norm&lt;/span>
+&lt;span class="k">end&lt;/span>
+&lt;span class="n">p&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">plot&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">z&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">ϕ&lt;/span>&lt;span class="o">.^&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">layout&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">4&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="n">size&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">800&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">600&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;span class="n">savefig&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;./1D-chulkov-eigvec.svg&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>下面是计算结果与文献值对比&lt;/p>
+&lt;!-- raw HTML omitted -->
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>λ&lt;/th>
+&lt;th>计算结果(eV)&lt;/th>
+&lt;th>文献值(eV)&lt;/th>
+&lt;th>实验值(eV)&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>-0.788&lt;/td>
+&lt;td>−0.77&lt;/td>
+&lt;td>-0.77&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>2&lt;/td>
+&lt;td>-0.674&lt;/td>
+&lt;td>-&lt;/td>
+&lt;td>-&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>3&lt;/td>
+&lt;td>-0.533&lt;/td>
+&lt;td>-&lt;/td>
+&lt;td>-&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>4&lt;/td>
+&lt;td>-0.330&lt;/td>
+&lt;td>-&lt;/td>
+&lt;td>-&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>5&lt;/td>
+&lt;td>-0.208&lt;/td>
+&lt;td>-0.22&lt;/td>
+&lt;td>-0.23&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>6&lt;/td>
+&lt;td>-0.103&lt;/td>
+&lt;td>-0.095&lt;/td>
+&lt;td>-0.10&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>7&lt;/td>
+&lt;td>-0.061&lt;/td>
+&lt;td>-0.053&lt;/td>
+&lt;td>-0.052&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>8&lt;/td>
+&lt;td>-0.031&lt;/td>
+&lt;td>-&lt;/td>
+&lt;td>-&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>上面表中有一些态主要分布在体相内，文献和实验中没有测到。为更明显地对比镜像态与 bulk 态的区别，
+这里使用 \(|\phi|^2\) 作图：&lt;/p>
+&lt;div class="box">
+&lt;figure itemprop="associatedMedia"
+itemscope itemtype="http://schema.org/ImageObject" >
+&lt;div class="img">
+&lt;img itemprop="thumbnail" src="http://ionizing.page/ox-hugo/1D-chulkov-eigvec.svg" />
+&lt;/div>
+&lt;a href="http://ionizing.page/ox-hugo/1D-chulkov-eigvec.svg" itemprop="contentUrl">&lt;/a>
+&lt;/figure>
+&lt;/div>
+&lt;p>显然， \(\phi_2\) 、 \(\phi_3\) 和 \(\phi_4\) 大部分都处于体相内，从包络线的形状看，
+它们类似于刚刚讨论过的势箱内的态，但这些态不属于镜像态，所以在与实验对比时应排除在外。
+而 \(\phi_1\) 、 \(\phi_5\) 、 \(\phi_6\) 和 \(\phi_7\) 在真空中的部分存在波包，且波包的数量刚好对应主量子数 \(n\) ，如 \(\phi_5\) 在 \(x\ge 0\) 的部分有两个波包，它就是 \(n=2\) 对应的本征态。&lt;/p>
+&lt;h3 id="二维及更高维系统的-hamiltonian-构造与求解">二维及更高维系统的 Hamiltonian 构造与求解&lt;/h3>
+&lt;p>一维情况下我们可以直接使用二阶导而无需其它处理即可构造出动能算符，但在更高维度下要如何构造动能算符，
+以及 Hamiltonian 呢？&lt;/p>
+&lt;h4 id="高维-laplacian-的离散化">高维 Laplacian 的离散化&lt;/h4>
+&lt;p>根据 &lt;a href="https://en.wikipedia.org/wiki/Kronecker%5Fsum%5Fof%5Fdiscrete%5FLaplacians">Wikipedia&lt;/a> &lt;sup id="fnref:4">&lt;a href="#fn:4" class="footnote-ref" role="doc-noteref">4&lt;/a>&lt;/sup>
+上关于离散 Laplacian （拉普拉斯算符）的描述，多维离散 Laplacian 是一维离散 Laplacian
+的 Kronecker Sum （克罗内克和）。&lt;/p>
+&lt;p>例如对于一个二维系统：&lt;/p>
+&lt;p>\[
+L = \bold{D}_\bold{xx} \oplus \bold{D}_\bold{yy} = \bold{D}_\bold{xx} \otimes \bold{I} + \bold{I} \otimes \bold{D}_\bold{yy}
+\]&lt;/p>
+&lt;p>其中 \(\bold{D}_\bold{xx}\) 、 \(\bold{D}_\bold{yy}\) 表示在 \(x\) 、 \(y\) 方向上的 Laplacian 矩阵， \(\bold{I}\) 是单位矩阵。&lt;/p>
+&lt;p>注意，上式中 &amp;ldquo;\(\oplus\)&amp;rdquo; 表示 Kronecker Sum 操作而不表示矩阵 Direct Sum （直和）操作，尽管它们所用的符号是一样的；
+而 &amp;ldquo;\(\otimes\)&amp;rdquo; 则可以理解为 Kronecker Product 或者 Direct Product （直积）操作，因为在此处可以认为两种操作等价。&lt;/p>
+&lt;p>相应地，对于一个三维系统，它的 Laplacian 应该是&lt;/p>
+&lt;p>\[
+L = \bold{D}_\bold{xx} \otimes \bold{I} \otimes \bold{I} +
+\bold{I} \otimes \bold{D}_\bold{yy} \otimes \bold{I} +
+\bold{I} \otimes \bold{I} \otimes \bold{D}_\bold{zz}
+\]&lt;/p>
+&lt;p>下面通过计算二维势箱内的电子能级来验证上面式子的正确性。&lt;/p>
+&lt;p>假设二维势箱是边长 \(a = 1 \rm{Å}\) 的正方形，其中的电子满足 Schrodinger 方程：&lt;/p>
+&lt;p>\[\begin{aligned}
+-\frac{\hbar^2}{2m_e}(\frac{\partial^2}{\partial x^2} + \frac{\partial^2}{\partial y^2}) \psi = E\psi
+\end{aligned}\]&lt;/p>
+&lt;p>它的 Hamiltonian 只包含 Laplacian ，解析解为&lt;/p>
+&lt;p>\[\begin{aligned}
+E &amp;amp;={} (n_x^2 + n_y^2)\frac{h^2}{8ma^2} \newline
+\psi(x, y) &amp;amp;={} \frac{2}{a}\sin(\frac{n_x \pi x}{a}) \sin(\frac{n_y \pi y}{a})
+\end{aligned}\]&lt;/p>
+&lt;p>程序实现如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;span class="lnt">45
+&lt;/span>&lt;span class="lnt">46
+&lt;/span>&lt;span class="lnt">47
+&lt;/span>&lt;span class="lnt">48
+&lt;/span>&lt;span class="lnt">49
+&lt;/span>&lt;span class="lnt">50
+&lt;/span>&lt;span class="lnt">51
+&lt;/span>&lt;span class="lnt">52
+&lt;/span>&lt;span class="lnt">53
+&lt;/span>&lt;span class="lnt">54
+&lt;/span>&lt;span class="lnt">55
+&lt;/span>&lt;span class="lnt">56
+&lt;/span>&lt;span class="lnt">57
+&lt;/span>&lt;span class="lnt">58
+&lt;/span>&lt;span class="lnt">59
+&lt;/span>&lt;span class="lnt">60
+&lt;/span>&lt;span class="lnt">61
+&lt;/span>&lt;span class="lnt">62
+&lt;/span>&lt;span class="lnt">63
+&lt;/span>&lt;span class="lnt">64
+&lt;/span>&lt;span class="lnt">65
+&lt;/span>&lt;span class="lnt">66
+&lt;/span>&lt;span class="lnt">67
+&lt;/span>&lt;span class="lnt">68
+&lt;/span>&lt;span class="lnt">69
+&lt;/span>&lt;span class="lnt">70
+&lt;/span>&lt;span class="lnt">71
+&lt;/span>&lt;span class="lnt">72
+&lt;/span>&lt;span class="lnt">73
+&lt;/span>&lt;span class="lnt">74
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-julia" data-lang="julia">&lt;span class="c">#!/usr/bin/env julia&lt;/span>
+&lt;span class="k">using&lt;/span> &lt;span class="n">LinearAlgebra&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="k">using&lt;/span> &lt;span class="n">SparseArrays&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="k">using&lt;/span> &lt;span class="n">Arpack&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="k">using&lt;/span> &lt;span class="n">Plots&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="c">################################################################################&lt;/span>
+&lt;span class="c">#&lt;/span>
+&lt;span class="c"># Constants Part&lt;/span>
+&lt;span class="c">#&lt;/span>
+&lt;span class="c">################################################################################&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">N&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">200&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c"># sample points&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">len&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">1.0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c"># box length&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">k&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">3.8099821161548593&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c"># hbar^2 / (2*m_e) = (Å^2) / eV&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">m&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">1.0&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c"># relative mass of electron&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">nev&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">8&lt;/span>&lt;span class="p">;&lt;/span> &lt;span class="c"># number of eigen values to be covered&lt;/span>
+&lt;span class="n">x&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">LinRange&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">0.0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">len&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="n">y&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">LinRange&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">0.0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">len&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">dx&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">len&lt;/span> &lt;span class="o">/&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">dy&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">len&lt;/span> &lt;span class="o">/&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="c">################################################################################&lt;/span>
+&lt;span class="c">#&lt;/span>
+&lt;span class="c"># Hamiltonian Part&lt;/span>
+&lt;span class="c">#&lt;/span>
+&lt;span class="c">################################################################################&lt;/span>
+&lt;span class="n">Tx&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">sparse&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mf">2.0&lt;/span>&lt;span class="nb">I&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="n">Tx&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">diagind&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Tx&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">)]&lt;/span> &lt;span class="o">.=&lt;/span> &lt;span class="mf">1.0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="n">Tx&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">diagind&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Tx&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">)]&lt;/span> &lt;span class="o">.=&lt;/span> &lt;span class="mf">1.0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="n">Tx&lt;/span> &lt;span class="o">*=&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">k&lt;/span> &lt;span class="o">/&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">m&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">dx&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">dx&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="n">Ix&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">sparse&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">1.0&lt;/span>&lt;span class="nb">I&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="n">Ty&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">sparse&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mf">2.0&lt;/span>&lt;span class="nb">I&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="n">Ty&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">diagind&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Ty&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">)]&lt;/span> &lt;span class="o">.=&lt;/span> &lt;span class="mf">1.0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="n">Ty&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">diagind&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Ty&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">)]&lt;/span> &lt;span class="o">.=&lt;/span> &lt;span class="mf">1.0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="n">Ty&lt;/span> &lt;span class="o">*=&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">k&lt;/span> &lt;span class="o">/&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">m&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">dx&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">dx&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="n">Iy&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">sparse&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">1.0&lt;/span>&lt;span class="nb">I&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="n">T_&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">kron&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Tx&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Iy&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">kron&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Ix&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Ty&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="n">T&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">deepcopy&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">T_&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="n">H&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">T&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="n">println&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Hamiltonian constructed, start solving ...&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="nd">@time&lt;/span> &lt;span class="n">λ&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">ϕ&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">eigs&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">H&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">nev&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">nev&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">which&lt;/span>&lt;span class="o">=:&lt;/span>&lt;span class="n">LM&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">sigma&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="mf">0.0&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="nd">@show&lt;/span> &lt;span class="n">λ&lt;/span>
+&lt;span class="c">################################################################################&lt;/span>
+&lt;span class="c">#&lt;/span>
+&lt;span class="c"># Visualization Part&lt;/span>
+&lt;span class="c">#&lt;/span>
+&lt;span class="c">################################################################################&lt;/span>
+&lt;span class="k">for&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="kp">in&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="n">nev&lt;/span>
+&lt;span class="n">ϕ&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">./=&lt;/span> &lt;span class="n">norm&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ϕ&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="p">])&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">dx&lt;/span> &lt;span class="c"># Normalization&lt;/span>
+&lt;span class="nd">@assert&lt;/span> &lt;span class="n">sum&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ϕ&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">.^&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">dx&lt;/span>&lt;span class="o">^&lt;/span>&lt;span class="mi">2&lt;/span> &lt;span class="n">≈&lt;/span> &lt;span class="mf">1.0&lt;/span> &lt;span class="c"># verify the norm: ∫ |ϕ|² dx == 1&lt;/span>
+&lt;span class="k">end&lt;/span>
+&lt;span class="nd">@show&lt;/span> &lt;span class="n">maximum&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ϕ&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">])&lt;/span>
+&lt;span class="n">ψ&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">reshape&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ϕ&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">nev&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="n">p1&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">surface&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">ψ&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">:&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">],&lt;/span> &lt;span class="n">title&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;ψ_1&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="n">p2&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">surface&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">ψ&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">:&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">],&lt;/span> &lt;span class="n">title&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;ψ_2&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="n">p3&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">surface&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">ψ&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">:&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">3&lt;/span>&lt;span class="p">],&lt;/span> &lt;span class="n">title&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;ψ_3&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="n">p4&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">surface&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">ψ&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">:&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">4&lt;/span>&lt;span class="p">],&lt;/span> &lt;span class="n">title&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">&amp;#34;ψ_4&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="n">p&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">plot&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">p1&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">p2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">p3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">p4&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">layout&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">),&lt;/span> &lt;span class="n">size&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">800&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">500&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;span class="n">savefig&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">p&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s">&amp;#34;./2D-particle-in-a-box-eigvec.svg&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>解得本征值与解析解对比如下：&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>\(\lambda\)&lt;/th>
+&lt;th>\(n_x^2 + n_y^2\)&lt;/th>
+&lt;th>\(E_{\rm numerical}\) (eV)&lt;/th>
+&lt;th>\(E_{\rm analytical}\) (eV)&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>1 + 1 = 2&lt;/td>
+&lt;td>74.458&lt;/td>
+&lt;td>75.206&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>2&lt;/td>
+&lt;td>4 + 1 = 5&lt;/td>
+&lt;td>186.136&lt;/td>
+&lt;td>187.961&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>3&lt;/td>
+&lt;td>1 + 4 = 5&lt;/td>
+&lt;td>186.136&lt;/td>
+&lt;td>187.961&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>4&lt;/td>
+&lt;td>4 + 4 = 8&lt;/td>
+&lt;td>297.814&lt;/td>
+&lt;td>300.737&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>5&lt;/td>
+&lt;td>9 + 1 = 10&lt;/td>
+&lt;td>372.236&lt;/td>
+&lt;td>375.922&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>6&lt;/td>
+&lt;td>1 + 9 = 10&lt;/td>
+&lt;td>372.236&lt;/td>
+&lt;td>375.922&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>7&lt;/td>
+&lt;td>9 + 4 = 13&lt;/td>
+&lt;td>483.914&lt;/td>
+&lt;td>488.698&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>8&lt;/td>
+&lt;td>4 + 9 = 13&lt;/td>
+&lt;td>483.914&lt;/td>
+&lt;td>488.698&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>解得的本征值相差还是不小的，但总体趋势是一致的。
+解得波函数如下（限于篇幅原因只列举前四个）:
+&lt;img src="http://ionizing.page/ox-hugo/2D-particle-in-a-box-eigvec.svg" alt="">&lt;/p>
+&lt;p>根据波函数形状判断，它们与量子数的对应关系如下：&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>\(\psi\)&lt;/th>
+&lt;th>\(n_x\)&lt;/th>
+&lt;th>\(n_y\)&lt;/th>
+&lt;th>\(E\) (eV)&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>1&lt;/td>
+&lt;td>1&lt;/td>
+&lt;td>74.458&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>2&lt;/td>
+&lt;td>2&lt;/td>
+&lt;td>1&lt;/td>
+&lt;td>186.136&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>3&lt;/td>
+&lt;td>1&lt;/td>
+&lt;td>2&lt;/td>
+&lt;td>186.136&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>4&lt;/td>
+&lt;td>2&lt;/td>
+&lt;td>2&lt;/td>
+&lt;td>297.814&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>在归一化波函数后，求得振幅为 1.990 ，与 \(\dfrac{2}{a} = 2\) 相差无几。&lt;/p>
+&lt;p>由此可见，使用 Kronecker Sum 构造的 Laplacian 解出的结果是正确的。&lt;/p>
+&lt;h4 id="高维-hamiltonian-的构造与求解">高维 Hamiltonian 的构造与求解&lt;/h4>
+&lt;p>已经有了高维的 Laplacian ，我们需要把势能项和 Laplacian 组合起来得到 Hamiltonian 。
+显然，我们需要把势能加到对角项上，但要注意一个问题，就是 Laplacian 的对角项与格点的对应关系：&lt;/p>
+&lt;p>\[
+L = \bold{D}_\bold{xx} \otimes \bold{I} \otimes \bold{I} +
+\bold{I} \otimes \bold{D}_\bold{yy} \otimes \bold{I} +
+\bold{I} \otimes \bold{I} \otimes \bold{D}_\bold{zz}
+\]&lt;/p>
+&lt;p>我们不妨令 \(\bold{D}_\bold{xx}\) 为 \(\bold{X}\) ， \(\bold{D}_\bold{yy}\) 为 \(\bold{Y}\) ，
+\(\bold{D}_\bold{zz}\) 为 \(\bold{Z}\)，
+根据 Kronecker Product 的运算过程（详见 Wiki），最后得到的矩阵对角线应该是&lt;/p>
+&lt;p>\[\begin{bmatrix}
+\bold{X}_{11} \bold{Y}_{11} \bold{Z}_{11} &amp;amp; &amp;amp; &amp;amp; \newline
+&amp;amp; \bold{X}_{11} \bold{Y}_{11} \bold{Z}_{22} &amp;amp; &amp;amp; \newline
+&amp;amp; &amp;amp; \bold{X}_{11} \bold{Y}_{11} \bold{Z}_{33} &amp;amp; \newline
+&amp;amp; &amp;amp; &amp;amp; &amp;amp; \ddots
+\end{bmatrix}\]&lt;/p>
+&lt;p>上式中 \(\bold{Z}\) 的对角线，即最后一个维度的下标增长得最快；对应地，在加和势能项时，
+也应该是最后一个维度增长最快，这恰好是访问一个行主序的多维数组元素时的访问顺序。
+也就是说我们只需要按照行主序的顺序把多维的势能数组展开为一维数组，然后加和到 Laplacian 上即可得到 Hamiltonain ：&lt;/p>
+&lt;p>\[H = T +
+\begin{bmatrix}
+V_{111} &amp;amp; &amp;amp; &amp;amp; \newline
+&amp;amp; V_{112} &amp;amp; &amp;amp; \newline
+&amp;amp; &amp;amp; V_{113} &amp;amp; \newline
+&amp;amp; &amp;amp; &amp;amp; \ddots
+\end{bmatrix}\]&lt;/p>
+&lt;p>此处我们选取静态氢原子的电子为求解对象，它的 Shrodinger 方程是这个形式&lt;/p>
+&lt;p>\[
+-\frac{\hbar^2}{2m_e} \nabla^2 \psi - \frac{e^2}{4\pi \epsilon_0} \frac{1}{r} \psi = E\psi
+\]&lt;/p>
+&lt;p>下面是程序实现，注意 Julia 的数组是列主序，因此在组合 Hamiltonian 时需要转换；
+除此之外受计算机性能和辣鸡 &lt;code>ARPACK&lt;/code> 的限制，这里每个维度只取 50 个点，每个维度各取 30Å 的长度。&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt"> 10
+&lt;/span>&lt;span class="lnt"> 11
+&lt;/span>&lt;span class="lnt"> 12
+&lt;/span>&lt;span class="lnt"> 13
+&lt;/span>&lt;span class="lnt"> 14
+&lt;/span>&lt;span class="lnt"> 15
+&lt;/span>&lt;span class="lnt"> 16
+&lt;/span>&lt;span class="lnt"> 17
+&lt;/span>&lt;span class="lnt"> 18
+&lt;/span>&lt;span class="lnt"> 19
+&lt;/span>&lt;span class="lnt"> 20
+&lt;/span>&lt;span class="lnt"> 21
+&lt;/span>&lt;span class="lnt"> 22
+&lt;/span>&lt;span class="lnt"> 23
+&lt;/span>&lt;span class="lnt"> 24
+&lt;/span>&lt;span class="lnt"> 25
+&lt;/span>&lt;span class="lnt"> 26
+&lt;/span>&lt;span class="lnt"> 27
+&lt;/span>&lt;span class="lnt"> 28
+&lt;/span>&lt;span class="lnt"> 29
+&lt;/span>&lt;span class="lnt"> 30
+&lt;/span>&lt;span class="lnt"> 31
+&lt;/span>&lt;span class="lnt"> 32
+&lt;/span>&lt;span class="lnt"> 33
+&lt;/span>&lt;span class="lnt"> 34
+&lt;/span>&lt;span class="lnt"> 35
+&lt;/span>&lt;span class="lnt"> 36
+&lt;/span>&lt;span class="lnt"> 37
+&lt;/span>&lt;span class="lnt"> 38
+&lt;/span>&lt;span class="lnt"> 39
+&lt;/span>&lt;span class="lnt"> 40
+&lt;/span>&lt;span class="lnt"> 41
+&lt;/span>&lt;span class="lnt"> 42
+&lt;/span>&lt;span class="lnt"> 43
+&lt;/span>&lt;span class="lnt"> 44
+&lt;/span>&lt;span class="lnt"> 45
+&lt;/span>&lt;span class="lnt"> 46
+&lt;/span>&lt;span class="lnt"> 47
+&lt;/span>&lt;span class="lnt"> 48
+&lt;/span>&lt;span class="lnt"> 49
+&lt;/span>&lt;span class="lnt"> 50
+&lt;/span>&lt;span class="lnt"> 51
+&lt;/span>&lt;span class="lnt"> 52
+&lt;/span>&lt;span class="lnt"> 53
+&lt;/span>&lt;span class="lnt"> 54
+&lt;/span>&lt;span class="lnt"> 55
+&lt;/span>&lt;span class="lnt"> 56
+&lt;/span>&lt;span class="lnt"> 57
+&lt;/span>&lt;span class="lnt"> 58
+&lt;/span>&lt;span class="lnt"> 59
+&lt;/span>&lt;span class="lnt"> 60
+&lt;/span>&lt;span class="lnt"> 61
+&lt;/span>&lt;span class="lnt"> 62
+&lt;/span>&lt;span class="lnt"> 63
+&lt;/span>&lt;span class="lnt"> 64
+&lt;/span>&lt;span class="lnt"> 65
+&lt;/span>&lt;span class="lnt"> 66
+&lt;/span>&lt;span class="lnt"> 67
+&lt;/span>&lt;span class="lnt"> 68
+&lt;/span>&lt;span class="lnt"> 69
+&lt;/span>&lt;span class="lnt"> 70
+&lt;/span>&lt;span class="lnt"> 71
+&lt;/span>&lt;span class="lnt"> 72
+&lt;/span>&lt;span class="lnt"> 73
+&lt;/span>&lt;span class="lnt"> 74
+&lt;/span>&lt;span class="lnt"> 75
+&lt;/span>&lt;span class="lnt"> 76
+&lt;/span>&lt;span class="lnt"> 77
+&lt;/span>&lt;span class="lnt"> 78
+&lt;/span>&lt;span class="lnt"> 79
+&lt;/span>&lt;span class="lnt"> 80
+&lt;/span>&lt;span class="lnt"> 81
+&lt;/span>&lt;span class="lnt"> 82
+&lt;/span>&lt;span class="lnt"> 83
+&lt;/span>&lt;span class="lnt"> 84
+&lt;/span>&lt;span class="lnt"> 85
+&lt;/span>&lt;span class="lnt"> 86
+&lt;/span>&lt;span class="lnt"> 87
+&lt;/span>&lt;span class="lnt"> 88
+&lt;/span>&lt;span class="lnt"> 89
+&lt;/span>&lt;span class="lnt"> 90
+&lt;/span>&lt;span class="lnt"> 91
+&lt;/span>&lt;span class="lnt"> 92
+&lt;/span>&lt;span class="lnt"> 93
+&lt;/span>&lt;span class="lnt"> 94
+&lt;/span>&lt;span class="lnt"> 95
+&lt;/span>&lt;span class="lnt"> 96
+&lt;/span>&lt;span class="lnt"> 97
+&lt;/span>&lt;span class="lnt"> 98
+&lt;/span>&lt;span class="lnt"> 99
+&lt;/span>&lt;span class="lnt">100
+&lt;/span>&lt;span class="lnt">101
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-julia" data-lang="julia">&lt;span class="c">#!/usr/bin/env julia&lt;/span>
+&lt;span class="k">using&lt;/span> &lt;span class="n">LinearAlgebra&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="k">using&lt;/span> &lt;span class="n">SparseArrays&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="k">using&lt;/span> &lt;span class="n">Arpack&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="k">using&lt;/span> &lt;span class="n">WriteVTK&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="c"># Auxiliary function&lt;/span>
+&lt;span class="k">function&lt;/span> &lt;span class="n">mgrid&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">xs&lt;/span>&lt;span class="o">...&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="n">it&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">Iterators&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="n">product&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">xs&lt;/span>&lt;span class="o">...&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="n">ret&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="p">[];&lt;/span>
+&lt;span class="k">for&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="kp">in&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="n">length&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">xs&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="n">push!&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ret&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">getindex&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">it&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;span class="k">end&lt;/span>
+&lt;span class="k">return&lt;/span> &lt;span class="n">ret&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="k">end&lt;/span>
+&lt;span class="c">################################################################################&lt;/span>
+&lt;span class="c">#&lt;/span>
+&lt;span class="c"># Constants Part&lt;/span>
+&lt;span class="c">#&lt;/span>
+&lt;span class="c">################################################################################&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">k&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">3.8099821161548593&lt;/span> &lt;span class="c"># hbar^2 / (2*m_e) /(Å^2) / eV&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">k_c&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">14.39964547842567&lt;/span> &lt;span class="c"># (e*e / (4 * np.pi * epsilon_0)) # measured in eV / Å&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">m&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">1.0&lt;/span> &lt;span class="c"># mass of electron&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">xlen&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mf">30.0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">ylen&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">xlen&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">zlen&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">xlen&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">N&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">50&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">dx&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">xlen&lt;/span> &lt;span class="o">/&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="c"># generate the grid&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">x&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">range&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">xlen&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">xlen&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">length&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">N&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">y&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">range&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">ylen&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">ylen&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">length&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">N&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">z&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">range&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">zlen&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">zlen&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">length&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">N&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="kd">const&lt;/span> &lt;span class="n">nev&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">10&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="c">################################################################################&lt;/span>
+&lt;span class="c">#&lt;/span>
+&lt;span class="c"># Potential Part&lt;/span>
+&lt;span class="c">#&lt;/span>
+&lt;span class="c">################################################################################&lt;/span>
+&lt;span class="n">gx&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">gy&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">gz&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">mgrid&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">x&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">z&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="k">function&lt;/span> &lt;span class="n">potential&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">gx&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">gy&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">gz&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">::&lt;/span>&lt;span class="kt">AbstractArray&lt;/span>
+&lt;span class="n">r&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">sqrt&lt;/span>&lt;span class="o">.&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">gx&lt;/span>&lt;span class="o">.^&lt;/span>&lt;span class="mi">2&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">gy&lt;/span>&lt;span class="o">.^&lt;/span>&lt;span class="mi">2&lt;/span> &lt;span class="o">+&lt;/span> &lt;span class="n">gz&lt;/span>&lt;span class="o">.^&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="n">r&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">r&lt;/span> &lt;span class="o">.&amp;lt;&lt;/span> &lt;span class="mf">0.0001&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">.=&lt;/span> &lt;span class="mf">0.0001&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="k">return&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">k_c&lt;/span> &lt;span class="o">./&lt;/span> &lt;span class="n">r&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="k">end&lt;/span>
+&lt;span class="n">V&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">potential&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">gx&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">gy&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">gz&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="n">Vmin&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">minimum&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">V&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="c">################################################################################&lt;/span>
+&lt;span class="c">#&lt;/span>
+&lt;span class="c"># Hamiltonian Part&lt;/span>
+&lt;span class="c">#&lt;/span>
+&lt;span class="c">################################################################################&lt;/span>
+&lt;span class="c"># Kinetic part&lt;/span>
+&lt;span class="n">Identity&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">sparse&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mf">1.0&lt;/span>&lt;span class="nb">I&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="n">T_&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">sparse&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="mf">2.0&lt;/span>&lt;span class="nb">I&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="n">T_&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">diagind&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">T_&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">)]&lt;/span> &lt;span class="o">.=&lt;/span> &lt;span class="mf">1.0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="n">T_&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">diagind&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">T_&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="mi">1&lt;/span>&lt;span class="p">)]&lt;/span> &lt;span class="o">.=&lt;/span> &lt;span class="mf">1.0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="n">T_&lt;/span> &lt;span class="o">.*=&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">k&lt;/span> &lt;span class="o">/&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">m&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">dx&lt;/span>&lt;span class="o">*&lt;/span>&lt;span class="n">dx&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;span class="n">T&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">kron&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">T_&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">kron&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Identity&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Identity&lt;/span>&lt;span class="p">))&lt;/span> &lt;span class="o">+&lt;/span>
+&lt;span class="n">kron&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Identity&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">kron&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">T_&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Identity&lt;/span>&lt;span class="p">))&lt;/span> &lt;span class="o">+&lt;/span>
+&lt;span class="n">kron&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Identity&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">kron&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">Identity&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">T_&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;span class="c"># Hamiltonian&lt;/span>
+&lt;span class="n">H&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">deepcopy&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">T&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="n">H&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="n">diagind&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">H&lt;/span>&lt;span class="p">)]&lt;/span> &lt;span class="o">.+=&lt;/span> &lt;span class="n">permutedims&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">V&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="mi">3&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">2&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="p">])[&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="p">];&lt;/span>
+&lt;span class="c"># Solve the equation Hψ = Eψ&lt;/span>
+&lt;span class="nd">@time&lt;/span> &lt;span class="n">λ&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">ϕ&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">eigs&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">H&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">nev&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">nev&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">which&lt;/span>&lt;span class="o">=:&lt;/span>&lt;span class="n">LM&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">sigma&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">min&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="mi">0&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">Vmin&lt;/span>&lt;span class="p">));&lt;/span>
+&lt;span class="nd">@show&lt;/span> &lt;span class="n">λ&lt;/span>
+&lt;span class="c">################################################################################&lt;/span>
+&lt;span class="c">#&lt;/span>
+&lt;span class="c"># Visualization Part&lt;/span>
+&lt;span class="c">#&lt;/span>
+&lt;span class="c">################################################################################&lt;/span>
+&lt;span class="n">vtk_grid&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;HydrogenAtom&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">x&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">y&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">z&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="k">do&lt;/span> &lt;span class="n">vtk&lt;/span>
+&lt;span class="k">for&lt;/span> &lt;span class="n">i&lt;/span> &lt;span class="kp">in&lt;/span> &lt;span class="mi">1&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="n">nev&lt;/span>
+&lt;span class="n">ϕ&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">./=&lt;/span> &lt;span class="n">norm&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ϕ&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">])&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">dx&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">sqrt&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">dx&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="nd">@assert&lt;/span> &lt;span class="n">sum&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ϕ&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="p">,&lt;/span>&lt;span class="n">i&lt;/span>&lt;span class="p">]&lt;/span>&lt;span class="o">.^&lt;/span>&lt;span class="mi">2&lt;/span>&lt;span class="p">)&lt;/span> &lt;span class="o">*&lt;/span> &lt;span class="n">dx&lt;/span>&lt;span class="o">^&lt;/span>&lt;span class="mi">3&lt;/span> &lt;span class="n">≈&lt;/span> &lt;span class="mf">1.0&lt;/span>
+&lt;span class="n">vtk&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s">&amp;#34;phi_&lt;/span>&lt;span class="si">$i&lt;/span>&lt;span class="s">&amp;#34;&lt;/span>&lt;span class="p">]&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="n">reshape&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="n">ϕ&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">i&lt;/span>&lt;span class="p">],&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="n">N&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="k">end&lt;/span>
+&lt;span class="k">end&lt;/span>
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>结果与解析值对比&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>\(\lambda\)&lt;/th>
+&lt;th>\(n\)&lt;/th>
+&lt;th>\(E_{\rm numernical}\) (eV)&lt;/th>
+&lt;th>\(E_{\rm analytical}\) (eV)&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>1&lt;/td>
+&lt;td>-10.713&lt;/td>
+&lt;td>-13.6&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>2&lt;/td>
+&lt;td>2&lt;/td>
+&lt;td>-3.417&lt;/td>
+&lt;td>-3.4&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>3&lt;/td>
+&lt;td>2&lt;/td>
+&lt;td>-3.417&lt;/td>
+&lt;td>-3.4&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>4&lt;/td>
+&lt;td>2&lt;/td>
+&lt;td>-3.417&lt;/td>
+&lt;td>-3.4&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>5&lt;/td>
+&lt;td>2&lt;/td>
+&lt;td>-3.031&lt;/td>
+&lt;td>-3.4&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>6&lt;/td>
+&lt;td>3&lt;/td>
+&lt;td>-1.515&lt;/td>
+&lt;td>-1.51&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>7&lt;/td>
+&lt;td>3&lt;/td>
+&lt;td>-1.515&lt;/td>
+&lt;td>-1.51&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>8&lt;/td>
+&lt;td>3&lt;/td>
+&lt;td>-1.515&lt;/td>
+&lt;td>-1.51&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>9&lt;/td>
+&lt;td>3&lt;/td>
+&lt;td>-1.474&lt;/td>
+&lt;td>-1.51&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>10&lt;/td>
+&lt;td>3&lt;/td>
+&lt;td>-1.474&lt;/td>
+&lt;td>-1.51&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>本征值与解析值对应得并不好，尤其是基态的能量，与解析解相差了近 3eV ，这是因为 \(1s\) 态主要局域在原子核附近，而求数值解时每个维度只取了 50 个点，&lt;/p>
+&lt;p>本征态如下（这里只取前五个态）：&lt;/p>
+&lt;div class="box">
+&lt;figure itemprop="associatedMedia"
+itemscope itemtype="http://schema.org/ImageObject" >
+&lt;div class="img">
+&lt;img itemprop="thumbnail" src="http://ionizing.page/ox-hugo/3D-hydrogen-eigvec.png" />
+&lt;/div>
+&lt;a href="http://ionizing.page/ox-hugo/3D-hydrogen-eigvec.png" itemprop="contentUrl">&lt;/a>
+&lt;/figure>
+&lt;/div>
+&lt;p>它们分别对应氢原子的 \(1s\) 态、 \(2p_y\) 态、 \(2p_z\) 态、 \(2p_x\) 态和 \(2s\) 态，抛去过于粗糙的格点和不太准的本征值不谈，
+它们的形状与实验上符合得还是很好的。&lt;/p>
+&lt;p>以上结果可以证明 Hamiltonian 的构造是合理的。&lt;/p>
+&lt;h2 id="有限元法">有限元法&lt;/h2>
+&lt;p>&lt;strong>&lt;strong>注：本人刚刚接触 FEM ，这里只是简单谈谈有限元法，以能通过改示例跑通自己的问题为标准
+，因此对它的各项论述十分粗浅且可能存在错误，欢迎专业人士指正。&lt;/strong>&lt;/strong>&lt;/p>
+&lt;p>上面我们讨论了使用有限差分法求解 Schrodinger 方程的过程，除了有限差分法，
+还有一种在 CAE 领域应用非常广泛的方法——有限元法，也能用来求解 Schrodinger 方程。
+简单且不负责任地说，有限元与有限差分最大的区别在于有限元的元素是大小、形状均可变，
+并且它可以随意调整求解空间的形状以及网格的形状、局部疏密等等，
+这使得它可以对各种奇怪的体系进行求解。&lt;/p>
+&lt;h3 id="定态-schrodinger-方程的变分弱解形式">定态 Schrodinger 方程的变分弱解形式&lt;/h3>
+&lt;p>之前本文给出过定态 Schrodinger 方程&lt;/p>
+&lt;p>\[
+-\frac{\hbar^2}{2m}\nabla^2 \psi + V\psi = E\psi
+\]&lt;/p>
+&lt;p>它其实是偏微分方程的 Strong Form （强解形式），而在 FEM 领域中常常使用 Weak Form
+（弱解形式）来描述一个偏微分方程。经过查阅资料，我找到的 Shrodinger 方程的弱解形式如下：&lt;/p>
+&lt;p>\[\begin{aligned}
+\frac{\hbar^2}{2m} \int_{\Omega} \left(
+\frac{\partial u}{\partial x} \frac{\partial v}{\partial x} +
+\frac{\partial u}{\partial y} \frac{\partial v}{\partial y} +
+\frac{\partial u}{\partial z} \frac{\partial v}{\partial z}
+\right) + \int_{\Omega} Vuv = \int_{\Omega} Euv
+\end{aligned}\]&lt;/p>
+&lt;p>上式中 \(u\) 是我们要求解的波函数， \(v\) 是测试函数， \(\Omega\) 是有限元空间。
+看起来这个式子和 Schrodinger 方程的强解形式差不多，只是动能项前面没有负号了。
+具体推导过程详见 &lt;a href="https://en.wikipedia.org/wiki/Weak%5Fformulation#Example%5F2:%5FPoisson's%5Fequation%20">Weak formulation of Poisson&amp;rsquo;s equation&lt;/a> &lt;sup id="fnref:5">&lt;a href="#fn:5" class="footnote-ref" role="doc-noteref">5&lt;/a>&lt;/sup>
+或 &lt;a href="https://en.wikiversity.org/wiki/User:Tclamb/FEniCS#Quantum%5FHarmonic%5FOscillator">Weak formulation of quantum harmonic oscillator&lt;/a> &lt;sup id="fnref:6">&lt;a href="#fn:6" class="footnote-ref" role="doc-noteref">6&lt;/a>&lt;/sup>。&lt;/p>
+&lt;h3 id="程序实现及结果验证">程序实现及结果验证&lt;/h3>
+&lt;p>有了弱解形式的 Schrodinger Equation 后就可以开始使用有限元法求解了，这里使用
+&lt;a href="https://freefem.org">FreeFEM++&lt;/a> &lt;sup id="fnref:7">&lt;a href="#fn:7" class="footnote-ref" role="doc-noteref">7&lt;/a>&lt;/sup> 作为实现语言。&lt;/p>
+&lt;p>使用 FreeFEM++ 求解本征值问题时主要有以下步骤：&lt;/p>
+&lt;ol>
+&lt;li>定义网格；&lt;/li>
+&lt;li>定义有限元空间；&lt;/li>
+&lt;li>定义需要解决的问题，即用代码表达弱解形式的偏微分方程；&lt;/li>
+&lt;li>调用求解器求解；&lt;/li>
+&lt;li>输出结果以及可视化结果等。&lt;/li>
+&lt;/ol>
+&lt;p>这里以求解氢原子为例，求解空间为 30Åx30Åx30Å 的正方体，边缘格点数为 40x40x40 ，使用 P1 有限元空间。
+下面是代码&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;span class="lnt">37
+&lt;/span>&lt;span class="lnt">38
+&lt;/span>&lt;span class="lnt">39
+&lt;/span>&lt;span class="lnt">40
+&lt;/span>&lt;span class="lnt">41
+&lt;/span>&lt;span class="lnt">42
+&lt;/span>&lt;span class="lnt">43
+&lt;/span>&lt;span class="lnt">44
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-fallback" data-lang="fallback">load &amp;#34;msh3&amp;#34;
+load &amp;#34;iovtk&amp;#34;
+int nn = 40;
+real ka = 3.8099821161548593; // hbar^2 / 2m_e
+real kc = 14.39964547842567; // e^2 / (4pi epsilon_0)
+mesh3 Th = cube(nn, nn, nn, [30*x-15, 30*y-15, 30*z-15]);
+plot(Th, wait=1);
+fespace Vh(Th, P1);
+cout &amp;lt;&amp;lt; &amp;#34;Th : nv = &amp;#34; &amp;lt;&amp;lt; Th.nv &amp;lt;&amp;lt; &amp;#34; nt = &amp;#34; &amp;lt;&amp;lt; Th.nt &amp;lt;&amp;lt; endl;
+real sigma = -13;
+macro Grad(u) [dx(u), dy(u), dz(u)] // EOM
+varf a(u1, u2) = int3d(Th) (
+Grad(u1)&amp;#39; * Grad(u2) * ka
+- 1.0 / sqrt(x^2 + y^2 + z^2) * u1 * u2 * kc
+- sigma * u1 * u2
+)
+//+ on(1, 2, 3, 4, 5, 6, u1=0.0) // boundary condition
+;
+varf b([u1], [u2]) = int3d(Th) ( u1 * u2 ) ;
+matrix A = a(Vh, Vh);
+matrix B = b(Vh, Vh);
+int nev = 20;
+real[int] ev(nev);
+Vh[int] eV(nev);
+int k = EigenValue(A, B, sym=true, sigma=sigma, value=ev, vector=eV, tol=1e-10);
+k = min(k, nev);
+for (int i=0; i&amp;lt;k; ++i) {
+cout &amp;lt;&amp;lt; &amp;#34; ---- &amp;#34; &amp;lt;&amp;lt; i &amp;lt;&amp;lt; &amp;#34; &amp;#34; &amp;lt;&amp;lt; ev[i] &amp;lt;&amp;lt; &amp;#34; == &amp;#34; &amp;lt;&amp;lt; endl;
+plot(eV[i], cmm=&amp;#34;#&amp;#34; + i + &amp;#34; EigenValue=&amp;#34; + ev[i], wait=true);
+savevtk(&amp;#34;Eigen_&amp;#34; + i + &amp;#34;.vtk&amp;#34;, Th, eV[i], dataname=&amp;#34;EigenValue=&amp;#34; + ev[i]);
+}
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>求得本征值如下：&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>\(\lambda\)&lt;/th>
+&lt;th>\(E_{\rm numerical}\) (eV)&lt;/th>
+&lt;th>\(E_{\rm analytical}\) (eV)&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>1&lt;/td>
+&lt;td>-10.390&lt;/td>
+&lt;td>-13.6&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>2&lt;/td>
+&lt;td>-3.163&lt;/td>
+&lt;td>-3.4&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>3&lt;/td>
+&lt;td>-3.163&lt;/td>
+&lt;td>-3.4&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>4&lt;/td>
+&lt;td>-2.980&lt;/td>
+&lt;td>-3.4&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>5&lt;/td>
+&lt;td>-2.776&lt;/td>
+&lt;td>-3.4&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>6&lt;/td>
+&lt;td>-1.475&lt;/td>
+&lt;td>-1.5&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>8&lt;/td>
+&lt;td>-1.475&lt;/td>
+&lt;td>-1.5&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>7&lt;/td>
+&lt;td>-1.444&lt;/td>
+&lt;td>-1.5&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>9&lt;/td>
+&lt;td>-1.444&lt;/td>
+&lt;td>-1.5&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>10&lt;/td>
+&lt;td>-1.423&lt;/td>
+&lt;td>-1.5&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>可见在这个格点密度下它的精度还是不太高，有些态甚至还比不上有限差分法的精度。&lt;/p>
+&lt;p>它们的本征态如下：&lt;/p>
+&lt;div class="box">
+&lt;figure itemprop="associatedMedia"
+itemscope itemtype="http://schema.org/ImageObject" >
+&lt;div class="img">
+&lt;img itemprop="thumbnail" src="http://ionizing.page/ox-hugo/3D-hydrogen-eigenvec-FEM.png" />
+&lt;/div>
+&lt;a href="http://ionizing.page/ox-hugo/3D-hydrogen-eigenvec-FEM.png" itemprop="contentUrl">&lt;/a>
+&lt;/figure>
+&lt;/div>
+&lt;p>和有限差分法相比，它的本征态似乎更粗糙一些，实际上这是由于取的网格不够密，
+以及势能项 \(1/r\) 在 0 处存在奇点难以近似导致的。&lt;/p>
+&lt;p>尽管有这样的缺陷，但它胜在是一个成熟的开源软件，比之前随便写的 toy 要正式许多，
+而且它还能使用其它设计软件来建模定义求解的空间，甚至读取其它软件生成的网格进行后续的计算，
+最重要的一点，它可以集成并行的本征值求解器 SLEPc &lt;sup id="fnref:8">&lt;a href="#fn:8" class="footnote-ref" role="doc-noteref">8&lt;/a>&lt;/sup> 。
+经过测试，求解一个 150x150x75 的网格时，在 32 核的服务器上可以用 18 分钟跑完，效率还是令人满意的。&lt;/p>
+&lt;h2 id="总结及吐槽">总结及吐槽&lt;/h2>
+&lt;p>总之，本文使用了两种不同的方法在实空间直接求解单电子的 Schrodinger 方程，
+总体的结果还算满意。有限差分法的算法学习自 GithHub 的一个项目
+&lt;a href="https://github.com/quantum-visualizations/qmsolve">qmsolve&lt;/a> &lt;sup id="fnref:9">&lt;a href="#fn:9" class="footnote-ref" role="doc-noteref">9&lt;/a>&lt;/sup>，
+作者甚至还把我拉到了这个项目的 Discord 讨论群（现在已经开放）继续讨论。&lt;/p>
+&lt;h3 id="吐槽">吐槽&lt;/h3>
+&lt;ol>
+&lt;li>有限差分法的 Hamiltonian 矩阵大小随维度的升高而急剧升高，
+如果一个问题能在较低的维度解决，不要使用更高的维度，通常情况后者解不动：
+一维问题的 Hamiltonian 大小是 \(O(N^2)\) ，而三维问题的 Hamiltonian 大小是 \(O(N^6)\)
+&lt;del>，如果后面有空的话我会考虑写一下柱坐标系内 Schrodinger 方程的求解&lt;/del> 。&lt;/li>
+&lt;li>在使用有限差分法时格点越密，求解所需的时间越多，且耗时呈指数级增长。
+为此我花了将近一周多的时间在寻找 Julia 能用的并行本征值求解器上，
+最后发现没有能满足要求的，有几个 C++ / Python 能用的并行求解器，如 SLEPc 和 Trilinos ，但我没去尝试；&lt;/li>
+&lt;li>&lt;code>Arpack&lt;/code> 在处理 60x60x60 的格点时就已经有点力不从心了，
+超算上显示它只能通过调用 &lt;code>BLAS&lt;/code> 来实现部分的并行操作，且最多只有 6 个线程在跑，
+而且 &lt;code>Arpack&lt;/code> 也确实很久没有更新了；&lt;/li>
+&lt;li>&lt;code>scipy.sparse.eigsh&lt;/code> 的效率还不如 Julia 里的 &lt;code>Arpack.eigs&lt;/code> ，前者算 50x50x50
+的体系就算不动了，而且似乎在超算上用并行也没什么加速效果，尽管所有核都是满载；&lt;/li>
+&lt;li>FreeFEM++ 的语言乍一看挺像 C++ ，但其实区别还是相当大的，令人惊喜的是它的文档还有一个中文翻译版；&lt;/li>
+&lt;li>在服务器上编译 FreeFEM++ 也花了我不少时间，这个东西的 Makefile 写得让人头疼：
+&lt;code>configure&lt;/code> 文件直接就是一个 Python 脚本，而且层层套娃，想改什么参数都不好找，
+那两天被弄得脑壳疼；&lt;/li>
+&lt;li>FreeFEM++ 支持并行操作，用更密的 Mesh 可以重复出文献上的结果；更重要的是它可以更灵活地指定边界条件；&lt;/li>
+&lt;li>在可视化 FreeFEM++ 的输出，即 vtk 文件时也遇到了不少麻烦，因为之前从没接触过 vtk 文件，
+只是听说 ParaView&lt;sup id="fnref:10">&lt;a href="#fn:10" class="footnote-ref" role="doc-noteref">10&lt;/a>&lt;/sup> 效果最好，于是从头开始学 ParaView 。
+不得不说，入门时还是看视频学最快，找谷歌翻论坛很可能不知所云；&lt;/li>
+&lt;li>实验组最后还要求用求得的波函数计算一下位置算符的期望值，于是我又不得不去翻 ParaView 的手册找怎么操作数据。
+这个软件和 Python 以及 VTK 深度集成，里面自带一个 Python 解释器，
+但没有提供内置对象的文档，导致你面对一个 Script 框时连输入是啥都不知道，
+此外它的一些数据结构在原版 VTK 内还没有，那就只能靠 &lt;code>dir(obj)&lt;/code> 来看它的方法列表了，
+通过不断地翻论坛（2018 年以前的论坛还是在邮件列表上），
+还是在一个人的回答中找到了相关的信息，算是顺利解决了问题，不得不说这个过程还是挺恶心人的。&lt;/li>
+&lt;/ol>
+&lt;p>这些东西可能读起来几分钟就读完了，但从接到相关的任务，到给出令实验组满意的结果，
+再到写出这篇博文，整整用掉了一个多月的时间，这期间试了尝试过很多次，
+不管是有限差分还是有限元，写过很多测试的代码但结果不正确，身边又没有可以请教人时，
+内心还是有一点绝望的（尤其在 6 月下半旬还夹着报账那个事），
+中途想过放弃，想着不如直接找个力学系的同学抛给他用 COMSOL 解出来，
+但最后还是通过翻论坛，厚着脸皮问 developer 等手段把想要的结果算出来了，
+此时觉得前面的努力还是没有白费，就是对当初对实验组的老师打包票说几天就能算出来，
+但实际花了近一个月这一点还是有点惭愧的。&lt;/p>
+&lt;section class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1" role="doc-endnote">
+&lt;p>&lt;a href="https://en.wikipedia.org/wiki/Particle%5Fin%5Fa%5Fbox">https://en.wikipedia.org/wiki/Particle%5Fin%5Fa%5Fbox&lt;/a> &lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:2" role="doc-endnote">
+&lt;p>&lt;a href="https://en.wikipedia.org/wiki/Finite%5Fdifference%5Fcoefficient">https://en.wikipedia.org/wiki/Finite%5Fdifference%5Fcoefficient&lt;/a> &lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:3" role="doc-endnote">
+&lt;p>&lt;a href="https://www.sciencedirect.com/science/article/pii/S0039602899006688">https://www.sciencedirect.com/science/article/pii/S0039602899006688&lt;/a> &lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:4" role="doc-endnote">
+&lt;p>&lt;a href="https://en.wikipedia.org/wiki/Kronecker%5Fsum%5Fof%5Fdiscrete%5FLaplacians">https://en.wikipedia.org/wiki/Kronecker%5Fsum%5Fof%5Fdiscrete%5FLaplacians&lt;/a> &lt;a href="#fnref:4" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:5" role="doc-endnote">
+&lt;p>&lt;a href="https://en.wikipedia.org/wiki/Weak%5Fformulation#Example%5F2:%5FPoisson's%5Fequation%20">https://en.wikipedia.org/wiki/Weak%5Fformulation#Example%5F2:%5FPoisson's%5Fequation%20&lt;/a> &lt;a href="#fnref:5" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:6" role="doc-endnote">
+&lt;p>&lt;a href="https://en.wikiversity.org/wiki/User:Tclamb/FEniCS#Quantum%5FHarmonic%5FOscillator">https://en.wikiversity.org/wiki/User:Tclamb/FEniCS#Quantum%5FHarmonic%5FOscillator&lt;/a> &lt;a href="#fnref:6" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:7" role="doc-endnote">
+&lt;p>&lt;a href="https://freefem.org">https://freefem.org&lt;/a> &lt;a href="#fnref:7" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:8" role="doc-endnote">
+&lt;p>&lt;a href="https://slepc.upv.es">https://slepc.upv.es&lt;/a> &lt;a href="#fnref:8" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:9" role="doc-endnote">
+&lt;p>&lt;a href="https://github.com/quantum-visualizations/qmsolve">https://github.com/quantum-visualizations/qmsolve&lt;/a> &lt;a href="#fnref:9" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:10" role="doc-endnote">
+&lt;p>&lt;a href="https://www.paraview.org">https://www.paraview.org&lt;/a> &lt;a href="#fnref:10" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/section></description></item><item><title>镜像态的那些坑</title><link>http://ionizing.page/post/issues-with-ips/</link><pubDate>Thu, 06 May 2021 00:18:00 +0800</pubDate><guid>http://ionizing.page/post/issues-with-ips/</guid><description>&lt;!-- raw HTML omitted -->
 &lt;!-- raw HTML omitted -->
 &lt;ul>
 &lt;li>&lt;a href="#%E8%A1%A8%E9%9D%A2%E6%80%81%E4%B8%8E%E9%95%9C%E5%83%8F%E6%80%81">表面态与镜像态&lt;/a>
