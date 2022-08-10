@@ -21,6 +21,7 @@
   - [[#haskell-学习笔记][Haskell 学习笔记]]
   - [[#二维-ising-model-的-julia-实现][二维 Ising Model 的 Julia 实现]]
   - [[#使用数值方法求解单电子-schrodinger-方程][使用数值方法求解单电子 Schrodinger 方程]]
+  - [[#简易-dft-玩具][简易 DFT 玩具]]
 
 * DONE About :about:
 CLOSED: [2021-4-13 Tue]
@@ -2403,3 +2404,84 @@ for (int i=0; i<k; ++i) {
 但最后还是通过翻论坛，厚着脸皮问 developer 等手段把想要的结果算出来了，
 此时觉得前面的努力还是没有白费，就是对当初对实验组的老师打包票说几天就能算出来，
 但实际花了近一个月这一点还是有点惭愧的。
+
+** DONE 简易 DFT 玩具 :@Physics:Julia:FiniteDifferenceMethod:DensityFunctionalTheory:
+CLOSED: [2022-08-05 Fri 09:36]
+:PROPERTIES:
+:EXPORT_FILE_NAME: simple-dft-toy
+:EXPORT_DATE: [2022-08-05]
+:EXPORT_HUGO_CUSTOM_FRONT_MATTER+: :mathjax true :markup goldmark
+:END:
+
+一直在用别人写好的 DFT 软件，对软件的运行过程略有兴趣，查阅资料弄懂了一些运行原理并参考
+了前人的 code 后，这次我们来自己写一个 DFT 的玩具～
+
+#+hugo: more
+
+*** 理论基础
+我们的目标是求解 Kohn-Sham 方程。
+
+对于 Kohn-Sham 方程，系统的能量包含下面几个部分
+
+\[
+E[\rho] = T_s[\rho] + \int d\mathbf r v_\text{ext}(\mathbf r) \rho(\mathbf r) + E_\text{Ha} [\rho] + E_\text{xc}[\rho]
+\]
+
+其中 \(T_s\) 是 Kohm-Sham 动能项，它的表达形式为
+
+\[
+T_s[\rho] = \sum_{i=1}^{N} \int d\mathbf r \varphi^*(\mathbf r) \left( -\frac{\hbar^2}{2m}
+\nabla^2 \right) \varphi_i(r)
+\]
+
+\(v_\text{ext}(\mathbf r)\) 是外场作用在系统所有电子上的势能，这里“外”是指除所研究电子以外，
+电子与原子核的相互作用也算在这一项内；
+
+\(E_\text{H}[\rho]\) 为 Hartree 能，也就是电子-电子的库仑相互作用项
+
+\[
+E_\text{H}[\rho] = \frac{e^2}{8\pi\epsilon} \int d\mathbf r \int d\mathbf{r'} \frac{\rho(\mathbf r)
+\rho(\mathbf {r'})}{|\mathbf r - \mathbf{r'}|}
+\]
+
+\(E_\text{xc}[\rho]\) 是交换关联能，这里为了简便处理，只使用 LDA 近似处理交换项，忽略关联项。
+在 LDA 近似下
+
+\[
+E_\text{x}^\text{LDA}[\rho] = -\frac 34 (\frac 3\pi)^{1/3} \int \rho^{4/3} d \mathbf r
+\]
+
+上面式子中 \(\rho\) 代表系统的电子密度，它是通过下面方式计算得到：
+令一系列正交归一的占据态电子轨道为 \(\varphi_i\)，则体系的电子密度为
+\[
+\rho(\mathbf r) = \sum_i^N |\varphi_i(\mathbf r)|^2
+\]
+
+上面的式子表示的都是能量，现在将它们对应到 Kohn-Sham 方程的 Hamiltonian 中
+
+\[
+\hat{H}_\text{KS} \Psi = E_\text{KS} \Psi
+\]
+
+- 显然动能算符是 \(-\frac{\hbar^2}{2m}\nabla^2\)
+- 外场作用算符为 \(v_\text{ext}(\mathbf r) = \frac{\delta \int d\mathbf r v_\text{ext}(\mathbf r) \rho(\mathbf r)}{\delta \rho}\)
+- Hartree 作用算符为 \(v_\text{Ha}(\mathbf r) = \frac{\delta E_\text{Ha}[\rho]}{\delta \rho}
+  = \frac{e^2}{4\pi \epsilon} \int\frac{\rho(\mathbf r')}{\sqrt{(\mathbf r - \mathbf r')^2}} d\mathbf r'\)
+- 交换项算符为 \(v_\text{x}(\mathbf r) = \frac{\delta E_\text{x}[\rho]}{\delta \rho} = -(\frac 3\pi)^{1/3} \rho^{1/3}\)
+
+此时 KS 方程和 Hamiltonian 可以展开为
+
+\[\begin{aligned}
+\hat{H}_\text{KS} &={} -\frac{\hbar^2}{2m}\nabla^2 + v(\mathbf r) \\
+                  &={} -\frac{\hbar^2}{2m}\nabla^2 + v_\text{ext}(\mathbf r) +
+                        v_\text{Ha}(\mathbf r) + v_\text{x}(\mathbf r) \\
+                  &={} -\frac{\hbar^2}{2m}\nabla^2 + v_\text{ext}(\mathbf r) +
+                    \frac{e^2}{4\pi \epsilon} \int\frac{\rho(\mathbf r')}{\sqrt{(\mathbf r - \mathbf r')^2}} d\mathbf r'
+                    -(\frac 3\pi)^{1/3} \rho^{1/3}
+\end{aligned}\]
+
+将 KS 方程的 Hamiltonian 写成矩阵形式，并对角化，即可得到 KS 轨道 \(\varphi_i\) 和它们对应的能量 \(E_i\) 。
+
+*** 程序实现
+
+为方便起见，这里依然使用 Julia 来实现，请确保机器上的 Julia 已经装上了 Arpack 和 Plots 库。
