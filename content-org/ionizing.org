@@ -2406,7 +2406,7 @@ for (int i=0; i<k; ++i) {
 但实际花了近一个月这一点还是有点惭愧的。
 
 ** DONE 简易 DFT 玩具 :@Physics:Julia:FiniteDifferenceMethod:DensityFunctionalTheory:
-CLOSED: [2022-08-05 Fri 09:36]
+CLOSED: [2022-08-10 Wed 23:32]
 :PROPERTIES:
 :EXPORT_FILE_NAME: simple-dft-toy
 :EXPORT_DATE: [2022-08-05]
@@ -2466,7 +2466,7 @@ E_\text{x}^\text{LDA}[\rho] = -\frac 34 (\frac 3\pi)^{1/3} \int \rho^{4/3} d \ma
 - 显然动能算符是 \(-\frac{\hbar^2}{2m}\nabla^2\)
 - 外场作用算符为 \(v_\text{ext}(\mathbf r) = \frac{\delta \int d\mathbf r v_\text{ext}(\mathbf r) \rho(\mathbf r)}{\delta \rho}\)
 - Hartree 作用算符为 \(v_\text{Ha}(\mathbf r) = \frac{\delta E_\text{Ha}[\rho]}{\delta \rho}
-  = \frac{e^2}{4\pi \epsilon} \int\frac{\rho(\mathbf r')}{\sqrt{(\mathbf r - \mathbf r')^2}} d\mathbf r'\)
+  = \frac{e^2 \Delta V}{4\pi \epsilon} \int\frac{\rho(\mathbf r')}{\sqrt{(\mathbf r - \mathbf r')^2}} d\mathbf r'\)
 - 交换项算符为 \(v_\text{x}(\mathbf r) = \frac{\delta E_\text{x}[\rho]}{\delta \rho} = -(\frac 3\pi)^{1/3} \rho^{1/3}\)
 
 此时 KS 方程和 Hamiltonian 可以展开为
@@ -2485,3 +2485,228 @@ E_\text{x}^\text{LDA}[\rho] = -\frac 34 (\frac 3\pi)^{1/3} \int \rho^{4/3} d \ma
 *** 程序实现
 
 为方便起见，这里依然使用 Julia 来实现，请确保机器上的 Julia 已经装上了 Arpack 和 Plots 库。
+
+#+begin_src julia
+using LinearAlgebra
+using Arpack
+using Plots
+using Printf
+plotly()  # 使用 plotly() 作为绘图后端
+#+end_src
+
+#+RESULTS:
+
+同时既然是玩具，这里就在一维的空间里计算电子的波函数。这里用到的大部分基础知识在上篇文章
+《使用数值方法求解单电子 Schrodinger 方程》 里都能找到（尤其是一维势箱模型系统的求解部分），
+因此下面的介绍会有所简化。
+
+这里在 $[-5, 5]$ 之间均匀取 200 个格点来表示整个系统所在的空间。
+
+#+begin_src julia
+ngrid = 200
+x = LinRange(-5, 5, ngrid)
+#+end_src
+
+#+RESULTS:
+
+**** $\nabla^2$ 的矩阵表示
+这个算符的矩阵表示在上一篇博客里已经讲过了，这里不再赘述:
+
+\[
+\frac{d^2}{dx^2} = \frac{1}{\Delta x^2} \begin{bmatrix}
+    -2 & 1 &   &  &   \newline
+     1 & -2 & 1 &  &   \newline
+      & 1 & -2 & \ddots &   \newline
+      &   & \ddots & \ddots  & 1 \newline
+      &   &   & 1 & -2
+\end{bmatrix}
+\]
+
+写成代码的形式即为
+
+#+begin_src julia
+Δx = x[2] - x[1]
+∇² = Tridiagonal(ones(ngrid-1), -2*ones(ngrid), ones(ngrid-1)) ./ (2*Δx)
+#+end_src
+
+#+RESULTS:
+
+**** 势能的表示
+一般情况下， Hamiltonian 里势能部分的贡献直接体现在对角线上，这里只给出一维形式的势能函数，然后会在
+所有势能计算好后一并加到 Hamiltonian 里。除此之外，由于取了模型势，电子质量和一些物理常数就直接取为 1 ，比如
+$\frac{e^2}{8\pi\epsilon}$ 和 $\frac{\hbar^2}{2m_e}$ 等。
+
+***** 外场势能 $v_\text{ext}(\mathbf r)$
+
+这里我们选择三个外场模型：无相互作用系统、无限深势阱系统和谐振子系统。
+
+****** 一维势箱系统
+在没有周期性边界条件的情况下， $v_\text{ext}(x) = 0$
+
+****** 无限深势阱系统
+这里的“无限深”也等价于周围的墙壁无限高，即
+\[
+    v_\text{ext}(x) = \begin{cases}
+        \infty & x < -d \\
+        0 & -d \le x \le d \\
+        \infty & x > d
+    \end{cases}
+\]
+其中 $d$ 就是中间势阱宽度，程序中取为 2 。 由于程序中无法直接表示值 $\infty$ ，因此使用一个非常大的正实数来代替，
+这里取 $1.0\times 10^10$ 这个值。
+
+#+begin_src julia
+V_well = fill(1e10, ngrid)
+@. V_well[-2 <= x <= 2] = 0
+#+end_src
+
+#+RESULTS:
+
+****** 谐振子系统
+谐振子系统的势能是一条抛物线
+\[
+    v_\text{ext}(x) = kx^2
+\]
+
+出于简化的目的，这里 $k$ 直接取为 1 。
+
+#+begin_src julia
+V_harm = x.^2
+#+end_src
+
+***** 电子密度 $\rho(\mathbf r)$
+Kohn-Sham 方程中包含电子之间库仑相互作用项（也称作 Hartree 项），和交换关联项，
+而这两者都是电子密度的泛函，因此需要计算电子密度函数 $\rho(\mathbf r)$ ：
+
+首先应保证每个电子的波函数是正交归一的
+
+\[
+\langle \phi_i | \phi_i \rangle = 1
+\]
+
+然后电子密度函数为
+
+\[
+\rho(x) = \sum_n f_n |\phi(x)|^2
+\]
+
+其中 $f_n$ 表示第 $n$ 个能级上的电子占据数，本文的体系目前暂不考虑电子的自旋，故
+$f_n$ 的最大值可达到 2 。
+
+根据上面公式，可以写出下面的代码
+
+#+begin_src julia
+function integrate(y::Matrix{Float64}, Δx::Float64) ::Vector{Float64}
+    # y 是一个 ngrid x nlevel 的矩阵，其中每一列表示一个电子的波函数
+    # Δx 表示空间格点的长度，前文中定义为 x[2] - x[1]
+    return sum(y, dims=1) * Δx
+end
+
+function get_density(fn::Vector{Float64}, ψ::Matrix{Float64}, Δx::Float64) ::Vector{Float64}
+    # fn 是长度为 nlevel 的向量，表示电子的占据数函数
+    # ψ 是一个 ngrid x nlevel 的矩阵
+
+    # 首先来归一化波函数
+    norms = sum(ψ.^2, dims=1) * Δx
+    ψ ./= sqrt.(norms)
+
+    # 求电子密度函数
+    ρ = sum(ψ.^2 .* fn', dims=2)
+
+    return ρ
+end
+#+end_src
+
+***** 库仑势 $v_\text{Ha}(\mathbf r)$
+
+库仑势的公式为：
+
+\[
+v_\text{Ha}(x) = \frac{e^2 \Delta x}{4\pi \epsilon} \int\frac{\rho(x')}{\sqrt{(x - x')^2}} dx'
+\]
+
+在程序实现时，限于积分精度和除零的问题，分母中的 $\sqrt{(x - x')^2}$ 需要加上一个小量 $\varepsilon$
+避免除零的出现
+
+\[
+v_\text{Ha} = \int \frac{n_j \Delta x}{\sqrt{(x - x')^2 + \varepsilon}} dx'
+\]
+
+#+begin_src julia
+function get_hartree(ρ::Vector{Float64}, x::Vector{Float64}; eps=1e-4) ::Tuple{Float64, Vector{Float64}}
+    Δx = x[2] - x[1]
+    energy = sum((ρ * ρ' .* Δx^2) ./ sqrt((x' .- x).^2 + eps)) / 2
+    potential = collect(Iterators.flatten((sum(ρ' .* Δx ./ sqrt.((x' .- x).^2 .+ eps), dims=2))))
+    return (energy, potential)
+end
+#+end_src
+
+***** 交换关联势
+首先忽略关联势，使用 LDA 近似，得到交换势为
+
+\[
+v_\text{x}^\text{LDA}[\rho] = -\sqrt[3]{3\rho / \pi}
+\]
+
+那么使用代码表示出来就很简单了：
+
+#+begin_src julia
+function get_exchange(ρ::Vector{Float64}, Δx::Float64) ::Tuple{Float64, Vector{Float64}}
+    energy = -3.0/4.0 * cbrt(3.0/π) * sum(ρ.^(4.0/3.0)) * Δx
+    potential = -cbrt(3.0/π) .* (cbrt.(ρ))
+    return (energy, potential)
+end
+#+end_src
+
+**** Hamiltonian 的构造
+
+上面说到 Hamiltonian 里势能的部分体现在对角线上
+
+\[\hat{H} = \frac{1}{(\Delta x)^2}
+\begin{bmatrix}
+    -2 & 1 &   &  &   \newline
+     1 & -2 & 1 &  &   \newline
+      & 1 & -2 & \ddots &   \newline
+      &   & \ddots & \ddots  & 1 \newline
+      &   &   & 1 & -2
+\end{bmatrix} +
+\begin{bmatrix}
+V_1 & & & \newline
+& V_2 & & \newline
+& & \ddots & \newline
+& & & V_n
+\end{bmatrix} \]
+
+用代码写出来
+
+#+begin_src julia
+function hamiltonian(x::Vector{Float64}, ρ::Vector{Float64}, v_ext::Vector{Float64}) ::Matrix{Float64}
+    Δx = x[2] - x[1]
+    ex_energy, ex_potential = get_exchange(ρ, Δx)
+    ha_energy, ha_potential = get_hartree(ρ, x)
+    ∇² = Tridiagonal(ones(ngrid-1), -2*ones(ngrid), ones(ngrid-1)) ./ (2*Δx)
+
+    # Hamiltonian
+    H = -∇² + Diagonal(ex_potential + ha_potential + v_ext)
+
+    return H
+end
+#+end_src
+
+对这个 Hamiltonian 对角化，可以得到一系列波函数 $\phi_i(x)$ 。
+
+#+begin_src julia
+E, ψ = eigs(H, nev=nlevel, which=:LM, sigma=0)  # 这个函数需要 using Arpack
+#+end_src
+
+**** KS 方程的迭代求解
+电子密度 $\rho(x)$ 依赖于波函数 $\phi_i(x)$ ，而求解 $\phi_i(x)$ 所用的 Hamiltonian 又反过来依赖于 $\rho(x)$ ，
+这意味着我们不能一次性求得正确的波函数 $\phi_i(x)$ ， 因此我们需要用迭代的方法来求解：
+
+1. 先猜一个初始电荷密度 $\rho(x)$ ；
+2. 用 $\rho(x)$ 构造 Hartree 势和交换关联势，然后构造 Hamiltonian ；
+3. 对角化 Hamiltonian 求得本征值 $E_i$ 和波函数 $\phi_i(x)$ ；
+4. 判断此次求得本征值 $E_i$ 与上一次结果相差是否足够小，如果是，则停止计算，否则进入第 5 步；
+5. 使用波函数 $\phi_i(x)$ 构造电子密度 $\rho(x)$ ，并返回第 2 步，直至求得本征值收敛。
+
+上面的过程也叫做自洽迭代(self-consistency loop)。
