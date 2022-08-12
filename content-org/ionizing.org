@@ -2489,12 +2489,9 @@ E_\text{x}^\text{LDA}[\rho] = -\frac 34 (\frac 3\pi)^{1/3} \int \rho^{4/3} d \ma
 #+begin_src julia
 using LinearAlgebra
 using Arpack
-using Plots
 using Printf
-plotly()  # 使用 plotly() 作为绘图后端
+using PlotlyJS
 #+end_src
-
-#+RESULTS:
 
 同时既然是玩具，这里就在一维的空间里计算电子的波函数。这里用到的大部分基础知识在上篇文章
 《使用数值方法求解单电子 Schrodinger 方程》 里都能找到（尤其是一维势箱模型系统的求解部分），
@@ -2506,8 +2503,6 @@ plotly()  # 使用 plotly() 作为绘图后端
 ngrid = 200
 x = LinRange(-5, 5, ngrid)
 #+end_src
-
-#+RESULTS:
 
 **** $\nabla^2$ 的矩阵表示
 这个算符的矩阵表示在上一篇博客里已经讲过了，这里不再赘述:
@@ -2707,6 +2702,117 @@ E, ψ = eigs(H, nev=nlevel, which=:LM, sigma=0)  # 这个函数需要 using Arpa
 2. 用 $\rho(x)$ 构造 Hartree 势和交换关联势，然后构造 Hamiltonian ；
 3. 对角化 Hamiltonian 求得本征值 $E_i$ 和波函数 $\phi_i(x)$ ；
 4. 判断此次求得本征值 $E_i$ 与上一次结果相差是否足够小，如果是，则停止计算，否则进入第 5 步；
-5. 使用波函数 $\phi_i(x)$ 构造电子密度 $\rho(x)$ ，并返回第 2 步，直至求得本征值收敛。
+5. 使用波函数 $\phi_i(x)$ 构造电子密度 $\rho(x)$ ，并返回第 2 步。
 
 上面的过程也叫做自洽迭代(self-consistency loop)。
+
+到这一步，我们把所有代码整合起来运行一下，便能得到一个简易的 DFT 玩具
+
+#+begin_src julia
+#!/usr/bin/env julia
+
+using LinearAlgebra
+using Arpack
+using Printf
+using PlotlyJS
+
+# Some functions
+function get_density(fn::Vector{Float64}, ψ::Matrix{Float64}, Δx::Float64) ::Vector{Float64}
+    # fn 是长度为 nlevel 的向量，表示电子的占据数函数
+    # ψ 是一个 ngrid x nlevel 的矩阵
+
+    # 首先来归一化波函数
+    norms = sum(ψ.^2, dims=1) * Δx
+    ψ ./= sqrt.(norms)
+
+    # 求电子密度函数
+    ρ = sum(ψ.^2 .* fn', dims=2)
+    ρ = dropdims(ρ; dims=2)
+
+    return ρ
+end
+
+function get_hartree(ρ::Vector{Float64}, x::Vector{Float64}; eps=1e-1) ::Tuple{Float64, Vector{Float64}}
+    Δx = x[2] - x[1]
+    energy = sum((ρ * ρ' .* Δx^2) ./ sqrt.((x' .- x).^2 .+ eps)) / 2
+    potential = collect(Iterators.flatten((sum(ρ' .* Δx ./ sqrt.((x' .- x).^2 .+ eps), dims=2))))
+    return (energy, potential)
+end
+
+function get_exchange(ρ::Vector{Float64}, Δx::Float64) ::Tuple{Float64, Vector{Float64}}
+    energy = -3.0/4.0 * cbrt(3.0/π) * sum(ρ.^(4.0/3.0)) * Δx
+    potential = -cbrt(3.0/π) .* (cbrt.(ρ))
+    return (energy, potential)
+end
+
+function get_hamiltonian(x::Vector{Float64}, ρ::Vector{Float64},
+                         v_ext::Vector{Float64}) ::Matrix{Float64}
+    Δx = x[2] - x[1]
+    ex_energy, ex_potential = get_exchange(ρ, Δx)
+    ha_energy, ha_potential = get_hartree(ρ, x)
+    ∇² = Tridiagonal(ones(ngrid-1), -2*ones(ngrid), ones(ngrid-1)) ./ (Δx^2)
+
+    # Hamiltonian
+    H = -∇²./2 + Diagonal(ex_potential .+ ha_potential .+ v_ext)
+
+    return H
+end
+
+if abspath(PROGRAM_FILE) == @__FILE__
+    ngrid = 200
+    nlevel = 20
+    nelect = 17
+
+    x = collect(LinRange(-5, 5, ngrid))
+    Δx = x[2] - x[1]
+    ∇² = Tridiagonal(ones(ngrid-1), -2*ones(ngrid), ones(ngrid-1)) ./ (Δx^2)
+
+    # V_ext
+    V_empty = zeros(ngrid)
+    V_well = fill(1e10, ngrid); @. V_well[-2 <= x <= 2] = 0;
+    V_harm = x.^2
+
+    # construct fn
+    fn = zeros(nlevel)
+    fn[1:(nelect÷2)] .= 2
+    if 1 == nelect % 2
+        fn[nelect÷2+1] = 1
+    end
+
+    max_iter = 1000
+    E_threshold = 1E-5
+
+    log0 = Dict("E" => [Inf], "ΔE" => [Inf])  # Use `log0` instead of `log` to avoid confict
+
+    # 使用自由电子的波函数做为初始猜测的电子波函数，可以加速收敛
+    E, ψ = eigs(-∇²./2.0, nev=nlevel, which=:LM, sigma=0)
+    ρ = get_density(fn, ψ, Δx)
+
+    for i in 1:max_iter
+        E_ex, V_ex = get_exchange(ρ, Δx)
+        E_ha, V_ha = get_hartree(ρ, x)
+        H = get_hamiltonian(x, ρ, V_harm)
+
+        E0, ψ0 = eigs(H, nev=nlevel, which=:LM, sigma=0)
+        E .= E0
+        ψ .= ψ0
+
+        E_tot = sum(E .* fn)  # 求占据态电子能量之和
+        ΔE = E_tot - log0["E"][end]
+        push!(log0["E"], E_tot)
+        push!(log0["ΔE"], ΔE)
+        @printf "step: %5d E: %10.4f ΔE %14.10f\n" i log0["E"][end] log0["ΔE"][end]
+
+        # 判断基能量是否收敛
+        if abs(ΔE) < E_threshold
+            print("converged!")
+            break
+        end
+
+        # 更新电子密度
+        ρ .= get_density(fn, ψ, Δx)
+    end
+
+    p = plot(x, ψ[:, 1:5])
+end
+#+end_src
