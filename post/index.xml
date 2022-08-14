@@ -1,4 +1,26 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Ionizing Radiation</title><link>http://ionizing.page/post/</link><description>Recent content in Posts on Ionizing Radiation</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Fri, 06 Aug 2021 14:44:00 +0800</lastBuildDate><atom:link href="http://ionizing.page/post/index.xml" rel="self" type="application/rss+xml"/><item><title>使用数值方法求解单电子 Schrodinger 方程</title><link>http://ionizing.page/post/schrodinger-equation-numerical-methods/</link><pubDate>Fri, 06 Aug 2021 14:44:00 +0800</pubDate><guid>http://ionizing.page/post/schrodinger-equation-numerical-methods/</guid><description>&lt;!-- raw HTML omitted -->
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Ionizing Radiation</title><link>http://ionizing.page/post/</link><description>Recent content in Posts on Ionizing Radiation</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Sun, 14 Aug 2022 22:13:00 +0800</lastBuildDate><atom:link href="http://ionizing.page/post/index.xml" rel="self" type="application/rss+xml"/><item><title>简易 DFT 玩具</title><link>http://ionizing.page/post/simple-dft-toy/</link><pubDate>Sun, 14 Aug 2022 22:13:00 +0800</pubDate><guid>http://ionizing.page/post/simple-dft-toy/</guid><description>&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;ul>
+&lt;li>&lt;a href="#%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80">理论基础&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0">程序实现&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#nabla-2-%E7%9A%84%E7%9F%A9%E9%98%B5%E8%A1%A8%E7%A4%BA">\(\nabla^2\) 的矩阵表示&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E5%8A%BF%E8%83%BD%E7%9A%84%E8%A1%A8%E7%A4%BA">势能的表示&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#%E5%A4%96%E5%9C%BA%E5%8A%BF%E8%83%BD-v-text-ext--mathbf-r">外场势能 \(v_\text{ext}(\mathbf r)\)&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E7%94%B5%E5%AD%90%E5%AF%86%E5%BA%A6-rho--mathbf-r">电子密度 \(\rho(\mathbf r)\)&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E5%BA%93%E4%BB%91%E5%8A%BF-v-text-ha--mathbf-r">库仑势 \(v_\text{Ha}(\mathbf r)\)&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E4%BA%A4%E6%8D%A2%E5%85%B3%E8%81%94%E5%8A%BF">交换关联势&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#hamiltonian-%E7%9A%84%E6%9E%84%E9%80%A0">Hamiltonian 的构造&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#ks-%E6%96%B9%E7%A8%8B%E7%9A%84%E8%BF%AD%E4%BB%A3%E6%B1%82%E8%A7%A3">KS 方程的迭代求解&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#%E6%80%BB%E7%BB%93%E4%B8%8E%E6%8B%93%E5%B1%95">总结与拓展&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;!-- raw HTML omitted -->
+&lt;p>一直在用别人写好的 DFT 软件，对软件的运行过程略有兴趣，查阅资料弄懂了一些运行原理并参考了前人的程序后，这次我们来自己写一个 DFT 的玩具～&lt;/p></description></item><item><title>使用数值方法求解单电子 Schrodinger 方程</title><link>http://ionizing.page/post/schrodinger-equation-numerical-methods/</link><pubDate>Fri, 06 Aug 2021 14:44:00 +0800</pubDate><guid>http://ionizing.page/post/schrodinger-equation-numerical-methods/</guid><description>&lt;!-- raw HTML omitted -->
 &lt;!-- raw HTML omitted -->
 &lt;ul>
 &lt;li>&lt;a href="#%E5%8D%95%E7%B2%92%E5%AD%90%E5%AE%9A%E6%80%81-schrodinger-%E6%96%B9%E7%A8%8B">单粒子定态 Schrodinger 方程&lt;/a>&lt;/li>
