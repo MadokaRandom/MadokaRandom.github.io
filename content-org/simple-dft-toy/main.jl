@@ -2,8 +2,8 @@
 
 using LinearAlgebra
 using Arpack
-using Printf
-using PlotlyJS
+using Formatting
+using Plots
 
 # Some functions
 function get_density(fn::Vector{Float64}, ψ::Matrix{Float64}, Δx::Float64) ::Vector{Float64}
@@ -78,8 +78,6 @@ if abspath(PROGRAM_FILE) == @__FILE__
     ρ = get_density(fn, ψ, Δx)
 
     for i in 1:max_iter
-        E_ex, V_ex = get_exchange(ρ, Δx)
-        E_ha, V_ha = get_hartree(ρ, x)
         H = get_hamiltonian(x, ρ, V_harm)
 
         E0, ψ0 = eigs(H, nev=nlevel, which=:LM, sigma=0)
@@ -90,11 +88,11 @@ if abspath(PROGRAM_FILE) == @__FILE__
         ΔE = E_tot - log0["E"][end]
         push!(log0["E"], E_tot)
         push!(log0["ΔE"], ΔE)
-        @printf "step: %5d E: %10.4f ΔE %14.10f\n" i log0["E"][end] log0["ΔE"][end]
+        printfmtln("step: {:5d} E: {:10.4f} ΔE {:14.10f}", i, log0["E"][end], log0["ΔE"][end])
 
         # 判断基能量是否收敛
         if abs(ΔE) < E_threshold
-            print("converged!")
+            println("converged!")
             break
         end
 
@@ -102,5 +100,5 @@ if abspath(PROGRAM_FILE) == @__FILE__
         ρ .= get_density(fn, ψ, Δx)
     end
 
-    p = plot(x, ψ[:, 1:5])
+    p = plot(x, ψ[:, 1:5], label=sprintf1.("%.3f", E[1:5]'), title="ψ")
 end

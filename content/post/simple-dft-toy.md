@@ -1,6 +1,6 @@
 ---
 title: "简易 DFT 玩具"
-date: 2022-08-10T23:32:00+08:00
+date: 2022-08-14T22:13:00+08:00
 tags: ["Posts", "Julia", "FiniteDifferenceMethod", "DensityFunctionalTheory"]
 categories: ["Physics"]
 draft: false
@@ -22,13 +22,16 @@ markup: "goldmark"
         - [交换关联势](#交换关联势)
     - [Hamiltonian 的构造](#hamiltonian-的构造)
     - [KS 方程的迭代求解](#ks-方程的迭代求解)
+- [总结与拓展](#总结与拓展)
 
 </div>
 <!--endtoc-->
 
-一直在用别人写好的 DFT 软件，对软件的运行过程略有兴趣，查阅资料弄懂了一些运行原理并参考了前人的 code 后，这次我们来自己写一个 DFT 的玩具～
+一直在用别人写好的 DFT 软件，对软件的运行过程略有兴趣，查阅资料弄懂了一些运行原理并参考了前人的程序后，这次我们来自己写一个 DFT 的玩具～
 
 <!--more-->
+
+**首先感谢一个 GitHub 上的仓库，为本文的代码提供了参考[^fn:1]。**
 
 
 ## 理论基础 {#理论基础}
@@ -195,7 +198,7 @@ x = LinRange(-5, 5, ngrid)
 
     以上三种势能函数画出来如下图所示：
 
-    {{< figure src="/ox-hugo/potentials.svg" >}}
+    {{< figure src="/ox-hugo/simple-dft-potentials.svg" >}}
 
 
 #### 电子密度 \\(\rho(\mathbf r)\\) {#电子密度-rho--mathbf-r}
@@ -239,7 +242,7 @@ end
 
 我们求解不包含库仑势和交换关联势的 Schrodinger 方程后，求得波函数和电子密度如下图所示
 
-{{< figure src="/ox-hugo/psi_rho.svg" >}}
+{{< figure src="/ox-hugo/simple-dft-psi_rho.svg" >}}
 
 
 #### 库仑势 \\(v\_\text{Ha}(\mathbf r)\\) {#库仑势-v-text-ha--mathbf-r}
@@ -349,8 +352,8 @@ E, ψ = eigs(H, nev=nlevel, which=:LM, sigma=0)  # 这个函数需要 using Arpa
 
 using LinearAlgebra
 using Arpack
-using Printf
-using PlotlyJS
+using Formatting
+using Plots
 
 # Some functions
 function get_density(fn::Vector{Float64}, ψ::Matrix{Float64}, Δx::Float64) ::Vector{Float64}
@@ -425,8 +428,6 @@ if abspath(PROGRAM_FILE) == @__FILE__
     ρ = get_density(fn, ψ, Δx)
 
     for i in 1:max_iter
-        E_ex, V_ex = get_exchange(ρ, Δx)
-        E_ha, V_ha = get_hartree(ρ, x)
         H = get_hamiltonian(x, ρ, V_harm)
 
         E0, ψ0 = eigs(H, nev=nlevel, which=:LM, sigma=0)
@@ -437,11 +438,11 @@ if abspath(PROGRAM_FILE) == @__FILE__
         ΔE = E_tot - log0["E"][end]
         push!(log0["E"], E_tot)
         push!(log0["ΔE"], ΔE)
-        @printf "step: %5d E: %10.4f ΔE %14.10f\n" i log0["E"][end] log0["ΔE"][end]
+        printfmtln("step: {:5d} E: {:10.4f} ΔE {:14.10f}", i, log0["E"][end], log0["ΔE"][end])
 
         # 判断基能量是否收敛
         if abs(ΔE) < E_threshold
-            print("converged!")
+            println("converged!")
             break
         end
 
@@ -449,6 +450,102 @@ if abspath(PROGRAM_FILE) == @__FILE__
         ρ .= get_density(fn, ψ, Δx)
     end
 
-    p = plot(x, ψ[:, 1:5])
+    p = plot(x, ψ[:, 1:5], label=sprintf1.("%.3f", E[1:5]'), title="ψ")
 end
 ```
+
+它运行时会出现下面的日志输出（以 \\(V\_\text{ext} = V\_\text{empty}\\) 为例）：
+
+```text
+step:     1 E:   191.3250 ΔE           -Inf
+step:     2 E:   188.6149 ΔE  -2.7101725428
+step:     3 E:   189.9835 ΔE   1.3686497726
+step:     4 E:   189.2422 ΔE  -0.7413493772
+step:     5 E:   189.7313 ΔE   0.4891692181
+step:     6 E:   189.4190 ΔE  -0.3123247101
+step:     7 E:   189.6381 ΔE   0.2191170430
+step:     8 E:   189.4893 ΔE  -0.1488193569
+step:     9 E:   189.5950 ΔE   0.1057145189
+step:    10 E:   189.5214 ΔE  -0.0735956265
+step:    11 E:   189.5738 ΔE   0.0523625987
+step:    12 E:   189.5369 ΔE  -0.0368426628
+step:    13 E:   189.5631 ΔE   0.0262003363
+step:    14 E:   189.5446 ΔE  -0.0185224236
+step:    15 E:   189.5578 ΔE   0.0131633325
+step:    16 E:   189.5484 ΔE  -0.0093260810
+step:    17 E:   189.5551 ΔE   0.0066245797
+step:    18 E:   189.5504 ΔE  -0.0046981797
+step:    19 E:   189.5537 ΔE   0.0033362576
+step:    20 E:   189.5513 ΔE  -0.0023672119
+step:    21 E:   189.5530 ΔE   0.0016807098
+step:    22 E:   189.5518 ΔE  -0.0011928024
+step:    23 E:   189.5527 ΔE   0.0008468043
+step:    24 E:   189.5521 ΔE  -0.0006010437
+step:    25 E:   189.5525 ΔE   0.0004266762
+step:    26 E:   189.5522 ΔE  -0.0003028617
+step:    27 E:   189.5524 ΔE   0.0002149933
+step:    28 E:   189.5523 ΔE  -0.0001526097
+step:    29 E:   189.5524 ΔE   0.0001083320
+step:    30 E:   189.5523 ΔE  -0.0000768987
+step:    31 E:   189.5523 ΔE   0.0000545872
+step:    32 E:   189.5523 ΔE  -0.0000387486
+step:    33 E:   189.5523 ΔE   0.0000275059
+step:    34 E:   189.5523 ΔE  -0.0000195251
+step:    35 E:   189.5523 ΔE   0.0000138599
+step:    36 E:   189.5523 ΔE  -0.0000098385
+converged!
+```
+
+和前面一样，把波函数和电子密度函数画出来，如下图所示：
+
+{{< figure src="/ox-hugo/simple-dft-psi_rho_dft.svg" >}}
+
+下面以 \\(V\_\text{empty}\\) 为例，对比一下原来的波函数与 DFT 方法算出的 KS 波函数的变化：
+
+{{< figure src="/ox-hugo/simple-dft-psi_org_dft.svg" >}}
+
+可以看到， KS 波函数的空间分布与原来无相互作用波函数空间分布差别很大， KS 波函数的波包的顶点都发生了偏移，说明库仑相互作用和交换相互作用影响较大。例如 \\(\psi\_1\\) ，无相互作用体系里波函数分布最大的地方在 \\(x=0\\) 处，但 KS 波函数里空间分布最大的地方在 \\(x=\pm 4.2\\) 处左右，表明其它能级更高的电子对它的分布也产生了显著的影响。除此之外，波函数的本征值也变化巨大。实际上这里的对比不太严谨：原来无相互作用体系的波函数是一个电子在不同能级的波函数，而 KS 波函数则被当成是一个含有 N 个电子的体系里每个电子的波函数，这两者概念上的差异不能忽略。
+
+需要注意的是，尽管我们习惯用 KS 轨道表示真实体系里每个电子的轨道，但 KS 轨道实质上仍是单粒子
+Schrodinger 方程的解，它能否代替体系真实的波函数仍需要 check ，本人不认为这两者等价。比如在
+ Ren Xinguo 老师的课件[^fn:2]
+ 里是这样描述的
+
+> KS orbitals are auxiliary variables, and have no strict physical meaning (except for HOMO and LUMO).
+
+即除了 HOMO 和 LUMO 之外， KS 波函数仅仅作为计算电子密度函数 \\(\rho(\text r)\\) 的辅助函数之用。
+HOMO 和 LUMO 在一定程度上可以视作体系的真实轨道，此时体系的第一电离能即为 HOMO 的能量（Janak theorem, 1978）：
+
+\\[
+I = E\_0(N-1) - E\_0(N) = -\epsilon\_N
+\\]
+
+下面来看一下电子密度函数的变化：
+
+{{< figure src="/ox-hugo/simple-dft-rho_org_dft.svg" >}}
+
+很明显，经过自洽迭代后，体系的电子密度分布也发生了变化，对比占据态轨道的变化而言，电子密度的变化还是比较小的。
+
+如果考虑电子的自旋，我们需要修改交换关联泛函，即使用考虑电子自旋的 LSDA 泛函，此时体系的波函数表示也需要随之修改， \\(\psi\_i(x)\\) 变为 \\(\psi\_i(x, \sigma)\\) ，即增加了一个自旋维度 \\(\sigma\\) 。
+具体的泛函形式比较复杂，这里作为一个 toy 介绍就不展开了，如果有兴趣可以去看 [Ren Xinguo 老师的课件](http://lqcc.ustc.edu.cn/renxg/plus/list.php?tid=7)。
+
+
+## 总结与拓展 {#总结与拓展}
+
+我们实现了一个简单的 DFT 计算程序，它可以使用自定义的外场势能函数，考虑 Hartree 势，并使用 LDA 近似。
+通过求解 KS 方程，我们得到了 KS 波函数，并与无相互作用体系的波函数作对比，发现波函数的分布发生了显著的变化，同时波函数的能量也发生了不小的变化。在实现的过程中，本人对那句“通过 DFT 将多体系统映射到单粒子系统”
+可能有了一些很浅薄的理解。
+
+尽管这是一个很简单的 toy ，但它也是包含了 DFT 计算所需的各种常见操作，比如构造电子密度函数，比如自洽迭代求解 KS 方程，再比如求 Hartree 势函数、使用 LDA 近似等等，这些都可以在常见的 DFT 软件里找到，那么此次 DIY 的过程也能加强对其它成熟 DFT 软件里运行时做了什么有了大概了理解。如果有人想要进一步拓展这个 toy ，我想到了以下几个方向：
+
+-   考虑上下自旋，使用 LSDA 近似
+-   使用 GGA 泛函（比如 PBE 泛函）
+-   考虑外加电场，这个比较好办，直接在修改外场势函数即可
+-   考虑外加磁场，这个需要修改 Hamiltonian 中的动能项表达式，添加矢势项
+-   考虑相对论效应，使用 Dirac 方程代替 Schrodinger 方程，看是否能算出自旋轨道耦合效应
+-   ......
+
+出于精力限制，本人可能没动力继续往下扩展，读者如果有兴趣，可以自行尝试。
+
+[^fn:1]: tamuhey 的代码 <https://github.com/tamuhey/python_1d_dft>
+[^fn:2]: 任老师的课件 <http://lqcc.ustc.edu.cn/renxg/plus/list.php?tid=7>
