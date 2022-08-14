@@ -156,7 +156,7 @@ savefig(p, "simple-dft-psi_rho_dft.svg")
 
 
 p = plot(x, ψ_empty[:, 1:3], label="ψ_" .* string.(collect(1:3)'), color=[:red :green :blue], line=(:dash, 4))
-plot!(p, x, -ψ_empty_dft[:, 1:3], label="ψ_" .* string.(collect(1:3)') .* "_dft", color=[:red :green :blue], line=(:solid, 4))
+plot!(p, x, ψ_empty_dft[:, 1:3], label="ψ_" .* string.(collect(1:3)') .* "_dft", color=[:red :green :blue], line=(:solid, 4))
 savefig(p, "simple-dft-psi_org_dft.svg")
 
 p = plot(x, [ρ_empty, ρ_well, ρ_harm], label=["ρ_empty" "ρ_well"  "ρ_harm"],
