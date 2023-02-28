@@ -17,11 +17,10 @@
   - [[#vasp-偶极校正及功函数的计算][VASP 偶极校正及功函数的计算]]
   - [[#组内集群折腾实录][组内集群折腾实录]]
   - [[#镜像态的那些坑][镜像态的那些坑]]
-  - [[#rsgrad-开发收获][Rsgrad 开发收获]]
-  - [[#haskell-学习笔记][Haskell 学习笔记]]
   - [[#二维-ising-model-的-julia-实现][二维 Ising Model 的 Julia 实现]]
   - [[#使用数值方法求解单电子-schrodinger-方程][使用数值方法求解单电子 Schrodinger 方程]]
   - [[#简易-dft-玩具][简易 DFT 玩具]]
+  - [[#利用-const-generics-实现量纲分析][利用 Const Generics 实现量纲分析]]
 
 * DONE About :about:
 CLOSED: [2021-4-13 Tue]
@@ -1493,36 +1492,6 @@ Probes of Surfaces, P. Halevi, Ed. (Elsevier, Amsterdam, 1995), pp. 347-411
 [fn:6] Classical Electrodynamics, From Image Charges to the Photon Mass and
 Magnetic monopoles, Francesco Lacava https://www.springer.com/gp/book/9783319394732
 [fn:7] One-dimensional hydrogen atom https://royalsocietypublishing.org/doi/10.1098/rspa.2015.0534
-** TODO Rsgrad 开发收获
-** TODO Haskell 学习笔记
-:PROPERTIES:
-# :EXPORT_FILE_NAME: haskell-notes
-# :EXPORT_DATE: [2021-05-11]
-:END:
-
-这是观看视频 [[https://www.youtube.com/watch?v=Vgu82wiiZ90&list=PLe7Ei6viL6jGp1Rfu0dil1JH1SHk9bgDV][Haskell for Imperative Programmers]] 时所做的笔记。
-
-#+hugo: more
-
-*** Functions, Types, let & where
-**** Functions (Definition)
-
-#+begin_src runhaskell
--- You can define functions like: ```name arg1 arg2 ... argn = <expr>```
-in_range :: Int -> Int -> Int -> Bool
-in_range min max x = x >= min && x <= max
-
-main = do
-  putStrLn $ show $ in_range 0 5 3
-  putStrLn $ show $ in_range 0 3 5
-#+end_src
-
-#+RESULTS:
-: True
-: False
-
-
-
 ** TODO 二维 Ising Model 的 Julia 实现
 ** DONE 使用数值方法求解单电子 Schrodinger 方程 :@Physics:Julia:FiniteDifferenceMethod:FiniteElementMethod:SchrodingerEquation:NumercialMethod:
 CLOSED: [2021-08-06 Fri 14:44]
@@ -2776,3 +2745,84 @@ I = E_0(N-1) - E_0(N) = -\epsilon_N
 - ......
 
 出于精力限制，本人可能没动力继续往下扩展，读者如果有兴趣，可以自行尝试。
+
+** DONE 利用 Const Generics 实现量纲分析 :@Programming:Rust:ConstGenerics:
+CLOSED: [2023-02-27 Mon 22:39]
+:PROPERTIES:
+:EXPORT_FILE_NAME: dimensional-analysis-using-const-generics
+:EXPORT_DATE: [2023-02-27 Mon]
+:END:
+
+开学前折腾了一段时间的 Rust const generics ，也读了一些前人的代码，并自己写出了自己的编译时量纲分析代码，
+因此吸收总结这一过程所得知识，产生了这篇博文。
+
+#+hugo: more
+
+*** 什么是 Const Generics
+Const generics 翻译过来即为常量泛型。在涉及 Rust 泛型代码时，如果泛型参数是一个常量值，而不是类型或
+生命周期参数等，那么这个泛型参数就称为常量泛型参数。例如下面一段代码就用到了泛型参数
+#+begin_src rust
+struct Position<T, const N: usize> {    // N 即为常量泛型参数
+    pos: [T; N]
+}
+#+end_src
+上面代码中 =const N: usize= 中的 =const= 前缀很贴心地告诉你后面的 =N= 是一个泛型参数，而 =: usize= 则表明
+=N= 的类型是 =usize= 。这段代码定义了一个泛型的 =struct= ，其中包含一个名为 =pos= 的数组成员，这个数组元素
+的类型由 =T= 决定，而长度由常量泛型参数 =N= 决定。注意，这里面的 =T= 和 =N= 都是编译期参数，也就是说它们在
+编译期就已经确定，由于 Rust 是一门静态语言，所有变量的类型在编译成机器码时都是可以被推导出来的，
+我们不能用一个程序运行期的变量（比如一个用户输入的值）作为 =T= 或 =N= ，这是不被允许，并且编译器
+也无法做到的。
+
+那么 Rust 为什么要添加 =const generics= 这个特性呢？其中的原因在 [[https://rust-lang.github.io/rfcs/2000-const-generics.html][RFC#2000]] 已经写得很清楚了，简单来说就是
+Rust 将 =[T; 1]= 、 =[T; 2]= 、 =[T;3]= ……这样不同长度的数组看做不同的类型，那么在实现一些操作时就会显得
+很脏，比如[[https://doc.rust-lang.org/1.37.0/std/primitive.array.html#impl-Eq][早期版本的 Rust 标准库]]在实现比较两个定长数组是否相等的特质 =Eq= 时就分别对 =[T; 0]= 、 =[T; 1]= 、
+ =[T; 2]= 等等的定长数组各自实现，一直到 =[T; 32]= 。那么如果你有一个长度大于 32 的定长数组需要比较时怎么办？
+比如这样的代码
+#+begin_src rust
+fn compare(lhs: &[i32; 33], rhs: &[i32; 33]) -> bool {
+    lhs == rhs
+}
+#+end_src
+编译器会直接报错罢工，而如果把两个 =33= 全部换成 =32= 则可以正常编译，是不是感觉非常不可思议？当然这个问题在 2021
+年 3 月份 [[https://blog.rust-lang.org/2021/02/26/const-generics-mvp-beta.html][const generics 稳定后]]就已经被解决了。在 Rustc 1.51 以后，你可以对任意长度的 =[T; LEN]= 运行比较，以及
+其它相关的操作，再也不用担心编译器摆烂。
+
+除了解决定长数组的相关问题， const generics 还有其它很多有用的地方，比如可以实现编译期的计算（写 C++
+的同学可能已经开始狂喜了，别高兴太早，用 +Ruast+ 的 const generics 来写类似 C++ 的模板元编译期计算会非常地痛苦，
+建议不要尝试）等。有一个相对关键的点在于，泛型参数只存在于编译期，也就是说在运行期这个参数不存在。这也意味着
+常量泛型参数自己并不占内存，比如
+#+begin_src rust
+struct Foo<const N: usize> {
+    value: i64,
+}
+#+end_src
+这个结构体的大小用 =std::mem::size_of::<Foo<1>>()= 求出来是 =8= ，正好等于 =i64= 本身的大小；事实上，不管
+=N= 取多少，甚至 =std::mem::size_of::<Foo<114514>>()= ，得到的仍然是 =8= ，这为编译器的优化提供了可能。
+
+除此之外，当 =N= 不同时， =Foo<N>= 被认为是不同的类型。即使你分别为 =Foo<N1>= 和 =Foo<N2>= 分别实现了相同的
+特质（这里以 =Eq= 为例），那么当你写下 =Foo::<N1>::default() == Foo::<N2>::default()= 这样的代码时，除非 =N1 == N2=
+否则编译器会报错提醒你：
+#+begin_src rust
+#[derive(Default, PartialEq, Eq)]
+struct Foo<const N: usize> {
+    value: i64,
+}
+
+fn main() {
+    println!("{}", Foo::<0>::default() == Foo::<1>::default());
+}
+// error[E0308]: mismatched types
+//  --> src/main.rs:8:43
+//   |
+// 8 |     println!("{}", Foo::<0>::default() == Foo::<1>::default());
+//   |                                           ^^^^^^^^^^^^^^^^^^^ expected `0`, found `1`
+//   |
+//   = note: expected struct `Foo<0>`
+//              found struct `Foo<1>`
+#+end_src
+这个特性对于量纲分析是至关重要的，可以说如果没有这个特性，编译期的量纲分析就无法实现。
+
+*** 什么是量纲分析
+现在我们来讲讲什么是量纲分析
+
+*** 为什么，以及如何使用 Const Generics 实现量纲分析
