@@ -20,7 +20,7 @@
   - [[#二维-ising-model-的-julia-实现][二维 Ising Model 的 Julia 实现]]
   - [[#使用数值方法求解单电子-schrodinger-方程][使用数值方法求解单电子 Schrodinger 方程]]
   - [[#简易-dft-玩具][简易 DFT 玩具]]
-  - [[#利用-const-generics-实现量纲分析][利用 Const Generics 实现量纲分析]]
+  - [[#利用-const-generics-实现编译期量纲分析][利用 Const Generics 实现编译期量纲分析]]
 
 * DONE About :about:
 CLOSED: [2021-4-13 Tue]
@@ -2746,17 +2746,60 @@ I = E_0(N-1) - E_0(N) = -\epsilon_N
 
 出于精力限制，本人可能没动力继续往下扩展，读者如果有兴趣，可以自行尝试。
 
-** DONE 利用 Const Generics 实现量纲分析 :@Programming:Rust:ConstGenerics:
+** DONE 利用 Const Generics 实现编译期量纲分析 :@Programming:Rust:ConstGenerics:
 CLOSED: [2023-02-27 Mon 22:39]
 :PROPERTIES:
 :EXPORT_FILE_NAME: dimensional-analysis-using-const-generics
 :EXPORT_DATE: [2023-02-27 Mon]
 :END:
 
-开学前折腾了一段时间的 Rust const generics ，也读了一些前人的代码，并自己写出了自己的编译时量纲分析代码，
+开学前折腾了一段时间的 Rust const generics ，也读了一些前人的代码，并自己写出了自己的编译期量纲分析代码，
 因此吸收总结这一过程所得知识，产生了这篇博文。
 
 #+hugo: more
+
+*** 什么是量纲分析
+这里浅薄地介绍一下什么是量纲分析。贴一下 Wiki 上关于量纲和量纲分析的定义：
+
+1) 量纲是表示一个物理量由基本量组成的情况。确定若干个基本量后，每个派生量都可以表示为基本量的幂的乘积的形式，
+   引入量纲分析可以进行量纲分析，这既是物理学的基础，又有很多重要的应用。通常一个物理量的量纲是由像质量、
+   长度、时间、电荷量、温度一类的基础量纲结合而成；
+2) 量纲分析是指对数学或者物理学中物理量的量纲可以用来分析或检验几个物理量之间的关系。
+   在判断一个由推导获得的方程式或计算结果是否合理时，可以对等号两边的量纲进行化简，从而确认是否一致，这个过程
+   即用到了量纲分析。对于较为复杂的情况，量纲分析也可以用来建立合理的假设，然后用严格的实验加以验证，或用已
+   发展成功的理论来仔细推敲。
+
+由于目前的基本物理量有七个，故在量纲中分别用七个字母表示它们的量纲，分别为：
+
+- 长度（L）
+- 质量（M）
+- 温度（Θ）
+- 电流（I）
+- 时间（T）
+- 物质的量（N）
+- 发光强度（J）
+
+任何一个物理量 \(A\) 都可以写出下列量纲式：
+\[
+    \text{dim} A = L^{\alpha} M^{\beta} \Theta^{\gamma} I^{\delta} T^{\epsilon} N^{\zeta} J^{\eta}
+\]
+如果一个物理量的量纲中所有的指数为 0 ，那么称它为无量纲量，常见的无量纲量有精细结构常数 \(\alpha \approx 1/137\) 、
+雷诺数 \(\text{Re} = \frac{\rho VL}{\mu} = \frac{VL}{\nu}\) 以及各种比值、概率等。
+两个物理量量纲一致是它们能够相加减的必要条件，而不是充要条件，比如力矩和能量的量纲都是 $F \cdot L$ ，但这两个量
+显然无法相加减。物理量的乘除乘方开方则没有这个限制，直接按照相应的代数运算法则对各个基本量纲处理再化简即可。
+
+值得注意的是，能放在指数和真数位置上的物理量一定是无量纲量。回想一下统计力学中几乎无处不在的
+\( \frac{E}{k_{\mathrm{B}} T}\) ，其中分母 \(k_B T\) 的量纲是能量，刚好与分子上 \(E\) 相抵消，导致指数整体是
+一个无量纲量，进而使得 \( \frac{E}{k_{\mathrm{B}} T}\) 这个整体也是一个无量纲量；又比如在化学反应中常见的公式
+\(\Delta G = \Delta G^{\ominus} + RT \ln K\) ，其中化学平衡常数 \(K\) 处于真数的位置，它一定是一个无量纲量。
+
+此时，我们可以大致总结一下量纲分析运算的规则：
+1) 物理量的量纲由 7 个基本量纲构成；
+2) 具有相同量纲的物理量才能相加减；
+3) 物理量在乘除、乘方和开方时基本量纲的指数遵循代数运算法则；
+4) 处于指数、真数位置的物理量是无量纲量。
+
+这些规则是我们程序实现量纲分析的参考。
 
 *** 什么是 Const Generics
 Const generics 翻译过来即为常量泛型。在涉及 Rust 泛型代码时，如果泛型参数是一个常量值，而不是类型或
@@ -2771,7 +2814,7 @@ struct Position<T, const N: usize> {    // N 即为常量泛型参数
 的类型由 =T= 决定，而长度由常量泛型参数 =N= 决定。注意，这里面的 =T= 和 =N= 都是编译期参数，也就是说它们在
 编译期就已经确定，由于 Rust 是一门静态语言，所有变量的类型在编译成机器码时都是可以被推导出来的，
 我们不能用一个程序运行期的变量（比如一个用户输入的值）作为 =T= 或 =N= ，这是不被允许，并且编译器
-也无法做到的。
+也无法做到的
 
 那么 Rust 为什么要添加 =const generics= 这个特性呢？其中的原因在 [[https://rust-lang.github.io/rfcs/2000-const-generics.html][RFC#2000]] 已经写得很清楚了，简单来说就是
 Rust 将 =[T; 1]= 、 =[T; 2]= 、 =[T;3]= ……这样不同长度的数组看做不同的类型，那么在实现一些操作时就会显得
@@ -2812,17 +2855,114 @@ fn main() {
     println!("{}", Foo::<0>::default() == Foo::<1>::default());
 }
 // error[E0308]: mismatched types
-//  --> src/main.rs:8:43
+//  --> src/main.rs:7:43
 //   |
-// 8 |     println!("{}", Foo::<0>::default() == Foo::<1>::default());
+// 7 |     println!("{}", Foo::<0>::default() == Foo::<1>::default());
 //   |                                           ^^^^^^^^^^^^^^^^^^^ expected `0`, found `1`
 //   |
 //   = note: expected struct `Foo<0>`
 //              found struct `Foo<1>`
 #+end_src
-这个特性对于量纲分析是至关重要的，可以说如果没有这个特性，编译期的量纲分析就无法实现。
+这个特性对于实现编译期量纲分析是至关重要的，可以说如果没有这个特性，编译期的量纲分析就无法实现。
 
-*** 什么是量纲分析
-现在我们来讲讲什么是量纲分析
+*** 如何使用 Const Generics 实现量纲分析
+在阐述如何使用 const generics 实现编译期量纲分析之前，我们先来了解一下运行期量纲分析有啥缺点。
 
-*** 为什么，以及如何使用 Const Generics 实现量纲分析
+为了描述量纲，我们需要定义一个结构体来储存七个基本量纲的指数，为了方便实现，这里直接取国际单位制：
+#+begin_src rust
+#[derive(Default, PartialEq, Eq)]   // make SiUnit::default() and SiUnit == SiUnit possible
+pub struct SiUnit {
+      m: i8,    // meter
+      s: i8,    // second
+     kg: i8,    // kilogram
+      c: i8,    // coulomb
+     cd: i8,    // candela
+    mol: i8,    // mole
+      k: i8,    // kelvin
+}
+
+impl SiUnit {
+    pub fn new() -> Self {
+        SiUnit::default()
+    }
+}
+#+end_src
+
+然后这个结构体需要实现加减运算特质，以满足两个物理量乘除时对量纲的运算：
+#+begin_src rust
+use std::ops::{Add, Sub, Mul, Div};   // required trait for overload of `+` and `-`.
+
+impl Add for SiUnit {
+    type Output = Self;     // required associate type
+    fn add(self, rhs: Self) -> Self::Output {
+        SiUnit {
+              m: self.m    + rhs.m,
+              s: self.s    + rhs.s,
+             kg: self.kg   + rhs.kg,
+              c: self.c    + rhs.c,
+             cd: self.cd   + rhs.cd,
+            mol: self.mol  + rhs.mol,
+              k: self.k    + rhs.k,
+        }
+    }
+}
+
+impl Sub for SiUnit {
+    type Output = Self;     // required associate type
+    fn sub(self, rhs: Self) -> Self::Output {
+        ...
+    }
+}
+#+end_src
+
+这样我们就可以直接执行 =SiUnit + SiUnit= 、 =SiUnit - SiUnit= 这样的操作了。
+
+为了实现物理量的乘方开方运算，它还需要实现 =Mul= 和 =Div= 特质，与实现 =Add=
+和 =Sub= 特质不同的是， =Mul= 和 =Div= 特质里的右操作数 =Rhs= 都是 =i8=
+类型，而不是 =SiUnit= 本身，因为乘方开方的指数都是没有量纲的。
+#+begin_src rust
+use std::ops::{Mul, Div};
+
+impl Mul<i8> for SiUnit {
+    type Output = Self;
+    fn mul(self, rhs: i8) -> Self::Output {
+        SiUnit {
+              m: self.m    * rhs,
+              s: self.s    * rhs,
+             kg: self.kg   * rhs,
+              c: self.c    * rhs,
+             cd: self.cd   * rhs,
+            mol: self.mol  * rhs,
+              k: self.k    * rhs,
+        }
+    }
+}
+
+impl Div<i8> for SiUnit {
+    type Output = Self;
+    fn div(self, rhs: i8) -> Self::Output {
+        SiUnit {
+            ...
+        }
+    }
+}
+#+end_src
+
+此时， =SiUnit= 可以进行 =SiUnit * 2= 、 =SiUnit / 2= 这样的运算了。那么把和一个值打包在一起就组成一个
+物理量了：
+#+begin_src rust
+pub struct PhysicalQuantity<T> {
+    value: T,
+    unit:  SiUnit,
+}
+#+end_src
+然后我们再为它实现各种运算操作，就可以用它代入各种公式求值了。那么这其中有什么问题呢？
+
+1) 它占用的内存太多。用 =std::mem::size_of::<PhysicalQuantity<f64>>()= 查看一下这个结构体占用的内存，
+   为 16 字节，这说明不参与值运算的 =unit= 成员就占用了一半的空间；如果对一个 =[PhysicalQuantity; len]=
+   这样的数组运算，那么所有元素的 =unit= 成员就交错分布在真正需要运算的 =value= 成员中间，这对 CPU
+   的缓存命中和 SIMD 优化是非常不利的，进而造成可观的性能损失；
+2) =PhysicalQuantity= 之间没有区分，也就是说 =unit= 不同的 =PhysicalQuantity= 被认为是同一个类型，
+   当它们被放在同一个数组等线性表里时，编译器不会报错，而且人工检查也只能在运行时进行；
+3) =PhysicalQuantity= 在执行加减运算时需要手动检查 =unit= 是否一致；在执行乘除法时，需要对 =unit= 运行相应
+   的运算，这些均在运行时进行，并且每个元素操作时都要做，这也会严重降低运行效率。
