@@ -2868,9 +2868,10 @@ fn main() {
 *** 如何使用 Const Generics 实现量纲分析
 在阐述如何使用 const generics 实现编译期量纲分析之前，我们先来了解一下运行期量纲分析有啥缺点。
 
+**** 运行期量纲分析
 为了描述量纲，我们需要定义一个结构体来储存七个基本量纲的指数，为了方便实现，这里直接取国际单位制：
 #+begin_src rust
-#[derive(Default, PartialEq, Eq)]   // make SiUnit::default() and SiUnit == SiUnit possible
+#[derive(Default, PartialEq, Eq, Clone, Copy)]   // make SiUnit::default() and SiUnit == SiUnit possible
 pub struct SiUnit {
       m: i8,    // meter
       s: i8,    // second
@@ -2966,3 +2967,217 @@ pub struct PhysicalQuantity<T> {
    当它们被放在同一个数组等线性表里时，编译器不会报错，而且人工检查也只能在运行时进行；
 3) =PhysicalQuantity= 在执行加减运算时需要手动检查 =unit= 是否一致；在执行乘除法时，需要对 =unit= 运行相应
    的运算，这些均在运行时进行，并且每个元素操作时都要做，这也会严重降低运行效率。
+
+如此这些缺陷在 const generics 的加持下都可以解决。
+
+**** 利用 const generics 实现编译期的量纲分析
+为了让编译器在编译期帮助我们推导量纲，我们可以利用 const generics ，把量纲信息放在泛型参数里，如下所示：
+#+begin_src rust
+#![feature(adt_const_params)]
+
+use num::Num;
+
+#[derive(PartialEq)]
+pub struct PhysicalQuantity<T, const U: SiUnit>
+where T: Num
+{
+    value: T,
+}
+
+impl<T, const U: SiUnit> PhysicalQuantity<T, U>
+where T: Num,
+{
+    pub fn new(value: T) -> Self {
+        Self { value }
+    }
+}
+#+end_src
+需要注意的是，在现在 Rustc 最新稳定版(1.67)里，只能支持整数、 =bool= 以及 =char= 作为 const generic params ，
+想要放结构体进去需要切换到 nightly 频道，并在代码开头加上 =#![feature(adt_const_params)]= 来开启 =adt_const_params=
+这个 feature ，从而支持把 =SiUnit= 放到泛型参数里。此时，运行 =std::mem::size_of<PhysicalQuantity<f64, SiUnit::default()>>()= ，
+输出为 8 ，说明没有多余的空间占用，第一个问题得以解决。
+
+为了方便起见，我们定义一些类型别名
+#+begin_src rust
+const METER: SiUnit = SiUnit {
+      m: 1,
+      s: 0,
+     kg: 0,
+      c: 0,
+     cd: 0,
+    mol: 0,
+      k: 0,
+};
+type Meter<T> = PhysicalQuantity<T, Meter>;
+
+const METER_PER_SEC: SiUnit = SiUnit {
+      m:  1,
+      s: -1,
+     kg:  0,
+      c:  0,
+     cd:  0,
+    mol:  0,
+      k:  0,
+};
+type Mps<T> = PhysicalQuantity<T, METER_PER_SEC>;
+#+end_src
+然后比较一个两个量纲不同的量，看会有什么反应
+#+begin_src rust
+let a = Meter::<f64> { value: 1.0 };
+let b = Mps::<f64> {value: 2.0};
+assert_ne!(a, b);   // cannot compile
+// error[E0308]: mismatched types
+//   --> src/main.rs:54:5
+//    |
+// 54 |     assert_ne!(a, b);   // cannot compile
+//    |     ^^^^^^^^^^^^^^^^ expected `SiUnit { m: 1, s: 0, kg: 0, c: 0, cd: 0, mol: 0, k: 0 }`, found `SiUnit { m: 1, s: -1, kg: 0, c: 0, cd: 0, mol: 0, k: 0 }`
+//    |
+//    = note: expected struct `PhysicalQuantity<_, SiUnit { m: 1, s: 0, kg: 0, c: 0, cd: 0, mol: 0, k: 0 }>`
+//               found struct `PhysicalQuantity<_, SiUnit { m: 1, s: -1, kg: 0, c: 0, cd: 0, mol: 0, k: 0 }>`
+//    = note: this error originates in the macro `assert_ne` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+// For more information about this error, try `rustc --explain E0308`.
+#+end_src
+此时，编译器拒绝编译，并给出了错误信息，其中明确说明参数 =b= 存在类型错误，从而避免用户强行将两者放在一起比较。
+这也表明只要量纲一致，那么类型肯定一致；反之如果量纲不一致，类型也一定不同，这可以将用户的编码错误提前到编译期暴露出来。
+以上只是一个示例，下面我们来为 =PhysicalQuantity= 实现更多功能。
+
+首先，我们需要在编译期对 =SiUnit= 进行运算，之前的 =impl Add for SiUnit { ... }= 是为 =SiUnit= 实现一个函数，
+然而这个函数只能在运行期跑，如何解决？这里就要用到 nightly 的另一个不稳定特性 =const_trait_impl= ，然后
+=impl const Add for SiUnit= 就可以了：
+#+begin_src rust
+#![feature(const_trait_impl)]
+
+impl const Add for SiUnit { ... }
+impl const Sub for SiUnit { ... }
+impl const Mul<i8> for SiUnit { ... }
+impl const Div<i8> for SiUnit { ... }
+#+end_src
+
+然后我们来考虑为 =PhysicalQuantity= 实现各种运算。我们先为它实现最为简单的加减运算，由于加减运算的两个操作数量纲一致，
+类型肯定相同，那么实现加减法就不需要对 =SiUnit= 进行运算：
+#+begin_src rust
+impl<T, const U: SiUnit> Add for PhysicalQuantity<T, U>
+where T: Num,
+{
+    type Output = PhysicalQuantity<T, U>;
+    fn add(self, rhs: Self) -> Self::Output {
+        Self::Output {
+            value: self.value + rhs.value
+        }
+    }
+}
+
+impl<T, const U: SiUnit> Sub for PhysicalQuantity<T, U>
+where T: Num,
+{
+    type Output = PhysicalQuantity<T, U>;
+    fn sub(self, rhs: Self) -> Self::Output {
+        Self::Output {
+            value: self.value - rhs.value
+        }
+    }
+}
+#+end_src
+
+而 =PhysicalQuantity= 的乘除法不要求左右操作数量纲一致，并且产生的结果可能有着第三种量纲，因此在实现乘除法的特质时
+会稍微麻烦一点，也会用到本文提到的第三个不稳定特性 =const_trait_impl= ，它支持在 const generic params 里写表达式，
+而这个表达式则需要用花括号包起来，比如像 =PhysicalQuantity<T, {U+V}>= 这样：
+#+begin_src rust
+#![feature(generic_const_exprs)]
+
+impl<T, const U: SiUnit, const V: SiUnit> Mul<PhysicalQuantity<T, V>> for PhysicalQuantity<T, U>
+where
+    T: Num,
+    PhysicalQuantity<T, {U+V}>:,    // generic_const_exprs used
+{
+    type Output = PhysicalQuantity<T, {U+V}>;
+    fn mul(self, rhs: PhysicalQuantity<T, V>) -> Self::Output {
+        Self::Output {
+            value: self.value * rhs.value
+        }
+    }
+}
+
+
+impl<T, const U: SiUnit, const V: SiUnit> Div<PhysicalQuantity<T, V>> for PhysicalQuantity<T, U>
+where
+    T: Num,
+    PhysicalQuantity<T, {U-V}>:,    // generic_const_exprs used
+{
+    type Output = PhysicalQuantity<T, {U-V}>;
+    fn div(self, rhs: PhysicalQuantity<T, V>) -> Self::Output {
+        Self::Output {
+            value: self.value / rhs.value
+        }
+    }
+}
+#+end_src
+上面的代码的每个特质的实现中，除了 =T= 之外，一共有三个泛型，分别是 =U= 、 =V= 和 =U±V= ，而在 =impl<>= 只能写 =U= 和 =V=
+这两个参数（ =U= 属于 =PhysicalQuantity= ， =V= 存在于 =Mul<Rhs>= 中的 =Rhs= 内），那么 =U±V= 就只能放在 =where= 里进行约束了。
+
+那么，为什么不直接 =where {U±V}:,= 这样来约束呢，那是因为现在编译器还不够强，不支持这样写，如果 =U= 和 =V= 是 =usize= 类型，
+官方支持 =where [(); {U±V}]:,= 这样来进行约束。但不幸的是，这里的 =U= 和 =V= 是 =SiUnit= 类型，除非你为它实现了转换到 =usize=
+的特质，然后写 =where [(); {U±V}.into::<usize>()]:,= 这样的约束条件。除了这个选择，我们可以直接约束 =PhysicalQuantity<T, {U±V}>=
+这个类型本身，幸运的是， rustc 确实接受这样的写法，谢天谢地。
+
+顺便吐槽一下， =generic_const_exprs= 所支持的表达式十分有限，甚至当 =U= 和 =V= 为 =usize= 时， ={U+V}= 和 ={V+U}= 被认为是不等价的，
+这也意味着我们在写表达式时需要十分小心表达式的顺序，如果写错的话，编译器吐出来的东西可能会非常难看……
+
+言归正传，经过上面的实现后，我们可以对不同量纲的物理量进行乘除运算了，比如：
+#+begin_src rust
+let a = Meter::<f64> { value: 1.0 };
+let b = Mps::<f64> { value: 2.0 };
+let c = a / b;
+println!("type: {}, value: {}", std::any::type_name_of_val(&c), c.value);
+// type: playground::PhysicalQuantity<f64, playground::SiUnit { m: 0, s: 1, kg: 0, c: 0, cd: 0, mol: 0, k: 0 }>, value: 0.5
+#+end_src
+在打印出 =c= 的类型后，它的量纲确实是时间，说明我们的实现是正确的。
+
+[TODO] here
+到现在为止，我们已经为 =PhysicalQuantity<T, U>= 实现了四则运算。对于乘方、开方之类的运算，由于标准库没有相关的特质，我们将这些直接实现为
+=PhysicalQuantity= 的方法。这里也要求指数是编译期就确定的数，否则对 =SiUnit= 的操作无法在编译期实现。
+#+begin_src rust
+
+#+end_src
+
+但有时公式中还会出现无量纲系数直接相乘的情况，比如 \(\frac{1}{4\pi \epsilon}\) ，
+这时如果把 \(4\pi\) 手动写成 =PhysicalQuantity::<T, U>::new(4.0 * pi)= 的形式，未免过于冗长。这种情况下，我们需要为直接数 =T= 实现到无量纲
+=PhysicalQuantity= 类型的转换特质：
+#+begin_src rust
+const DIMENSIONLESS: SiUnit = SiUnit {
+      m: 0,
+      s: 0,
+     kg: 0,
+      c: 0,
+     cd: 0,
+    mol: 0,
+      k: 0,
+};
+type Dimensionless<T> = PhysicalQuantity<T, DIMENSIONLESS>;
+
+impl<T> From<T> for Dimensionless<T>
+where T: Num,
+{
+    fn from(value: T) -> Dimensionless<T> {
+        Dimensionless::<T> { value }
+    }
+}
+#+end_src
+然后就可以这样写了：
+#+begin_src rust
+let d = c * 4.0.into();
+println!("type: {}, value: {}", std::any::type_name_of_val(&d), d.value);
+// type: playground::PhysicalQuantity<f64, playground::SiUnit { m: 0, s: 1, kg: 0, c: 0, cd: 0, mol: 0, k: 0 }>, value: 2
+#+end_src
+注意，这里还有一个坑， =let d = 4.0.into() * c= 是无法编译的，因为 =a * b= 运算具体调用哪个函数首先取决于 =a= 的类型，编译器会查找左操作数类型与 =a=
+一致的函数，然后在其中查找右操作数类型与 =b= 一致的函数 =mul(type_a, type_b)= ，最后调用 =mul()= 。如果 =4.0.into()= 写在 =*= 的左边，由于 =4.0.into()=
+得到并不是一个固定的类型，这个类型取决于上下文，那么查找相应 =mul= 函数的第一步就无法完成，编译器自然会报错。如何解决呢？我们可以指定 =.into()=
+得到的类型： =<f64 as Into<Dimensionless<f64>>>::into(4.0)= 或者 =Dimensionless::<f64>::from(4.0)= ，但这两种写法都太麻烦了，不如直接把 =4.0.into()=
+写在右面，一样可以编译通过。
+
+尽管如此， =4.0.into()= 这种写法依然看起来很糟糕，为什么不能直接实现 =4.0 * c= 这样的写法呢？因为要支持这样的写法意味着我们需要对四则运算分别再实现一遍，
+像 =impl<T> Op<T> for Dimensionless<T> where T: Num= 这样；而且由于孤儿规则的存在，编译器也不允许我们
+=impl<T> Mul<Dimensionless<T>> for T where T: Num= ，所以只能作罢。出于复用 =PhysicalQuantity= 之间已经实现的运算的目的，不如把无量纲系数转换为
+=Dimensionless<T>= ，再利用已有的函数去实现各种运算，何乐而不为呢（）。至于 =4.0.into()= 这种看起来很丑的写法，这是 Ruast 的一大特色，不得不品尝，
+连标准库的文档里都充斥着 =1.0_f64.sqrt()= 这种一样“很丑”的写法，习惯就好啦，你多看几眼就不觉得丑啦 +（这就是 Ruast 带给我们的自信）+ 。
