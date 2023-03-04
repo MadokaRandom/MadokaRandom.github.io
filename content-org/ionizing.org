@@ -2747,19 +2747,19 @@ I = E_0(N-1) - E_0(N) = -\epsilon_N
 出于精力限制，本人可能没动力继续往下扩展，读者如果有兴趣，可以自行尝试。
 
 ** DONE 利用 Const Generics 实现编译期量纲分析 :@Programming:Rust:ConstGenerics:
-CLOSED: [2023-02-27 Mon 22:39]
+CLOSED: [2023-03-04 Sat 22:46]
 :PROPERTIES:
 :EXPORT_FILE_NAME: dimensional-analysis-using-const-generics
 :EXPORT_DATE: [2023-02-27 Mon]
 :END:
 
 开学前折腾了一段时间的 Rust const generics ，也读了一些前人的代码，并自己写出了自己的编译期量纲分析代码，
-因此吸收总结这一过程所得知识，产生了这篇博文。
+因此吸收总结这一过程所得知识，产生了这篇博文。本文的实现全部代码在[[https://play.rust-lang.org/?version=nightly&mode=debug&edition=2021&gist=4807be24f1e6493bcc5c7cb86457439c][这里]]。
 
 #+hugo: more
 
 *** 什么是量纲分析
-这里浅薄地介绍一下什么是量纲分析。贴一下 Wiki 上关于量纲和量纲分析的定义：
+这里浅薄地介绍一下什么是量纲分析。贴一下 Wiki[fn:: https://en.wikipedia.org/wiki/Dimensional_analysis] 上关于量纲和量纲分析的定义：
 
 1) 量纲是表示一个物理量由基本量组成的情况。确定若干个基本量后，每个派生量都可以表示为基本量的幂的乘积的形式，
    引入量纲分析可以进行量纲分析，这既是物理学的基础，又有很多重要的应用。通常一个物理量的量纲是由像质量、
@@ -3042,6 +3042,7 @@ assert_ne!(a, b);   // cannot compile
 这也表明只要量纲一致，那么类型肯定一致；反之如果量纲不一致，类型也一定不同，这可以将用户的编码错误提前到编译期暴露出来。
 以上只是一个示例，下面我们来为 =PhysicalQuantity= 实现更多功能。
 
+***** =SiUnit= 的编译期运算
 首先，我们需要在编译期对 =SiUnit= 进行运算，之前的 =impl Add for SiUnit { ... }= 是为 =SiUnit= 实现一个函数，
 然而这个函数只能在运行期跑，如何解决？这里就要用到 nightly 的另一个不稳定特性 =const_trait_impl= ，然后
 =impl const Add for SiUnit= 就可以了：
@@ -3054,6 +3055,7 @@ impl const Mul<i8> for SiUnit { ... }
 impl const Div<i8> for SiUnit { ... }
 #+end_src
 
+***** =PhysicalQuantity= 的加减法运算
 然后我们来考虑为 =PhysicalQuantity= 实现各种运算。我们先为它实现最为简单的加减运算，由于加减运算的两个操作数量纲一致，
 类型肯定相同，那么实现加减法就不需要对 =SiUnit= 进行运算：
 #+begin_src rust
@@ -3080,6 +3082,7 @@ where T: Num,
 }
 #+end_src
 
+***** =PhysicalQuantity= 的乘除法运算
 而 =PhysicalQuantity= 的乘除法不要求左右操作数量纲一致，并且产生的结果可能有着第三种量纲，因此在实现乘除法的特质时
 会稍微麻烦一点，也会用到本文提到的第三个不稳定特性 =const_trait_impl= ，它支持在 const generic params 里写表达式，
 而这个表达式则需要用花括号包起来，比如像 =PhysicalQuantity<T, {U+V}>= 这样：
@@ -3134,16 +3137,103 @@ println!("type: {}, value: {}", std::any::type_name_of_val(&c), c.value);
 #+end_src
 在打印出 =c= 的类型后，它的量纲确实是时间，说明我们的实现是正确的。
 
-[TODO] here
-到现在为止，我们已经为 =PhysicalQuantity<T, U>= 实现了四则运算。对于乘方、开方之类的运算，由于标准库没有相关的特质，我们将这些直接实现为
-=PhysicalQuantity= 的方法。这里也要求指数是编译期就确定的数，否则对 =SiUnit= 的操作无法在编译期实现。
+***** =PhysicalQuantity= 的乘方开方运算
+到现在为止，我们已经为 =PhysicalQuantity<T, U>= 实现了四则运算。相比于前面的实现，乘方、开方的运算要更麻烦一些，因为返回值的
+量纲取决于指数，等于说返回的类型取决于指数，这要求我们必须把指数放在 =const generics param= 的位置上，否则存在于运行期的指数
+无论如何也无法让编译器在编译期推导出返回类型。特质 =num::pow::Pow= 定义了 =.pow()= 函数，但这个函数的签名中指数存在于
+第二个函数参数的位置上，而不是常量泛型参数的位置上，因此不能使用；尽管如此，我们仍可以照猫画虎，仿照 =num::pow::Pow=
+来自己定义一个特质 =Power= ：
 #+begin_src rust
-
+pub trait PowerI<const power: i8> {
+    type Output;    // 关联类型
+    fn powi(self) -> Self::Output;
+}
 #+end_src
+然后为 =PhysicalQuantity= 实现它
+#+begin_src rust
+impl<T, const U: SiUnit, const power: i8> PowerI<power> for PhysicalQuantity<T, U>
+where
+    T: Num + Pow<i8, Output = T>,
+    PhysicalQuantity<T, {U*power}>:,
+{
+    type Output = PhysicalQuantity<T, {U*power}>;
+    fn powi(self) -> Self::Output {
+        Self::Output {
+            value: self.value.pow(power)
+        }
+    }
+}
+#+end_src
+最后，我们应该怎样调用它呢？经过与 rustc 的搏斗，我发现主要有以下两种写法：
+1) =let f2 = <Meter<f64> as PowerI<2>>::powi(f);=
+2) =let f2 = PowerI::<2>::powi(f);=
+第 1 种写法看着就令人头疼，第 2 种写法稍微好一些，但也只是五十步笑百步。造成写法如此难看的原因是指数 =power=
+被放在了 =trait= 的泛型参数里，而不是 =fn powi<power>(self) ...=  这个函数的泛型参数里。但是，如果将 =power=
+写在 =fn powi()= 里，那么当你在实现时不得不面对 [[https://doc.rust-lang.org/error_codes/E0207.html][E0207 错误]] ：
+#+begin_src rust
+pub trait PowerI {
+    type Output;
+    fn powi<const power: i8>(self) -> Self::Output;
+}
 
-但有时公式中还会出现无量纲系数直接相乘的情况，比如 \(\frac{1}{4\pi \epsilon}\) ，
-这时如果把 \(4\pi\) 手动写成 =PhysicalQuantity::<T, U>::new(4.0 * pi)= 的形式，未免过于冗长。这种情况下，我们需要为直接数 =T= 实现到无量纲
-=PhysicalQuantity= 类型的转换特质：
+impl<T, const U: SiUnit, const power: i8> PowerI for PhysicalQuantity<T, U>
+where
+    T: Num + Pow<i8, Output = T>,
+    PhysicalQuantity<T, {U*power}>:,
+{
+    type Output = PhysicalQuantity<T, {U*power}>;
+    fn powi(self) -> Self::Output
+    {
+        Self::Output {
+            value: self.value.pow(power)
+        }
+    }
+}
+//     |
+// 182 | impl<T, const U: SiUnit, const power: i8> PowerI for PhysicalQuantity<T, U>
+//     |                          ^^^^^^^^^^^^^^^ unconstrained const parameter
+//     |
+//     = note: expressions using a const parameter must map each value to a distinct output value
+//     = note: proving the result of expressions other than the parameter are unique is not supported
+#+end_src
+这个报错告诉我们常量泛型参数 =power= 必须出现在 =impl<...> Trait<...> for Object<...>= 的后两个尖括号内，
+或者直接出现 =where= 约束的从句里，以表达式的形式出现则不被接受。上面代码里就是因为
+=where PhysicalQuantity<T, {U*power}>= 中 =power= 是以表达式的形式出现而被拒绝编译，以笔者水平，看来这条路是走不通了。
+
+那有没有简单、直接点的实现，让我们可以 =f.powi::<power>()= 呢？当然有的，直接 =impl= ，给 =PhysicalQuantity=
+添加方法即可：
+#+begin_src rust
+impl<T, const U: SiUnit> PhysicalQuantity<T, U>
+where
+    T: Num + Pow<i8, Output = T>,
+{
+    fn powi<const power: i8>(self) -> PhysicalQuantity<T, {U*power}> {
+        PhysicalQuantity::<T, {U*power}> {
+            value: self.value.pow(power)
+        }
+    }
+}
+#+end_src
+这样就能使用 =let f2 = f.powi::<2>()= 来求得 =f= 的平方了，看起来这样的实现既简单，效果也好 +所谓大道至简，也不过如此吧2333+ 。
+至于开方，它和乘方的实现几乎一致，这里限制 =T= 为浮点数类型，为了使返回类型 =T= 与输入类型 =T= 一致：
+#+begin_src rust
+impl<T, const U: SiUnit> PhysicalQuantity<T, U>
+where
+    T: Float + From<f64>,
+{
+    fn nth_root<const root: i8>(self) -> PhysicalQuantity<T, {U/root}> {
+        PhysicalQuantity::<T, {U/root}> {
+            value: self.value.powf((1.0f64 / root as f64).into())
+        }
+    }
+}
+#+end_src
+然后就可以 =f.nth_root::<3>()= 来求 =f= 的立方根了。
+
+***** 无量纲数及常系数的特殊处理
+有时公式中还会出现无量纲系数直接相乘的情况，比如 \(\frac{1}{4\pi \epsilon}\) ，
+这时如果把 \(4\pi\) 手动写成 =PhysicalQuantity::<T, U>::new(4.0 * pi)= 的形式，未免过于冗长。这种情况下，我们需要为直接数
+=T= 实现到无量纲 =PhysicalQuantity= 类型的转换特质：
 #+begin_src rust
 const DIMENSIONLESS: SiUnit = SiUnit {
       m: 0,
@@ -3181,3 +3271,71 @@ println!("type: {}, value: {}", std::any::type_name_of_val(&d), d.value);
 =impl<T> Mul<Dimensionless<T>> for T where T: Num= ，所以只能作罢。出于复用 =PhysicalQuantity= 之间已经实现的运算的目的，不如把无量纲系数转换为
 =Dimensionless<T>= ，再利用已有的函数去实现各种运算，何乐而不为呢（）。至于 =4.0.into()= 这种看起来很丑的写法，这是 Ruast 的一大特色，不得不品尝，
 连标准库的文档里都充斥着 =1.0_f64.sqrt()= 这种一样“很丑”的写法，习惯就好啦，你多看几眼就不觉得丑啦 +（这就是 Ruast 带给我们的自信）+ 。
+
+对于一般的数，乘法运算是对易的，但除法却不是。当除数是无量纲数时，我们可以使用 =c / 4.0.into()= ；但当被除数是无量纲数时，我们只能
+=Dimensionless::from(4.0f64) / c= 这样来处理了。
+
+对于 \(e^{c})\) 和 \(\ln{c}\) 等限制输入为无量纲数的函数，我们可以通过只为 =Dimensionless= 类型实现相关函数来实现：
+#+begin_src rust
+impl<T> Dimensionless<T>
+where T: Float,
+{
+    pub fn exp(self) -> Self {
+        Self { value: self.value.exp() }
+    }
+
+    pub fn ln(self) -> Self {
+        Self { value: self.value.ln() }
+    }
+}
+#+end_src
+这样，即使用户传入了一个非无量纲数，编译器也会在编译期把这种代码拒之门外。
+
+至此，我们已经为 =PhysicalQuantity= 实现了基础的运算操作，现在已经可以用它去做一些简单的推导了，并且推导的过程完全是编译期完成的，
+并且只要能编译成功，就能保证结果的量纲和单位正确。
+
+***** 其它实现
+其实很早就有编译期量纲分析的实现了，它们没有用到 =const generics= 这个特性，而是直接使用 [[https://docs.rs/typenum/latest/typenum/][typenum]] 这个库提供的 =Integer= 特质，其定义如下
+#+begin_src rust
+pub trait Integer: Sealed + Copy + Default + 'static {
+    const I8: i8;
+    const I16: i16;
+    const I32: i32;
+    const I64: i64;
+    const ISIZE: isize;
+
+    fn to_i8() -> i8;
+    fn to_i16() -> i16;
+    fn to_i32() -> i32;
+    fn to_i64() -> i64;
+    fn to_isize() -> isize;
+}
+#+end_src
+这个特质作为泛型约束出现，那么它所约束的泛型参数就相当于本文实现中 =const unit: SiUnit= 内的的成员，然后分别定义了一系列 =P1= 、 =P2= 、 =N1= ……
+等等 *类型* ，对这些类型实现 =Integer= 特质，使用时调用 =.to_i8()= 等函数则返回 =1= 、 =2= 、 =-1= 等等整数，从而模拟 =const generics=
+内的整数，由于 =P1= 等本质还是类型，所以它不受 =const generics= 里弱鸡表达式的限制，当然作者为了实现类型之间的运算也是花了很大的功夫，
+这里就不谈了（其实是没读懂）。比较完善的量纲分析库，我找到的有两个，分别是 [[https://docs.rs/dimensioned/latest/dimensioned/][dimensioned]] 和 [[https://docs.rs/uom/latest/uom/][uom]] ，其中 dimensioned 的作者也是 =typenum= 的作者，
++可以说是为了这碟醋包了一锅饺子+ 。
+
+除了使用 =typenum= 库的实现，还有用 =const generics= 实现的库 [[https://docs.rs/const_unit_poc/latest/const_unit_poc/][const_unit_poc]] ，本文就是参考了它的实现。
+
+*** 总结
+本文分别实现了运行期的量纲分析和借助 const genreics 实现的编译期量纲分析，着重后者了后者的优势，以及实现上的细节。在使用 const generics
+时，依次用到了三个不稳定特性： =adt_const_params= （让 const generics 支持自定义的 =SiUnit= 结构体）， =const_trait_impl= （为 =SiUnit=
+实现编译期的四则运算）和 =generic_const_exprs= （允许在 const generic params 内写表达式）。这些不稳定特性现在只能临时使用，将来可能会有语法、
+行为上的变化，因此本文的实现不保证在未来依然可用。在实现的同时，我们也发现了一些 Rust 不那么优雅的地方，比如冗长的
+=<f64 as Into<Dimensionless<f64>>>::into(4.0)= 表达式、对孤儿规则的妥协、 =generic_const_exprs= 对表达式极为有限的支持等等。
+不过相比起 C++ 标准的更新速度， Rust 的标准库更新速度还是可以期待的。
+
+本文实现的全部代码在[[https://play.rust-lang.org/?version=nightly&mode=debug&edition=2021&gist=4807be24f1e6493bcc5c7cb86457439c][这里]] [fn:: https://play.rust-lang.org/?version=nightly&mode=debug&edition=2021&gist=4807be24f1e6493bcc5c7cb86457439c]。
+还有几篇博文对本人帮助很大，有 zqp-cn 大佬的[[https://zjp-cn.github.io/rust-note/forum/impl-const-param.html][针对常量泛型参数的分类实现]]
+
+说来编译期的量纲分析其实在 1995 年就被 John J. Barton 和
+Lee R. Nackman [fn:: John J. Barton 与 Lee R. Nackman 的书 https://www.amazon.com/Scientific-Engineering-Introduction-Advanced-Techniques/dp/0201533936]
+使用 C++ 的模板元编程所实现，
+C++ 大师 Scott Meyers 也曾专门写了一篇文章阐述如何使用 C++ template 实现量纲分析[fn:: Scott Meyers 的文章
+https://se.inf.ethz.ch/~meyer/publications/OTHERS/scott_meyers/dimensions.pdf] 。
+本人其实也是受这个实现所启发，进而产生了用 Rust 的泛型系统重新实现一下这个功能的想法，进而稍微读了些前人的实现，之后便有了这篇文章。
+不得不感叹，读别人的代码和自己写完全是两种感觉，有些坑只有自己踩了才会知道，也才能明白有些代码写得拐弯抹角是为了解决啥问题，有啥优势等等。
+
+超长假期学到的一点点东西总算记录了下来，希望不会那么快地忘掉。现在已经开学一两周了，接下来的一两年可能才是艰难险阻的开始，祈祷好运吧……
