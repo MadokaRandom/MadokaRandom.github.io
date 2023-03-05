@@ -382,7 +382,7 @@ Rust 将 <code>[T; 1]</code> 、 <code>[T; 2]</code> 、 <code>[T;3]</code> …�
 </span><span class=w>    </span><span class=n>mol</span>: <span class=mi>0</span><span class=p>,</span><span class=w>
 </span><span class=w>      </span><span class=n>k</span>: <span class=mi>0</span><span class=p>,</span><span class=w>
 </span><span class=w></span><span class=p>};</span><span class=w>
-</span><span class=w></span><span class=k>type</span> <span class=nc>Meter</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>PhysicalQuantity</span><span class=o>&lt;</span><span class=n>T</span><span class=p>,</span><span class=w> </span><span class=n>Meter</span><span class=o>&gt;</span><span class=p>;</span><span class=w>
+</span><span class=w></span><span class=k>type</span> <span class=nc>Meter</span><span class=o>&lt;</span><span class=n>T</span><span class=o>&gt;</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>PhysicalQuantity</span><span class=o>&lt;</span><span class=n>T</span><span class=p>,</span><span class=w> </span><span class=n>METER</span><span class=o>&gt;</span><span class=p>;</span><span class=w>
 </span><span class=w>
 </span><span class=w></span><span class=k>const</span><span class=w> </span><span class=n>METER_PER_SEC</span>: <span class=nc>SiUnit</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>SiUnit</span><span class=w> </span><span class=p>{</span><span class=w>
 </span><span class=w>      </span><span class=n>m</span>:  <span class=mi>1</span><span class=p>,</span><span class=w>
@@ -481,7 +481,7 @@ Rust 将 <code>[T; 1]</code> 、 <code>[T; 2]</code> 、 <code>[T;3]</code> …�
 </span><span class=w>        </span><span class=p>}</span><span class=w>
 </span><span class=w>    </span><span class=p>}</span><span class=w>
 </span><span class=w></span><span class=p>}</span><span class=w>
-</span></code></pre></td></tr></table></div></div><h4 id=physicalquantity-的乘除法运算><code>PhysicalQuantity</code> 的乘除法运算</h4><p>而 <code>PhysicalQuantity</code> 的乘除法不要求左右操作数量纲一致，并且产生的结果可能有着第三种量纲，因此在实现乘除法的特质时会稍微麻烦一点，也会用到本文提到的第三个不稳定特性 <code>const_trait_impl</code> ，它支持在 const generic params 里写表达式，
+</span></code></pre></td></tr></table></div></div><h4 id=physicalquantity-的乘除法运算><code>PhysicalQuantity</code> 的乘除法运算</h4><p>而 <code>PhysicalQuantity</code> 的乘除法不要求左右操作数量纲一致，并且产生的结果可能有着第三种量纲，因此在实现乘除法的特质时会稍微麻烦一点，也会用到本文提到的第三个不稳定特性 <code>generic_const_exprs</code> ，它支持在 const generic params 里写表达式，
 而这个表达式则需要用花括号包起来，比如像 <code>PhysicalQuantity&lt;T, {U+V}></code> 这样：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
 </span><span class=lnt> 2
 </span><span class=lnt> 3
