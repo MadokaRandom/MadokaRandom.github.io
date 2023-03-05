@@ -1,6 +1,6 @@
 ---
 title: "利用 Const Generics 实现编译期量纲分析"
-date: 2023-03-04T22:46:00+08:00
+date: 2023-03-05T11:59:00+08:00
 tags: ["Posts", "Rust", "ConstGenerics"]
 categories: ["Programming"]
 draft: false
@@ -78,7 +78,8 @@ draft: false
 
 ## 什么是 Const Generics {#什么是-const-generics}
 
-Const generics 翻译过来即为常量泛型。在涉及 Rust 泛型代码时，如果泛型参数是一个常量值，而不是类型或生命周期参数等，那么这个泛型参数就称为常量泛型参数。例如下面一段代码就用到了泛型参数
+Const generics 翻译过来即为常量泛型。在涉及 Rust 泛型代码时，如果泛型参数是一个常量值，而不是类型或生命周期参数等，那么这个泛型参数就称为常量泛型参数[^fn:2]。
+例如下面一段代码就用到了泛型参数
 
 ```rust
 struct Position<T, const N: usize> {    // N 即为常量泛型参数
@@ -88,7 +89,7 @@ struct Position<T, const N: usize> {    // N 即为常量泛型参数
 
 上面代码中 `const N: usize` 中的 `const` 前缀很贴心地告诉你后面的 `N` 是一个泛型参数，而 `: usize` 则表明
 `N` 的类型是 `usize` 。这段代码定义了一个泛型的 `struct` ，其中包含一个名为 `pos` 的数组成员，这个数组元素的类型由 `T` 决定，而长度由常量泛型参数 `N` 决定。注意，这里面的 `T` 和 `N` 都是编译期参数，也就是说它们在编译期就已经确定，由于 Rust 是一门静态语言，所有变量的类型在编译成机器码时都是可以被推导出来的，
-我们不能用一个程序运行期的变量（比如一个用户输入的值）作为 `T` 或 `N` ，这是不被允许，并且编译器也无法做到的
+我们不能用一个程序运行期的变量（比如一个用户输入的值）作为 `T` 或 `N` ，这是不被允许，并且编译器也无法做到的。
 
 那么 Rust 为什么要添加 `const generics` 这个特性呢？其中的原因在 [RFC#2000](https://rust-lang.github.io/rfcs/2000-const-generics.html) 已经写得很清楚了，简单来说就是
 Rust 将 `[T; 1]` 、 `[T; 2]` 、 `[T;3]` ……这样不同长度的数组看做不同的类型，那么在实现一些操作时就会显得很脏，比如[早期版本的 Rust 标准库](https://doc.rust-lang.org/1.37.0/std/primitive.array.html#impl-Eq)在实现比较两个定长数组是否相等的特质 `Eq` 时就分别对 `[T; 0]` 、 `[T; 1]` 、
@@ -96,9 +97,19 @@ Rust 将 `[T; 1]` 、 `[T; 2]` 、 `[T;3]` ……这样不同长度的数组看�
 比如这样的代码
 
 ```rust
+// https://godbolt.org/z/zn1TYfaev
 fn compare(lhs: &[i32; 33], rhs: &[i32; 33]) -> bool {
     lhs == rhs
 }
+// error[E0369]: binary operation `==` cannot be applied to type `&[i32; 33]`
+//  --> <source>:2:9
+//   |
+// 2 |     lhs == rhs
+//   |     --- ^^ --- &[i32; 33]
+//   |     |
+//   |     &[i32; 33]
+//   |
+//   = note: an implementation of `std::cmp::PartialEq` might be missing for `&[i32; 33]`
 ```
 
 编译器会直接报错罢工，而如果把两个 `33` 全部换成 `32` 则可以正常编译，是不是感觉非常不可思议？当然这个问题在 2021
@@ -117,7 +128,7 @@ struct Foo<const N: usize> {
 这个结构体的大小用 `std::mem::size_of::<Foo<1>>()` 求出来是 `8` ，正好等于 `i64` 本身的大小；事实上，不管
 `N` 取多少，甚至 `std::mem::size_of::<Foo<114514>>()` ，得到的仍然是 `8` ，这为编译器的优化提供了可能。
 
-除此之外，当 `N` 不同时， `Foo<N>` 被认为是不同的类型。即使你分别为 `Foo<N1>` 和 `Foo<N2>` 分别实现了相同的特质（这里以 `Eq` 为例），那么当你写下 `Foo::<N1>::default() =` Foo::&lt;N2&gt;::default()= 这样的代码时，除非 `N1 =` N2=
+除此之外，当 `N` 不同时， `Foo<N>` 被认为是不同的类型。即使你分别为 `Foo<N1>` 和 `Foo<N2>` 分别实现了相同的特质（这里以 `Eq` 为例），那么当你写下 `Foo::<N1>::default() == Foo::<N2>::default()` 这样的代码时，除非 `N1 == N2`
 否则编译器会报错提醒你：
 
 ```rust
@@ -140,6 +151,8 @@ fn main() {
 ```
 
 这个特性对于实现编译期量纲分析是至关重要的，可以说如果没有这个特性，编译期的量纲分析就无法实现。
+
+当然，现在稳定版的 const generics 所支持的功能还十分有限，如果想了解关于它的更多信息，可以戳[这个链接](https://rustmagazine.github.io/rust_magazine_2021/chapter_2/lang.html?highlight=const%20generics#%E5%85%B3%E4%BA%8E-const-generics-mvp-%E4%BD%A0%E9%9C%80%E8%A6%81%E7%9F%A5%E9%81%93%E7%9A%84)。
 
 
 ## 如何使用 Const Generics 实现量纲分析 {#如何使用-const-generics-实现量纲分析}
@@ -331,7 +344,9 @@ assert_ne!(a, b);   // cannot compile
 ```
 
 此时，编译器拒绝编译，并给出了错误信息，其中明确说明参数 `b` 存在类型错误，从而避免用户强行将两者放在一起比较。
-这也表明只要量纲一致，那么类型肯定一致；反之如果量纲不一致，类型也一定不同，这可以将用户的编码错误提前到编译期暴露出来。
+这也表明只要量纲一致，那么类型肯定一致；反之如果量纲不一致，类型也一定不同，这可以将用户的编码错误提前到编译期暴露出来，
+第二个问题得以解决。
+
 以上只是一个示例，下面我们来为 `PhysicalQuantity` 实现更多功能。
 
 
@@ -526,7 +541,7 @@ where
 }
 ```
 
-这样就能使用 `let f2 = f.powi::<2>()` 来求得 `f` 的平方了，看起来这样的实现既简单，效果也好 ~~所谓大道至简，也不过如此吧2333~~ 。
+这样就能使用 `let f2 = f.powi::<2>()` 来求得 `f` 的平方了，看起来这样的实现既简单，效果也好 ~~所谓大道至简，也即是如此吧2333~~ 。
 至于开方，它和乘方的实现几乎一致，这里限制 `T` 为浮点数类型，为了使返回类型 `T` 与输入类型 `T` 一致：
 
 ```rust
@@ -588,14 +603,14 @@ println!("type: {}, value: {}", std::any::type_name_of_val(&d), d.value);
 
 尽管如此， `4.0.into()` 这种写法依然看起来很糟糕，为什么不能直接实现 `4.0 * c` 这样的写法呢？因为要支持这样的写法意味着我们需要对四则运算分别再实现一遍，
 像 `impl<T> Op<T> for Dimensionless<T> where T: Num` 这样；而且由于孤儿规则的存在，编译器也不允许我们
-`impl<T> Mul<Dimensionless<T>> for T where T: Num` ，所以只能作罢。出于复用 `PhysicalQuantity` 之间已经实现的运算的目的，不如把无量纲系数转换为
+`impl<T> Op<Dimensionless<T>> for T where T: Num` ，所以只能作罢。出于复用 `PhysicalQuantity` 之间已经实现的运算的目的，不如把无量纲系数转换为
 `Dimensionless<T>` ，再利用已有的函数去实现各种运算，何乐而不为呢（）。至于 `4.0.into()` 这种看起来很丑的写法，这是 Ruast 的一大特色，不得不品尝，
 连标准库的文档里都充斥着 `1.0_f64.sqrt()` 这种一样“很丑”的写法，习惯就好啦，你多看几眼就不觉得丑啦 ~~（这就是 Ruast 带给我们的自信）~~ 。
 
 对于一般的数，乘法运算是对易的，但除法却不是。当除数是无量纲数时，我们可以使用 `c / 4.0.into()` ；但当被除数是无量纲数时，我们只能
 `Dimensionless::from(4.0f64) / c` 这样来处理了。
 
-对于 \\(e^{c})\\) 和 \\(\ln{c}\\) 等限制输入为无量纲数的函数，我们可以通过只为 `Dimensionless` 类型实现相关函数来实现：
+对于 \\(e^{c}\\) 和 \\(\ln{c}\\) 等限制输入为无量纲数的函数，我们可以通过只为 `Dimensionless` 类型实现相关函数来实现：
 
 ```rust
 impl<T> Dimensionless<T>
@@ -640,10 +655,12 @@ pub trait Integer: Sealed + Copy + Default + 'static {
 这个特质作为泛型约束出现，那么它所约束的泛型参数就相当于本文实现中 `const unit: SiUnit` 内的的成员，然后分别定义了一系列 `P1` 、 `P2` 、 `N1` ……
 等等 **类型** ，对这些类型实现 `Integer` 特质，使用时调用 `.to_i8()` 等函数则返回 `1` 、 `2` 、 `-1` 等等整数，从而模拟 `const generics`
 内的整数，由于 `P1` 等本质还是类型，所以它不受 `const generics` 里弱鸡表达式的限制，当然作者为了实现类型之间的运算也是花了很大的功夫，
-这里就不谈了（其实是没读懂）。比较完善的量纲分析库，我找到的有两个，分别是 [dimensioned](https://docs.rs/dimensioned/latest/dimensioned/) 和 [uom](https://docs.rs/uom/latest/uom/) ，其中 dimensioned 的作者也是 `typenum` 的作者，
-~~可以说是为了这碟醋包了一锅饺子~~ 。
+这里就不谈了（其实是没读懂）。比较完善的量纲分析库，我找到的有两个，分别是 [dimensioned](https://docs.rs/dimensioned/latest/dimensioned/) 和 [uom](https://docs.rs/uom/latest/uom/) ，其中 dimensioned 的作者也是
+`typenum` 的作者， crates.io 上统计 `typenum` 的下载量将近八千万，而 `dimensioned` 也就三万不到，对于作者来说
+`dimensioned` 只是顺手一写的小项目了，即便如此，它的提供了丰富的内置单位和转换操作，足够一般使用。
 
-除了使用 `typenum` 库的实现，还有用 `const generics` 实现的库 [const_unit_poc](https://docs.rs/const_unit_poc/latest/const_unit_poc/) ，本文就是参考了它的实现。
+除了使用 `typenum` 库的实现，还有用 `const generics` 实现的库 [const_unit_poc](https://docs.rs/const_unit_poc/latest/const_unit_poc/) ，这是利用 const generics 实现量纲分析的一个
+proof of concept ，足够简短，代码也好读，本文就是参考了它的实现。
 
 
 ## 总结 {#总结}
@@ -655,20 +672,21 @@ pub trait Integer: Sealed + Copy + Default + 'static {
 `<f64 as Into<Dimensionless<f64>>>::into(4.0)` 表达式、对孤儿规则的妥协、 `generic_const_exprs` 对表达式极为有限的支持等等。
 不过相比起 C++ 标准的更新速度， Rust 的标准库更新速度还是可以期待的。
 
-本文实现的全部代码在[这里](https://play.rust-lang.org/?version=nightly&mode=debug&edition=2021&gist=4807be24f1e6493bcc5c7cb86457439c)&nbsp;[^fn:2]。
+本文实现的全部代码在[这里](https://play.rust-lang.org/?version=nightly&mode=debug&edition=2021&gist=4807be24f1e6493bcc5c7cb86457439c)&nbsp;[^fn:3]。
 还有几篇博文对本人帮助很大，有 zqp-cn 大佬的[针对常量泛型参数的分类实现](https://zjp-cn.github.io/rust-note/forum/impl-const-param.html)
 
 说来编译期的量纲分析其实在 1995 年就被 John J. Barton 和
-Lee R. Nackman&nbsp;[^fn:3]
+Lee R. Nackman&nbsp;[^fn:4]
 使用 C++ 的模板元编程所实现，
-C++ 大师 Scott Meyers 也曾专门写了一篇文章阐述如何使用 C++ template 实现量纲分析[^fn:4] 。
+C++ 大师 Scott Meyers 也曾专门写了一篇文章阐述如何使用 C++ template 实现量纲分析[^fn:5] 。
 本人其实也是受这个实现所启发，进而产生了用 Rust 的泛型系统重新实现一下这个功能的想法，进而稍微读了些前人的实现，之后便有了这篇文章。
 不得不感叹，读别人的代码和自己写完全是两种感觉，有些坑只有自己踩了才会知道，也才能明白有些代码写得拐弯抹角是为了解决啥问题，有啥优势等等。
 
 超长假期学到的一点点东西总算记录了下来，希望不会那么快地忘掉。现在已经开学一两周了，接下来的一两年可能才是艰难险阻的开始，祈祷好运吧……
 
 [^fn:1]: <https://en.wikipedia.org/wiki/Dimensional_analysis>
-[^fn:2]: <https://play.rust-lang.org/?version=nightly&mode=debug&edition=2021&gist=4807be24f1e6493bcc5c7cb86457439c>
-[^fn:3]: John J. Barton 与 Lee R. Nackman 的书 <https://www.amazon.com/Scientific-Engineering-Introduction-Advanced-Techniques/dp/0201533936>
-[^fn:4]: Scott Meyers 的文章
+[^fn:2]: <https://blog.rust-lang.org/2021/02/26/const-generics-mvp-beta.html>
+[^fn:3]: <https://play.rust-lang.org/?version=nightly&mode=debug&edition=2021&gist=4807be24f1e6493bcc5c7cb86457439c>
+[^fn:4]: John J. Barton 与 Lee R. Nackman 的书 <https://www.amazon.com/Scientific-Engineering-Introduction-Advanced-Techniques/dp/0201533936>
+[^fn:5]: Scott Meyers 的文章
     <https://se.inf.ethz.ch/~meyer/publications/OTHERS/scott_meyers/dimensions.pdf>
