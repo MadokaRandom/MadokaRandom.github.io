@@ -310,7 +310,7 @@ const METER: SiUnit = SiUnit {
     mol: 0,
       k: 0,
 };
-type Meter<T> = PhysicalQuantity<T, Meter>;
+type Meter<T> = PhysicalQuantity<T, METER>;
 
 const METER_PER_SEC: SiUnit = SiUnit {
       m:  1,
@@ -398,7 +398,7 @@ where T: Num,
 
 #### `PhysicalQuantity` 的乘除法运算 {#physicalquantity-的乘除法运算}
 
-而 `PhysicalQuantity` 的乘除法不要求左右操作数量纲一致，并且产生的结果可能有着第三种量纲，因此在实现乘除法的特质时会稍微麻烦一点，也会用到本文提到的第三个不稳定特性 `const_trait_impl` ，它支持在 const generic params 里写表达式，
+而 `PhysicalQuantity` 的乘除法不要求左右操作数量纲一致，并且产生的结果可能有着第三种量纲，因此在实现乘除法的特质时会稍微麻烦一点，也会用到本文提到的第三个不稳定特性 `generic_const_exprs` ，它支持在 const generic params 里写表达式，
 而这个表达式则需要用花括号包起来，比如像 `PhysicalQuantity<T, {U+V}>` 这样：
 
 ```rust
