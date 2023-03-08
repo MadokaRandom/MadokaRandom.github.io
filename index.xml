@@ -1036,12 +1036,18 @@ proof of concept ，足够简短，代码也好读，本文就是参考了它的
 行为上的变化，因此本文的实现不保证在未来依然可用。在实现的同时，我们也发现了一些 Rust 不那么优雅的地方，比如冗长的
 &lt;code>&amp;lt;f64 as Into&amp;lt;Dimensionless&amp;lt;f64&amp;gt;&amp;gt;&amp;gt;::into(4.0)&lt;/code> 表达式、对孤儿规则的妥协、 &lt;code>generic_const_exprs&lt;/code> 对表达式极为有限的支持等等。
 不过相比起 C++ 标准的更新速度， Rust 的标准库更新速度还是可以期待的。&lt;/p>
-&lt;p>本文实现的全部代码在&lt;a href="https://play.rust-lang.org/?version=nightly&amp;amp;mode=debug&amp;amp;edition=2021&amp;amp;gist=4807be24f1e6493bcc5c7cb86457439c">这里&lt;/a> &lt;sup id="fnref:3">&lt;a href="#fn:3" class="footnote-ref" role="doc-noteref">3&lt;/a>&lt;/sup>。
-还有几篇博文对本人帮助很大，有 zqp-cn 大佬的&lt;a href="https://zjp-cn.github.io/rust-note/forum/impl-const-param.html">针对常量泛型参数的分类实现&lt;/a>&lt;/p>
+&lt;p>本文实现的全部代码在&lt;a href="https://play.rust-lang.org/?version=nightly&amp;amp;mode=debug&amp;amp;edition=2021&amp;amp;gist=4807be24f1e6493bcc5c7cb86457439c">这里&lt;/a>&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup>。&lt;/p>
+&lt;p>还有几篇博文对本人帮助很大：&lt;/p>
+&lt;ol>
+&lt;li>zqp-cn 大佬的&lt;a href="https://zjp-cn.github.io/rust-note/forum/impl-const-param.html">针对常量泛型参数的分类实现&lt;/a>；&lt;/li>
+&lt;li>Rust 官方的 &lt;a href="https://blog.rust-lang.org/2021/02/26/const-generics-mvp-beta.html">Const generics MVP hits beta!&lt;/a>；&lt;/li>
+&lt;li>Rust 官方的 &lt;a href="https://blog.rust-lang.org/inside-rust/2021/09/06/Splitting-const-generics.html">Splitting the const generics features&lt;/a>；&lt;/li>
+&lt;li>Rust 中文社区 2021 年的&lt;a href="https://rustmagazine.github.io/rust_magazine_2021/chapter_11/bench-and-const.html">Rust AEAD benchmark 与 Const generics&lt;/a>。&lt;/li>
+&lt;/ol>
 &lt;p>说来编译期的量纲分析其实在 1995 年就被 John J. Barton 和
-Lee R. Nackman &lt;sup id="fnref:4">&lt;a href="#fn:4" class="footnote-ref" role="doc-noteref">4&lt;/a>&lt;/sup>
+Lee R. Nackman&lt;sup id="fnref:3">&lt;a href="#fn:3" class="footnote-ref" role="doc-noteref">3&lt;/a>&lt;/sup>
 使用 C++ 的模板元编程所实现，
-C++ 大师 Scott Meyers 也曾专门写了一篇文章阐述如何使用 C++ template 实现量纲分析&lt;sup id="fnref:5">&lt;a href="#fn:5" class="footnote-ref" role="doc-noteref">5&lt;/a>&lt;/sup> 。
+C++ 大师 Scott Meyers 也曾专门写了一篇文章阐述如何使用 C++ template 实现量纲分析&lt;sup id="fnref:4">&lt;a href="#fn:4" class="footnote-ref" role="doc-noteref">4&lt;/a>&lt;/sup> 。
 本人其实也是受这个实现所启发，进而产生了用 Rust 的泛型系统重新实现一下这个功能的想法，进而稍微读了些前人的实现，之后便有了这篇文章。
 不得不感叹，读别人的代码和自己写完全是两种感觉，有些坑只有自己踩了才会知道，也才能明白有些代码写得拐弯抹角是为了解决啥问题，有啥优势等等。&lt;/p>
 &lt;p>超长假期学到的一点点东西总算记录了下来，希望不会那么快地忘掉。现在已经开学一两周了，接下来的一两年可能才是艰难险阻的开始，祈祷好运吧……&lt;/p>
@@ -1058,11 +1064,8 @@ C++ 大师 Scott Meyers 也曾专门写了一篇文章阐述如何使用 C++ tem
 &lt;p>&lt;a href="https://play.rust-lang.org/?version=nightly&amp;amp;mode=debug&amp;amp;edition=2021&amp;amp;gist=4807be24f1e6493bcc5c7cb86457439c">https://play.rust-lang.org/?version=nightly&amp;amp;mode=debug&amp;amp;edition=2021&amp;amp;gist=4807be24f1e6493bcc5c7cb86457439c&lt;/a> &lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;li id="fn:4" role="doc-endnote">
-&lt;p>John J. Barton 与 Lee R. Nackman 的书 &lt;a href="https://www.amazon.com/Scientific-Engineering-Introduction-Advanced-Techniques/dp/0201533936">https://www.amazon.com/Scientific-Engineering-Introduction-Advanced-Techniques/dp/0201533936&lt;/a> &lt;a href="#fnref:4" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
-&lt;/li>
-&lt;li id="fn:5" role="doc-endnote">
 &lt;p>Scott Meyers 的文章
-&lt;a href="https://se.inf.ethz.ch/~meyer/publications/OTHERS/scott_meyers/dimensions.pdf">https://se.inf.ethz.ch/~meyer/publications/OTHERS/scott_meyers/dimensions.pdf&lt;/a> &lt;a href="#fnref:5" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;a href="https://se.inf.ethz.ch/~meyer/publications/OTHERS/scott_meyers/dimensions.pdf">https://se.inf.ethz.ch/~meyer/publications/OTHERS/scott_meyers/dimensions.pdf&lt;/a> &lt;a href="#fnref:4" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
 &lt;/section></description></item><item><title>简易 DFT 玩具</title><link>http://ionizing.page/post/simple-dft-toy/</link><pubDate>Sun, 14 Aug 2022 22:13:00 +0800</pubDate><guid>http://ionizing.page/post/simple-dft-toy/</guid><description>&lt;!-- raw HTML omitted -->
