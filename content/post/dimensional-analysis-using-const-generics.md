@@ -672,11 +672,17 @@ proof of concept ，足够简短，代码也好读，本文就是参考了它的
 `<f64 as Into<Dimensionless<f64>>>::into(4.0)` 表达式、对孤儿规则的妥协、 `generic_const_exprs` 对表达式极为有限的支持等等。
 不过相比起 C++ 标准的更新速度， Rust 的标准库更新速度还是可以期待的。
 
-本文实现的全部代码在[这里](https://play.rust-lang.org/?version=nightly&mode=debug&edition=2021&gist=4807be24f1e6493bcc5c7cb86457439c)&nbsp;[^fn:3]。
-还有几篇博文对本人帮助很大，有 zqp-cn 大佬的[针对常量泛型参数的分类实现](https://zjp-cn.github.io/rust-note/forum/impl-const-param.html)
+本文实现的全部代码在[这里](https://play.rust-lang.org/?version=nightly&mode=debug&edition=2021&gist=4807be24f1e6493bcc5c7cb86457439c)[^fn:2]。
+
+还有几篇博文对本人帮助很大：
+
+1.  zqp-cn 大佬的[针对常量泛型参数的分类实现](https://zjp-cn.github.io/rust-note/forum/impl-const-param.html)；
+2.  Rust 官方的 [Const generics MVP hits beta!](https://blog.rust-lang.org/2021/02/26/const-generics-mvp-beta.html)；
+3.  Rust 官方的 [Splitting the const generics features](https://blog.rust-lang.org/inside-rust/2021/09/06/Splitting-const-generics.html)；
+4.  Rust 中文社区 2021 年的[Rust AEAD benchmark 与 Const generics](https://rustmagazine.github.io/rust_magazine_2021/chapter_11/bench-and-const.html)。
 
 说来编译期的量纲分析其实在 1995 年就被 John J. Barton 和
-Lee R. Nackman&nbsp;[^fn:4]
+Lee R. Nackman[^fn:3]
 使用 C++ 的模板元编程所实现，
 C++ 大师 Scott Meyers 也曾专门写了一篇文章阐述如何使用 C++ template 实现量纲分析[^fn:5] 。
 本人其实也是受这个实现所启发，进而产生了用 Rust 的泛型系统重新实现一下这个功能的想法，进而稍微读了些前人的实现，之后便有了这篇文章。
