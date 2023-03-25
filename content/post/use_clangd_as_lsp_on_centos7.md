@@ -1,6 +1,6 @@
 ---
 title: "在 CentOS 7 上使用 Clangd 作为 C/C++ 的 LSP"
-date: 2023-03-25T16:28:00+08:00
+date: 2023-03-25T19:22:00+08:00
 tags: ["Posts", "C", "CXX", "Anaconda", "LSP"]
 categories: ["Programming"]
 draft: false
@@ -231,6 +231,8 @@ Hello world.
 ```
 
 删掉 `compile.json` 、 `compile_flags.txt` 和 `.clangd` ，然后打开 `main.cpp` ，补全依然正常工作，大功告成。
+
+当然如果你需要为某个工程写特定的编译参数，那还是老老实实用那三个配置文件吧， `initializationOptions` 仅限简单场景使用。
 
 [^fn:1]: <https://clang.llvm.org/docs/ClangCommandLineReference.html#cmdoption-clang-gcc-toolchain>
 [^fn:2]: <https://clang.llvm.org/docs/JSONCompilationDatabase.html#format>
