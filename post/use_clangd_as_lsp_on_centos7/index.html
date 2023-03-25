@@ -1,0 +1,218 @@
+<!doctype html><html lang=en itemscope itemtype=http://schema.org/WebPage><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><title>在 CentOS 7 上使用 Clangd 作为 C/C++ 的 LSP - Ionizing Radiation</title><meta name=renderer content="webkit"><meta name=viewport content="width=device-width,initial-scale=1,user-scalable=yes"><meta name=MobileOptimized content="width"><meta name=HandheldFriendly content="true"><meta name=applicable-device content="pc,mobile"><meta name=theme-color content="#f8f5ec"><meta name=msapplication-navbutton-color content="#f8f5ec"><meta name=apple-mobile-web-app-capable content="yes"><meta name=apple-mobile-web-app-status-bar-style content="#f8f5ec"><meta name=mobile-web-app-capable content="yes"><meta name=author content="Ionizing"><meta name=description content=" 基本环境要求 安装 clangd 配置 coc.nvim  最近在 CentOS 7 服务器上写程序时没有 LSP 的帮助，感觉写起来很费劲，于是折腾了一下 clangd 使之能为 coc.nvim 所用。
+"><meta name=keywords content="PhysicalChemistry,ComputerScience"><meta name=generator content="Hugo 0.82.0"><link rel=canonical href=http://ionizing.page/post/use_clangd_as_lsp_on_centos7/><link rel=icon href=/favicon.ico><link rel=stylesheet href=/sass/jane.min.f7440b5c0d223f47a09bf5853465434e6f91d80a591c2f8d2d5e8220e5db0580.css integrity="sha256-90QLXA0iP0egm/WFNGVDTm+R2ApZHC+NLV6CIOXbBYA=" media=screen crossorigin=anonymous><meta property="og:title" content="在 CentOS 7 上使用 Clangd 作为 C/C++ 的 LSP"><meta property="og:description" content="
+
+
+基本环境要求
+安装 clangd
+配置 coc.nvim
+
+
+最近在 CentOS 7 服务器上写程序时没有 LSP 的帮助，感觉写起来很费劲，于是折腾了一下 clangd 使之能为 coc.nvim 所用。"><meta property="og:type" content="article"><meta property="og:url" content="http://ionizing.page/post/use_clangd_as_lsp_on_centos7/"><meta property="article:section" content="post"><meta property="article:published_time" content="2023-03-25T16:28:00+08:00"><meta property="article:modified_time" content="2023-03-25T16:28:00+08:00"><meta itemprop=name content="在 CentOS 7 上使用 Clangd 作为 C/C++ 的 LSP"><meta itemprop=description content="
+
+
+基本环境要求
+安装 clangd
+配置 coc.nvim
+
+
+最近在 CentOS 7 服务器上写程序时没有 LSP 的帮助，感觉写起来很费劲，于是折腾了一下 clangd 使之能为 coc.nvim 所用。"><meta itemprop=datePublished content="2023-03-25T16:28:00+08:00"><meta itemprop=dateModified content="2023-03-25T16:28:00+08:00"><meta itemprop=wordCount content="1548"><meta itemprop=keywords content="Posts,C,CXX,Anaconda,LSP,"><meta name=twitter:card content="summary"><meta name=twitter:title content="在 CentOS 7 上使用 Clangd 作为 C/C++ 的 LSP"><meta name=twitter:description content="
+
+
+基本环境要求
+安装 clangd
+配置 coc.nvim
+
+
+最近在 CentOS 7 服务器上写程序时没有 LSP 的帮助，感觉写起来很费劲，于是折腾了一下 clangd 使之能为 coc.nvim 所用。"><!--[if lte IE 9]><script src=https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js></script><![endif]--><!--[if lt IE 9]><script src=https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js></script><script src=https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js></script><![endif]--></head><body><div id=mobile-navbar class=mobile-navbar><div class=mobile-header-logo><a href=/ class=logo>IonizingRadiation</a></div><div class=mobile-navbar-icon><span></span><span></span><span></span></div></div><nav id=mobile-menu class="mobile-menu slideout-menu"><ul class=mobile-menu-list><li class=mobile-menu-item><a class=menu-item-link href=http://ionizing.page/>Home</a></li><li class=mobile-menu-item><a class=menu-item-link href=http://ionizing.page/post/>Archives</a></li><li class=mobile-menu-item><a class=menu-item-link href=http://ionizing.page/tags/>Tags</a></li><li class=mobile-menu-item><a class=menu-item-link href=http://ionizing.page/categories/>Categories</a></li><li class=mobile-menu-item><a class=menu-item-link href=http://ionizing.page/about/>About</a></li><li class=mobile-menu-item><a class=menu-item-link href=http://ionizing.page/external-link/>External-link</a></li></ul></nav><link rel=stylesheet href=/lib/photoswipe/photoswipe.min.css><link rel=stylesheet href=/lib/photoswipe/default-skin/default-skin.min.css><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><header id=header class="header container"><div class=logo-wrapper><a href=/ class=logo>IonizingRadiation</a></div><nav class=site-navbar><ul id=menu class=menu><li class=menu-item><a class=menu-item-link href=http://ionizing.page/>Home</a></li><li class=menu-item><a class=menu-item-link href=http://ionizing.page/post/>Archives</a></li><li class=menu-item><a class=menu-item-link href=http://ionizing.page/tags/>Tags</a></li><li class=menu-item><a class=menu-item-link href=http://ionizing.page/categories/>Categories</a></li><li class=menu-item><a class=menu-item-link href=http://ionizing.page/about/>About</a></li><li class=menu-item><a class=menu-item-link href=http://ionizing.page/external-link/>External-link</a></li></ul></nav></header><div id=mobile-panel><main id=main class="main bg-llight"><div class=content-wrapper><div id=content class="content container"><article class="post bg-white"><header class=post-header><h1 class=post-title>在 CentOS 7 上使用 Clangd 作为 C/C++ 的 LSP</h1><div class=post-meta><time datetime=2023-03-25 class=post-time>2023-03-25</time><div class=post-category><a href=http://ionizing.page/categories/programming/>Programming</a></div></div></header><div class=post-toc id=post-toc><h2 class=post-toc-title>文章目录</h2><div class=post-toc-content><nav id=TableOfContents><ul><li><a href=#基本环境要求>基本环境要求</a></li><li><a href=#安装-clangd>安装 <code>clangd</code></a></li><li><a href=#配置-coc-dot-nvim>配置 <code>coc.nvim</code></a></li></ul></nav></div></div><div class=post-content><ul><li><a href=#%E5%9F%BA%E6%9C%AC%E7%8E%AF%E5%A2%83%E8%A6%81%E6%B1%82>基本环境要求</a></li><li><a href=#%E5%AE%89%E8%A3%85-clangd>安装 <code>clangd</code></a></li><li><a href=#%E9%85%8D%E7%BD%AE-coc-dot-nvim>配置 <code>coc.nvim</code></a></li></ul><p>最近在 CentOS 7 服务器上写程序时没有 LSP 的帮助，感觉写起来很费劲，于是折腾了一下 <code>clangd</code> 使之能为 <code>coc.nvim</code> 所用。</p><h2 id=基本环境要求>基本环境要求</h2><ol><li><p>Anaconda/Miniconda
+可以去各大镜像站下载安装包，然后直接 <code>sh Anaconda_xxx.sh</code> 进行安装。这里推荐使用 miniconda ，因为 Anaconda
+内置的包太多，每次 <code>conda install</code> 解析依赖冲突都会耗时 114514 年，而 miniconda 因为内置的包更少，依赖解析起来反倒更快。</p></li><li><p>Vim 及其插件
+使用 <code>conda</code> 命令安装 Vim 8.0 或更高的版本</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-shell data-lang=shell>      conda install -c conda-forge vim
+</code></pre></td></tr></table></div></div><p>然后查看 vim 的版本号：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-shell data-lang=shell>      $ vim --version
+      VIM - Vi IMproved 9.0 <span class=o>(</span><span class=m>2022</span> Jun 28, compiled Aug <span class=m>31</span> <span class=m>2022</span> 01:19:52<span class=o>)</span>
+      Included patches: 1-335
+      Compiled by conda@065326dfb3d2
+      Huge version without GUI.  Features included <span class=o>(</span>+<span class=o>)</span> or not <span class=o>(</span>-<span class=o>)</span>:
+      +acl               +file_in_path      +mouse_urxvt       -tag_any_white
+      ...
+      ...
+</code></pre></td></tr></table></div></div><p>是 9.0 ，说明安装成功。</p><p>然后安装 <code>vim-plug</code> 和 <code>coc.nvim</code> ，直接 Follow 官网上的安装教程即可</p><ul><li><a href=https://github.com/junegunn/vim-plug><code>vim-plug</code> 的官网</a></li><li><a href=https://github.com/junegunn/vim-plug><code>coc.nvim</code> 的官网</a></li></ul></li></ol><h2 id=安装-clangd>安装 <code>clangd</code></h2><p>CentOS 7 的 yum 源里也有 <code>llvm</code> 和 <code>clang</code> 的包，但它们都没有提供 <code>clangd</code> ，那我们只能去自己安装了。</p><p>其实如果你使用 <code>coc-clangd</code> 的话，它会帮你下载 <code>clangd</code> 的可执行文件，但网上预编译的 <code>clangd</code> 没有对
+CentOS 7 这种老平台适配，运行时会报这个经典错误</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-text data-lang=text>/lib64/libc.so.6: version `GLIBC_2.18&#39; not found (required by clangd)
+</code></pre></td></tr></table></div></div><p>这是因为 CentOS 7 默认的 <code>glibc</code> 只有 2.17 ，而贸然升级 <code>glibc</code> 又是管理 Linux 服务器的大忌（各种程序会炸），
+那就只能寻求别的办法了。</p><p>所幸 Anaconda 提供了 <code>clangd</code> ，我们只需要执行下面的命令即可</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-shell data-lang=shell>conda install -c conda-forge clang clangxx clang-tools
+</code></pre></td></tr></table></div></div><p>然后检查一下各个程序的版本</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-shell data-lang=shell>$ clang --version
+clang version 14.0.6
+Target: x86_64-unknown-linux-gnu
+Thread model: posix
+InstalledDir: /public/home/xxx/.miniconda/bin
+
+$ clang++ --version
+clang version 14.0.6
+Target: x86_64-unknown-linux-gnu
+Thread model: posix
+InstalledDir: /public/home/xxx/.miniconda/bin
+
+$ clangd --version
+clangd version 14.0.6
+Features: linux
+Platform: x86_64-unknown-linux-gnu
+</code></pre></td></tr></table></div></div><p>写一个 C 的 Hello world ：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C data-lang=C><span class=cp>#include</span> <span class=cpf>&lt;stdio.h&gt;</span><span class=cp>
+</span><span class=cp></span>
+<span class=kt>int</span> <span class=nf>main</span><span class=p>(</span><span class=kt>int</span> <span class=n>argc</span><span class=p>,</span> <span class=kt>char</span><span class=o>*</span> <span class=n>argv</span><span class=p>[])</span> <span class=p>{</span>
+    <span class=n>puts</span><span class=p>(</span><span class=s>&#34;Hello world.&#34;</span><span class=p>);</span>
+    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><p>看能不能用 Clang 编译</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-shell data-lang=shell>$ clang main.c <span class=o>&amp;&amp;</span> ./a.out
+Hello world.
+</code></pre></td></tr></table></div></div><p>看来是没问题的；那么 C++ 的 Hello world 呢？</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-C++ data-lang=C++><span class=cp>#include</span> <span class=cpf>&lt;iostream&gt;</span><span class=cp>
+</span><span class=cp></span>
+<span class=kt>int</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+    <span class=n>std</span><span class=o>::</span><span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;Hello world.&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>std</span><span class=o>::</span><span class=n>endl</span><span class=p>;</span>
+    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><p>使用 <code>clang++</code> 编译：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-shell data-lang=shell>$ clang++ main.cpp
+main.cpp:1:10: fatal error: <span class=s1>&#39;iostream&#39;</span> file not found
+<span class=c1>#include &lt;iostream&gt;</span>
+         ^~~~~~~~~~
+<span class=m>1</span> error generated.
+</code></pre></td></tr></table></div></div><p>这又是一个很经典的错误，它表示 <code>clang++</code> 找不到头文件 <code>iostream</code> ，解决它的办不是添加 <code>-I/usr/include/...</code> 等参数，而是告诉 <code>clang++</code> 借用 <code>gcc</code> 工具链内的一些头文件和链接库，具体办法就是使用 <code>--gcc-toolchain</code> 这个参数，
+官网<sup id=fnref:1><a href=#fn:1 class=footnote-ref role=doc-noteref>1</a></sup>
+上对这个参数的说明中表示</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-text data-lang=text>--gcc-toolchain=&lt;arg&gt;
+Specify a directory where Clang can find ‘include’ and ‘lib{,32,64}/gcc{,-cross}/$triple/$version’. Clang will use the GCC installation with the largest version
+</code></pre></td></tr></table></div></div><p>那就很好办了，直接指定 <code>--gcc-toolchain=/usr</code> 即可：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-shell data-lang=shell>$ clang++ --gcc-toolchain<span class=o>=</span>/usr main.cpp <span class=o>&amp;&amp;</span> ./a.out
+Hello world.
+</code></pre></td></tr></table></div></div><p>编译运行成功。</p><p>此时关于 Clang 的安装就完成了。</p><h2 id=配置-coc-dot-nvim>配置 <code>coc.nvim</code></h2><p><code>coc.nvim</code> 的官网提供了 <code>clangd</code> 的配置模板，直接复制到 <code>~/.vim/coc-settings.json</code> 里即可</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-js data-lang=js><span class=s2>&#34;languageserver&#34;</span><span class=o>:</span> <span class=p>{</span>
+  <span class=s2>&#34;clangd&#34;</span><span class=o>:</span> <span class=p>{</span>
+    <span class=s2>&#34;command&#34;</span><span class=o>:</span> <span class=s2>&#34;clangd&#34;</span><span class=p>,</span>
+    <span class=s2>&#34;rootPatterns&#34;</span><span class=o>:</span> <span class=p>[</span><span class=s2>&#34;compile_flags.txt&#34;</span><span class=p>,</span> <span class=s2>&#34;compile_commands.json&#34;</span><span class=p>,</span> <span class=s2>&#34;.git/&#34;</span><span class=p>,</span> <span class=s2>&#34;.hg/&#34;</span><span class=p>],</span>
+    <span class=s2>&#34;filetypes&#34;</span><span class=o>:</span> <span class=p>[</span><span class=s2>&#34;c&#34;</span><span class=p>,</span> <span class=s2>&#34;cc&#34;</span><span class=p>,</span> <span class=s2>&#34;cpp&#34;</span><span class=p>,</span> <span class=s2>&#34;c++&#34;</span><span class=p>,</span> <span class=s2>&#34;objc&#34;</span><span class=p>,</span> <span class=s2>&#34;objcpp&#34;</span><span class=p>]</span>
+  <span class=p>}</span>
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><p>此时，用 Vim 打开刚才写的 C Hello world <code>main.c</code> 应该已经可以提供补全了，如图所示
+<img src=/ox-hugo/vim-clangd-C.png alt></p><p>接下来配置 C++ 源文件的补全。如果不添加别的参数，那么打开刚刚的 C++ Hello world <code>main.cpp</code> ，应该会出现以下错误
+<img src=/ox-hugo/vim-clangd-cxx-1.png alt>
+这和之前直接用 <code>clang++</code> 编译时的错误一模一样，之前是通过给 <code>clang++</code> 加一个参数 <code>--gcc-toolchain=/usr</code> 来解决的，
+那么一定有方法可以把编译参数传给 <code>clang++</code> 来让 <code>clangd</code> 正常工作。 <code>clangd</code> 官网上给出的解决方案是在 <code>main.cpp</code> 同目录下写一个配置文件让 <code>clangd</code> 来正确调用相关的程序，有三种格式可供选择：</p><ol><li><p><code>compile_commands.json</code></p><p>这个就是用 json 的格式把编译时需要的命令和参数记录下来传给 <code>clangd</code> ，它需要把每个文件的编译命令都显式写出来，
+我想没人会喜欢手写 json ，并且是如此啰嗦的 json ，
+下面是一个示例<sup id=fnref:2><a href=#fn:2 class=footnote-ref role=doc-noteref>2</a></sup></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-js data-lang=js>      <span class=p>[</span>
+      <span class=p>{</span>
+          <span class=s2>&#34;directory&#34;</span><span class=o>:</span> <span class=s2>&#34;/public/home/xxx/tests/cxx&#34;</span><span class=p>,</span>
+          <span class=s2>&#34;arguments&#34;</span><span class=o>:</span> <span class=p>[</span><span class=s2>&#34;/public/home/xxx/.miniconda/bin/clang++&#34;</span><span class=p>,</span> <span class=s2>&#34;--gcc-toolchain=/usr&#34;</span><span class=p>,</span> <span class=s2>&#34;main.cpp&#34;</span><span class=p>],</span>
+          <span class=s2>&#34;file&#34;</span><span class=o>:</span> <span class=s2>&#34;file.cc&#34;</span>
+      <span class=p>},</span>
+      <span class=p>]</span>
+</code></pre></td></tr></table></div></div></li><li><p><code>compile_flags.txt</code></p><p>这个文件的格式非常简单，把参数逐行写到这个文件里即可</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-text data-lang=text>      --gcc-toolchain=/usr
+      --std=c++11
+</code></pre></td></tr></table></div></div><p>然后 <code>clangd</code> 就能正常工作了。</p></li></ol><ol><li><p><code>.clangd</code></p><p>这个文件格式会稍微复杂一些，官网<sup id=fnref:3><a href=#fn:3 class=footnote-ref role=doc-noteref>3</a></sup>上有详细的解释，这里给出一个可用的示例</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-text data-lang=text>      CompileFlags:
+        Add: [--gcc-toolchain=/usr]
+</code></pre></td></tr></table></div></div></li></ol><p>将上述三个文件中的任意一个放到 <code>main.cpp</code> 的同目录下，用 Vim 打开 <code>main.cpp</code> ， LSP 应该能正常补全了
+<img src=/ox-hugo/vim-clangd-cxx-2.png alt></p><p>看起来效果不错，但总要写这些配置文件总让人不爽，倒不是说参数太长，而是连建个 Hello world 都要写个配置文件难免过于麻烦了，而且编译参数在 <code>Makefile</code> 里已经写过一遍，再写一遍岂不很累。有没有办法不用写这些配置，就把参数传给 <code>clang++</code> ？经过上网冲浪，在 <code>vscode</code> 和 <a href=https://github.com/clangd/coc-clangd><code>coc-clangd</code></a> 的配置里有个参数叫 <code>--fallbackFlags</code> ，它表示当
+<code>clangd</code> 找不到上面 <code>compile.json</code> 、 <code>compile_flags.txt</code> 和 <code>.clangd</code> 中任意一个时所使用的参数。从 <code>coc-clangd</code>
+的源码<sup id=fnref:4><a href=#fn:4 class=footnote-ref role=doc-noteref>4</a></sup>里得知，
+这个参数应该被放在 <code>initializationOptions</code> 下面。打开 <code>~/.vim/coc-settings.json</code> ，加上这个参数：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-js data-lang=js><span class=s2>&#34;languageserver&#34;</span><span class=o>:</span> <span class=p>{</span>
+    <span class=s2>&#34;clangd&#34;</span><span class=o>:</span> <span class=p>{</span>
+        <span class=s2>&#34;command&#34;</span><span class=o>:</span> <span class=s2>&#34;clangd&#34;</span><span class=p>,</span>
+        <span class=s2>&#34;rootPatterns&#34;</span><span class=o>:</span> <span class=p>[</span><span class=s2>&#34;compile_flags.txt&#34;</span><span class=p>,</span> <span class=s2>&#34;compile_commands.json&#34;</span><span class=p>,</span> <span class=s2>&#34;.git/&#34;</span><span class=p>,</span> <span class=s2>&#34;.hg/&#34;</span><span class=p>],</span>
+        <span class=s2>&#34;filetypes&#34;</span><span class=o>:</span> <span class=p>[</span><span class=s2>&#34;c&#34;</span><span class=p>,</span> <span class=s2>&#34;cc&#34;</span><span class=p>,</span> <span class=s2>&#34;cpp&#34;</span><span class=p>,</span> <span class=s2>&#34;c++&#34;</span><span class=p>,</span> <span class=s2>&#34;objc&#34;</span><span class=p>,</span> <span class=s2>&#34;objcpp&#34;</span><span class=p>],</span>
+        <span class=s2>&#34;initializationOptions&#34;</span><span class=o>:</span> <span class=p>{</span>
+            <span class=s2>&#34;fallbackFlags&#34;</span><span class=o>:</span><span class=p>[</span><span class=s2>&#34;--gcc-toolchain=/usr&#34;</span><span class=p>]</span>
+        <span class=p>}</span>
+    <span class=p>}</span>
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><p>删掉 <code>compile.json</code> 、 <code>compile_flags.txt</code> 和 <code>.clangd</code> ，然后打开 <code>main.cpp</code> ，补全依然正常工作，大功告成。</p><section class=footnotes role=doc-endnotes><hr><ol><li id=fn:1 role=doc-endnote><p><a href=https://clang.llvm.org/docs/ClangCommandLineReference.html#cmdoption-clang-gcc-toolchain>https://clang.llvm.org/docs/ClangCommandLineReference.html#cmdoption-clang-gcc-toolchain</a> <a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:2 role=doc-endnote><p><a href=https://clang.llvm.org/docs/JSONCompilationDatabase.html#format>https://clang.llvm.org/docs/JSONCompilationDatabase.html#format</a> <a href=#fnref:2 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:3 role=doc-endnote><p><a href=https://clangd.llvm.org/config>https://clangd.llvm.org/config</a> <a href=#fnref:3 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:4 role=doc-endnote><p><a href=https://github.com/clangd/coc-clangd/blob/ff784ff7e9bcbcad2bbac556e6849be08c3f048c/src/ctx.ts#L73>https://github.com/clangd/coc-clangd/blob/ff784ff7e9bcbcad2bbac556e6849be08c3f048c/src/ctx.ts#L73</a> <a href=#fnref:4 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></section></div><div class=post-copyright><p class=copyright-item><span class=item-title>文章作者</span>
+<span class=item-content>Ionizing</span></p><p class=copyright-item><span class=item-title>上次更新</span>
+<span class=item-content>2023-03-25</span></p><p class=copyright-item><span class=item-title>许可协议</span>
+<span class=item-content><a rel="license noopener" href=https://creativecommons.org/licenses/by-nc-nd/4.0/ target=_blank>CC BY-NC-ND 4.0</a></span></p></div><footer class=post-footer><div class=post-tags><a href=http://ionizing.page/tags/posts/>Posts</a>
+<a href=http://ionizing.page/tags/c/>C</a>
+<a href=http://ionizing.page/tags/cxx/>CXX</a>
+<a href=http://ionizing.page/tags/anaconda/>Anaconda</a>
+<a href=http://ionizing.page/tags/lsp/>LSP</a></div><nav class=post-nav><a class=next href=/post/dimensional-analysis-using-const-generics/><span class="next-text nav-default">利用 Const Generics 实现编译期量纲分析</span>
+<span class="prev-text nav-mobile">下一篇</span>
+<i class=iconfont><svg class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="18" height="18"><path d="M332.091514 74.487481l-75.369571 89.491197c-10.963703 12.998035-10.285251 32.864502 1.499144 44.378743l286.278095 300.375162L266.565125 819.058374c-11.338233 12.190647-11.035334 32.285311.638543 44.850487l80.46666 86.564541c11.680017 12.583596 30.356378 12.893658 41.662889.716314l377.434212-421.426145c11.332093-12.183484 11.041474-32.266891-.657986-44.844348l-80.46666-86.564541c-1.772366-1.910513-3.706415-3.533476-5.750981-4.877077L373.270379 71.774697c-11.777231-11.500939-30.216186-10.304694-41.178865 2.712784z"/></svg></i></a></nav></footer></article></div></div></main><footer id=footer class=footer><div class=icon-links><a href=mailto:petersmith_9@outlook.com rel="me noopener" class=iconfont title=email><svg class="icon" viewBox="0 0 1451 1024" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="36" height="36"><path d="M664.781909 681.472759.0 97.881301C0 3.997201 71.046997.0 71.046997.0H474.477909 961.649408h399.992405s71.046998 3.997201 71.046998 97.881301L771.345323 681.472759S764.482731 685.154773 753.594283 688.65053V688.664858C741.602731 693.493018 729.424896 695.068979 718.077952 694.839748 706.731093 695.068979 694.553173 693.493018 682.561621 688.664858V688.65053C671.644501 685.140446 664.781909 681.472759 664.781909 681.472759zm53.281707 130.131124C693.779541 811.016482 658.879232 802.205449 619.10784 767.734955 542.989056 701.759633.0 212.052267.0 212.052267V942.809523S0 1024 83.726336 1024H682.532949 753.579947h595.368192C1432.688811 1024 1432.688811 942.809523 1432.688811 942.809523V212.052267S893.138176 701.759633 817.019477 767.734955c-39.771477 34.470494-74.671786 43.295855-98.955861 43.868928z"/></svg></a><a href=http://github.com/Ionizing rel="me noopener" class=iconfont title=github target=_blank><svg class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="36" height="36"><path d="M512 12.672c-282.88.0-512 229.248-512 512 0 226.261333 146.688 418.133333 350.08 485.76 25.6 4.821333 34.986667-11.008 34.986667-24.618667.0-12.16-.426667-44.373333-.64-87.04C242.005334 929.664 211.968 830.08 211.968 830.08 188.672 770.986667 155.008 755.2 155.008 755.2c-46.378667-31.744 3.584-31.104 3.584-31.104 51.413333 3.584 78.421333 52.736 78.421333 52.736 45.653333 78.293333 119.850667 55.68 149.12 42.581333 4.608-33.109333 17.792-55.68 32.426667-68.48-113.706667-12.8-233.216-56.832-233.216-253.013333.0-55.893333 19.84-101.546667 52.693333-137.386667-5.76-12.928-23.04-64.981333 4.48-135.509333.0.0 42.88-13.738667 140.8 52.48 40.96-11.392 84.48-17.024 128-17.28 43.52.256 87.04 5.888 128 17.28 97.28-66.218667 140.16-52.48 140.16-52.48 27.52 70.528 10.24 122.581333 5.12 135.509333 32.64 35.84 52.48 81.493333 52.48 137.386667.0 196.693333-119.68 240-233.6 252.586667 17.92 15.36 34.56 46.762667 34.56 94.72.0 68.522667-.64 123.562667-.64 140.202666.0 13.44 8.96 29.44 35.2 24.32C877.44 942.592 1024 750.592 1024 524.672c0-282.752-229.248-512-512-512"/></svg></a><a href=http://ionizing.page/index.xml rel="noopener alternate" type=application/rss+xml class=iconfont title=rss target=_blank><svg class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30" height="30"><path d="M819.157333 1024C819.157333 574.592 449.408 204.8.0 204.8V0c561.706667.0 1024 462.293333 1024 1024H819.157333zM140.416 743.04a140.8 140.8.0 01140.501333 140.586667A140.928 140.928.0 01140.074667 1024C62.72 1024 0 961.109333.0 883.626667S62.933333 743.082667 140.416 743.04zM678.784 1024h-199.04c0-263.210667-216.533333-479.786667-479.744-479.786667v-199.04c372.352.0 678.784 306.517333 678.784 678.826667z"/></svg></a></div><div class=copyright><span class=power-by>Powered by <a class=hexo-link href=https://gohugo.io>Hugo</a></span>
+<span class=division>|</span>
+<span class=theme-info>Theme - <a class=theme-link href=https://github.com/xianmin/hugo-theme-jane>Jane</a></span>
+<span class=copyright-year>&copy;
+2021 -
+2023
+<span class=heart><i class=iconfont><svg class="icon" viewBox="0 0 1025 1024" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="14" height="14"><path d="M1000.1 247.9c-15.5-37.3-37.6-70.6-65.7-98.9-54.4-54.8-125.8-85-201-85-85.7.0-166 39-221.4 107.4C456.6 103 376.3 64 290.6 64c-75.1.0-146.5 30.4-201.1 85.6-28.2 28.5-50.4 61.9-65.8 99.3-16 38.8-24 79.9-23.6 122.2.7 91.7 40.1 177.2 108.1 234.8 3.1 2.6 6 5.1 8.9 7.8 14.9 13.4 58 52.8 112.6 102.7 93.5 85.5 209.9 191.9 257.5 234.2 7 6.1 15.8 9.5 24.9 9.5 9.2.0 18.1-3.4 24.9-9.5 34.5-30.7 105.8-95.9 181.4-165 74.2-67.8 150.9-138 195.8-178.2 69.5-57.9 109.6-144.4 109.9-237.3.1-42.5-8-83.6-24-122.2z" fill="#8a8a8a"/></svg></i></span><span class=author>Ionizing</span></span></div></footer><div class=back-to-top id=back-to-top><i class=iconfont><svg class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="35" height="35"><path d="M510.866688 227.694839 95.449397 629.218702h235.761562L329.15309 958.01517h362.40389L691.55698 628.188232l241.942331-3.089361L510.866688 227.694839zM63.840492 63.962777h894.052392v131.813095H63.840492V63.962777zm0 0"/></svg></i></div></div><script type=text/javascript src=/lib/jquery/jquery-3.2.1.min.js></script><script type=text/javascript src=/lib/slideout/slideout-1.0.1.min.js></script><script type=text/javascript src=/js/main.638251f4230630f0335d8c6748e53a96f94b72670920b60c09a56fdc8bece214.js integrity="sha256-Y4JR9CMGMPAzXYxnSOU6lvlLcmcJILYMCaVv3Ivs4hQ=" crossorigin=anonymous></script><script type=text/javascript>window.MathJax={showProcessingMessages:!1,messageStyle:'none'}</script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML" async></script><script type=text/javascript src=/js/load-photoswipe.js></script><script type=text/javascript src=/lib/photoswipe/photoswipe.min.js></script><script type=text/javascript src=/lib/photoswipe/photoswipe-ui-default.min.js></script></body></html>

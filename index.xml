@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Ionizing Radiation</title><link>http://ionizing.page/</link><description>Recent content on Ionizing Radiation</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Sun, 05 Mar 2023 11:59:00 +0800</lastBuildDate><atom:link href="http://ionizing.page/index.xml" rel="self" type="application/rss+xml"/><item><title>About</title><link>http://ionizing.page/about/</link><pubDate>Tue, 13 Apr 2021 00:00:00 +0800</pubDate><guid>http://ionizing.page/about/</guid><description>&lt;p>A Ph.D candidate who majors in physical chemistry.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Ionizing Radiation</title><link>http://ionizing.page/</link><description>Recent content on Ionizing Radiation</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Sat, 25 Mar 2023 16:28:00 +0800</lastBuildDate><atom:link href="http://ionizing.page/index.xml" rel="self" type="application/rss+xml"/><item><title>About</title><link>http://ionizing.page/about/</link><pubDate>Tue, 13 Apr 2021 00:00:00 +0800</pubDate><guid>http://ionizing.page/about/</guid><description>&lt;p>A Ph.D candidate who majors in physical chemistry.&lt;/p>
 &lt;table>
 &lt;thead>
 &lt;tr>
@@ -53,7 +53,354 @@
 &lt;td>&lt;a href="https://mrjokersince1997.gitee.io">https://mrjokersince1997.gitee.io&lt;/a>&lt;/td>
 &lt;/tr>
 &lt;/tbody>
-&lt;/table></description></item><item><title>利用 Const Generics 实现编译期量纲分析</title><link>http://ionizing.page/post/dimensional-analysis-using-const-generics/</link><pubDate>Sun, 05 Mar 2023 11:59:00 +0800</pubDate><guid>http://ionizing.page/post/dimensional-analysis-using-const-generics/</guid><description>&lt;!-- raw HTML omitted -->
+&lt;/table></description></item><item><title>在 CentOS 7 上使用 Clangd 作为 C/C++ 的 LSP</title><link>http://ionizing.page/post/use_clangd_as_lsp_on_centos7/</link><pubDate>Sat, 25 Mar 2023 16:28:00 +0800</pubDate><guid>http://ionizing.page/post/use_clangd_as_lsp_on_centos7/</guid><description>&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;ul>
+&lt;li>&lt;a href="#%E5%9F%BA%E6%9C%AC%E7%8E%AF%E5%A2%83%E8%A6%81%E6%B1%82">基本环境要求&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E5%AE%89%E8%A3%85-clangd">安装 &lt;code>clangd&lt;/code>&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E9%85%8D%E7%BD%AE-coc-dot-nvim">配置 &lt;code>coc.nvim&lt;/code>&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;!-- raw HTML omitted -->
+&lt;p>最近在 CentOS 7 服务器上写程序时没有 LSP 的帮助，感觉写起来很费劲，于是折腾了一下 &lt;code>clangd&lt;/code> 使之能为 &lt;code>coc.nvim&lt;/code> 所用。&lt;/p>
+&lt;h2 id="基本环境要求">基本环境要求&lt;/h2>
+&lt;ol>
+&lt;li>
+&lt;p>Anaconda/Miniconda
+可以去各大镜像站下载安装包，然后直接 &lt;code>sh Anaconda_xxx.sh&lt;/code> 进行安装。这里推荐使用 miniconda ，因为 Anaconda
+内置的包太多，每次 &lt;code>conda install&lt;/code> 解析依赖冲突都会耗时 114514 年，而 miniconda 因为内置的包更少，依赖解析起来反倒更快。&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Vim 及其插件
+使用 &lt;code>conda&lt;/code> 命令安装 Vim 8.0 或更高的版本&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-shell" data-lang="shell"> conda install -c conda-forge vim
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>然后查看 vim 的版本号：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-shell" data-lang="shell"> $ vim --version
+VIM - Vi IMproved 9.0 &lt;span class="o">(&lt;/span>&lt;span class="m">2022&lt;/span> Jun 28, compiled Aug &lt;span class="m">31&lt;/span> &lt;span class="m">2022&lt;/span> 01:19:52&lt;span class="o">)&lt;/span>
+Included patches: 1-335
+Compiled by conda@065326dfb3d2
+Huge version without GUI. Features included &lt;span class="o">(&lt;/span>+&lt;span class="o">)&lt;/span> or not &lt;span class="o">(&lt;/span>-&lt;span class="o">)&lt;/span>:
++acl +file_in_path +mouse_urxvt -tag_any_white
+...
+...
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>是 9.0 ，说明安装成功。&lt;/p>
+&lt;p>然后安装 &lt;code>vim-plug&lt;/code> 和 &lt;code>coc.nvim&lt;/code> ，直接 Follow 官网上的安装教程即可&lt;/p>
+&lt;ul>
+&lt;li>&lt;a href="https://github.com/junegunn/vim-plug">&lt;code>vim-plug&lt;/code> 的官网&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://github.com/junegunn/vim-plug">&lt;code>coc.nvim&lt;/code> 的官网&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;h2 id="安装-clangd">安装 &lt;code>clangd&lt;/code>&lt;/h2>
+&lt;p>CentOS 7 的 yum 源里也有 &lt;code>llvm&lt;/code> 和 &lt;code>clang&lt;/code> 的包，但它们都没有提供 &lt;code>clangd&lt;/code> ，那我们只能去自己安装了。&lt;/p>
+&lt;p>其实如果你使用 &lt;code>coc-clangd&lt;/code> 的话，它会帮你下载 &lt;code>clangd&lt;/code> 的可执行文件，但网上预编译的 &lt;code>clangd&lt;/code> 没有对
+CentOS 7 这种老平台适配，运行时会报这个经典错误&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-text" data-lang="text">/lib64/libc.so.6: version `GLIBC_2.18&amp;#39; not found (required by clangd)
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这是因为 CentOS 7 默认的 &lt;code>glibc&lt;/code> 只有 2.17 ，而贸然升级 &lt;code>glibc&lt;/code> 又是管理 Linux 服务器的大忌（各种程序会炸），
+那就只能寻求别的办法了。&lt;/p>
+&lt;p>所幸 Anaconda 提供了 &lt;code>clangd&lt;/code> ，我们只需要执行下面的命令即可&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-shell" data-lang="shell">conda install -c conda-forge clang clangxx clang-tools
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>然后检查一下各个程序的版本&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-shell" data-lang="shell">$ clang --version
+clang version 14.0.6
+Target: x86_64-unknown-linux-gnu
+Thread model: posix
+InstalledDir: /public/home/xxx/.miniconda/bin
+$ clang++ --version
+clang version 14.0.6
+Target: x86_64-unknown-linux-gnu
+Thread model: posix
+InstalledDir: /public/home/xxx/.miniconda/bin
+$ clangd --version
+clangd version 14.0.6
+Features: linux
+Platform: x86_64-unknown-linux-gnu
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>写一个 C 的 Hello world ：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-C" data-lang="C">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;stdio.h&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;span class="cp">&lt;/span>
+&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="kt">int&lt;/span> &lt;span class="n">argc&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="kt">char&lt;/span>&lt;span class="o">*&lt;/span> &lt;span class="n">argv&lt;/span>&lt;span class="p">[])&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="n">puts&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s">&amp;#34;Hello world.&amp;#34;&lt;/span>&lt;span class="p">);&lt;/span>
+&lt;span class="k">return&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>看能不能用 Clang 编译&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-shell" data-lang="shell">$ clang main.c &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> ./a.out
+Hello world.
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>看来是没问题的；那么 C++ 的 Hello world 呢？&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-C++" data-lang="C++">&lt;span class="cp">#include&lt;/span> &lt;span class="cpf">&amp;lt;iostream&amp;gt;&lt;/span>&lt;span class="cp">
+&lt;/span>&lt;span class="cp">&lt;/span>
+&lt;span class="kt">int&lt;/span> &lt;span class="nf">main&lt;/span>&lt;span class="p">()&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">cout&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="s">&amp;#34;Hello world.&amp;#34;&lt;/span> &lt;span class="o">&amp;lt;&amp;lt;&lt;/span> &lt;span class="n">std&lt;/span>&lt;span class="o">::&lt;/span>&lt;span class="n">endl&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="k">return&lt;/span> &lt;span class="mi">0&lt;/span>&lt;span class="p">;&lt;/span>
+&lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>使用 &lt;code>clang++&lt;/code> 编译：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-shell" data-lang="shell">$ clang++ main.cpp
+main.cpp:1:10: fatal error: &lt;span class="s1">&amp;#39;iostream&amp;#39;&lt;/span> file not found
+&lt;span class="c1">#include &amp;lt;iostream&amp;gt;&lt;/span>
+^~~~~~~~~~
+&lt;span class="m">1&lt;/span> error generated.
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>这又是一个很经典的错误，它表示 &lt;code>clang++&lt;/code> 找不到头文件 &lt;code>iostream&lt;/code> ，解决它的办不是添加 &lt;code>-I/usr/include/...&lt;/code> 等参数，而是告诉 &lt;code>clang++&lt;/code> 借用 &lt;code>gcc&lt;/code> 工具链内的一些头文件和链接库，具体办法就是使用 &lt;code>--gcc-toolchain&lt;/code> 这个参数，
+官网&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>
+上对这个参数的说明中表示&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-text" data-lang="text">--gcc-toolchain=&amp;lt;arg&amp;gt;
+Specify a directory where Clang can find ‘include’ and ‘lib{,32,64}/gcc{,-cross}/$triple/$version’. Clang will use the GCC installation with the largest version
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>那就很好办了，直接指定 &lt;code>--gcc-toolchain=/usr&lt;/code> 即可：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-shell" data-lang="shell">$ clang++ --gcc-toolchain&lt;span class="o">=&lt;/span>/usr main.cpp &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> ./a.out
+Hello world.
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>编译运行成功。&lt;/p>
+&lt;p>此时关于 Clang 的安装就完成了。&lt;/p>
+&lt;h2 id="配置-coc-dot-nvim">配置 &lt;code>coc.nvim&lt;/code>&lt;/h2>
+&lt;p>&lt;code>coc.nvim&lt;/code> 的官网提供了 &lt;code>clangd&lt;/code> 的配置模板，直接复制到 &lt;code>~/.vim/coc-settings.json&lt;/code> 里即可&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="s2">&amp;#34;languageserver&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="s2">&amp;#34;clangd&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="s2">&amp;#34;command&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;clangd&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="s2">&amp;#34;rootPatterns&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="s2">&amp;#34;compile_flags.txt&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;compile_commands.json&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;.git/&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;.hg/&amp;#34;&lt;/span>&lt;span class="p">],&lt;/span>
+&lt;span class="s2">&amp;#34;filetypes&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="s2">&amp;#34;c&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;cc&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;cpp&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;c++&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;objc&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;objcpp&amp;#34;&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;span class="p">}&lt;/span>
+&lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>此时，用 Vim 打开刚才写的 C Hello world &lt;code>main.c&lt;/code> 应该已经可以提供补全了，如图所示
+&lt;img src="http://ionizing.page/ox-hugo/vim-clangd-C.png" alt="">&lt;/p>
+&lt;p>接下来配置 C++ 源文件的补全。如果不添加别的参数，那么打开刚刚的 C++ Hello world &lt;code>main.cpp&lt;/code> ，应该会出现以下错误
+&lt;img src="http://ionizing.page/ox-hugo/vim-clangd-cxx-1.png" alt="">
+这和之前直接用 &lt;code>clang++&lt;/code> 编译时的错误一模一样，之前是通过给 &lt;code>clang++&lt;/code> 加一个参数 &lt;code>--gcc-toolchain=/usr&lt;/code> 来解决的，
+那么一定有方法可以把编译参数传给 &lt;code>clang++&lt;/code> 来让 &lt;code>clangd&lt;/code> 正常工作。 &lt;code>clangd&lt;/code> 官网上给出的解决方案是在 &lt;code>main.cpp&lt;/code> 同目录下写一个配置文件让 &lt;code>clangd&lt;/code> 来正确调用相关的程序，有三种格式可供选择：&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>&lt;code>compile_commands.json&lt;/code>&lt;/p>
+&lt;p>这个就是用 json 的格式把编译时需要的命令和参数记录下来传给 &lt;code>clangd&lt;/code> ，它需要把每个文件的编译命令都显式写出来，
+我想没人会喜欢手写 json ，并且是如此啰嗦的 json ，
+下面是一个示例&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-js" data-lang="js"> &lt;span class="p">[&lt;/span>
+&lt;span class="p">{&lt;/span>
+&lt;span class="s2">&amp;#34;directory&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;/public/home/xxx/tests/cxx&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="s2">&amp;#34;arguments&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="s2">&amp;#34;/public/home/xxx/.miniconda/bin/clang++&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;--gcc-toolchain=/usr&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;main.cpp&amp;#34;&lt;/span>&lt;span class="p">],&lt;/span>
+&lt;span class="s2">&amp;#34;file&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;file.cc&amp;#34;&lt;/span>
+&lt;span class="p">},&lt;/span>
+&lt;span class="p">]&lt;/span>
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>&lt;code>compile_flags.txt&lt;/code>&lt;/p>
+&lt;p>这个文件的格式非常简单，把参数逐行写到这个文件里即可&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-text" data-lang="text"> --gcc-toolchain=/usr
+--std=c++11
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>然后 &lt;code>clangd&lt;/code> 就能正常工作了。&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;!-- raw HTML omitted -->
+&lt;ol>
+&lt;li>
+&lt;p>&lt;code>.clangd&lt;/code>&lt;/p>
+&lt;p>这个文件格式会稍微复杂一些，官网&lt;sup id="fnref:3">&lt;a href="#fn:3" class="footnote-ref" role="doc-noteref">3&lt;/a>&lt;/sup>上有详细的解释，这里给出一个可用的示例&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-text" data-lang="text"> CompileFlags:
+Add: [--gcc-toolchain=/usr]
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ol>
+&lt;p>将上述三个文件中的任意一个放到 &lt;code>main.cpp&lt;/code> 的同目录下，用 Vim 打开 &lt;code>main.cpp&lt;/code> ， LSP 应该能正常补全了
+&lt;img src="http://ionizing.page/ox-hugo/vim-clangd-cxx-2.png" alt="">&lt;/p>
+&lt;p>看起来效果不错，但总要写这些配置文件总让人不爽，倒不是说参数太长，而是连建个 Hello world 都要写个配置文件难免过于麻烦了，而且编译参数在 &lt;code>Makefile&lt;/code> 里已经写过一遍，再写一遍岂不很累。有没有办法不用写这些配置，就把参数传给 &lt;code>clang++&lt;/code> ？经过上网冲浪，在 &lt;code>vscode&lt;/code> 和 &lt;a href="https://github.com/clangd/coc-clangd">&lt;code>coc-clangd&lt;/code>&lt;/a> 的配置里有个参数叫 &lt;code>--fallbackFlags&lt;/code> ，它表示当
+&lt;code>clangd&lt;/code> 找不到上面 &lt;code>compile.json&lt;/code> 、 &lt;code>compile_flags.txt&lt;/code> 和 &lt;code>.clangd&lt;/code> 中任意一个时所使用的参数。从 &lt;code>coc-clangd&lt;/code>
+的源码&lt;sup id="fnref:4">&lt;a href="#fn:4" class="footnote-ref" role="doc-noteref">4&lt;/a>&lt;/sup>里得知，
+这个参数应该被放在 &lt;code>initializationOptions&lt;/code> 下面。打开 &lt;code>~/.vim/coc-settings.json&lt;/code> ，加上这个参数：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre class="chroma">&lt;code class="language-js" data-lang="js">&lt;span class="s2">&amp;#34;languageserver&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="s2">&amp;#34;clangd&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="s2">&amp;#34;command&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="s2">&amp;#34;clangd&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;span class="s2">&amp;#34;rootPatterns&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="s2">&amp;#34;compile_flags.txt&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;compile_commands.json&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;.git/&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;.hg/&amp;#34;&lt;/span>&lt;span class="p">],&lt;/span>
+&lt;span class="s2">&amp;#34;filetypes&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="s2">&amp;#34;c&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;cc&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;cpp&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;c++&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;objc&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;objcpp&amp;#34;&lt;/span>&lt;span class="p">],&lt;/span>
+&lt;span class="s2">&amp;#34;initializationOptions&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;span class="s2">&amp;#34;fallbackFlags&amp;#34;&lt;/span>&lt;span class="o">:&lt;/span>&lt;span class="p">[&lt;/span>&lt;span class="s2">&amp;#34;--gcc-toolchain=/usr&amp;#34;&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;span class="p">}&lt;/span>
+&lt;span class="p">}&lt;/span>
+&lt;span class="p">}&lt;/span>
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>删掉 &lt;code>compile.json&lt;/code> 、 &lt;code>compile_flags.txt&lt;/code> 和 &lt;code>.clangd&lt;/code> ，然后打开 &lt;code>main.cpp&lt;/code> ，补全依然正常工作，大功告成。&lt;/p>
+&lt;section class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1" role="doc-endnote">
+&lt;p>&lt;a href="https://clang.llvm.org/docs/ClangCommandLineReference.html#cmdoption-clang-gcc-toolchain">https://clang.llvm.org/docs/ClangCommandLineReference.html#cmdoption-clang-gcc-toolchain&lt;/a> &lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:2" role="doc-endnote">
+&lt;p>&lt;a href="https://clang.llvm.org/docs/JSONCompilationDatabase.html#format">https://clang.llvm.org/docs/JSONCompilationDatabase.html#format&lt;/a> &lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:3" role="doc-endnote">
+&lt;p>&lt;a href="https://clangd.llvm.org/config">https://clangd.llvm.org/config&lt;/a> &lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:4" role="doc-endnote">
+&lt;p>&lt;a href="https://github.com/clangd/coc-clangd/blob/ff784ff7e9bcbcad2bbac556e6849be08c3f048c/src/ctx.ts#L73">https://github.com/clangd/coc-clangd/blob/ff784ff7e9bcbcad2bbac556e6849be08c3f048c/src/ctx.ts#L73&lt;/a> &lt;a href="#fnref:4" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/section></description></item><item><title>利用 Const Generics 实现编译期量纲分析</title><link>http://ionizing.page/post/dimensional-analysis-using-const-generics/</link><pubDate>Sun, 05 Mar 2023 11:59:00 +0800</pubDate><guid>http://ionizing.page/post/dimensional-analysis-using-const-generics/</guid><description>&lt;!-- raw HTML omitted -->
 &lt;!-- raw HTML omitted -->
 &lt;ul>
 &lt;li>&lt;a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E9%87%8F%E7%BA%B2%E5%88%86%E6%9E%90">什么是量纲分析&lt;/a>&lt;/li>

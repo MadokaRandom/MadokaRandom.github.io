@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Anaconda on Ionizing Radiation</title><link>http://ionizing.page/tags/anaconda/</link><description>Recent content in Anaconda on Ionizing Radiation</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Sat, 25 Mar 2023 16:28:00 +0800</lastBuildDate><atom:link href="http://ionizing.page/tags/anaconda/index.xml" rel="self" type="application/rss+xml"/><item><title>在 CentOS 7 上使用 Clangd 作为 C/C++ 的 LSP</title><link>http://ionizing.page/post/use_clangd_as_lsp_on_centos7/</link><pubDate>Sat, 25 Mar 2023 16:28:00 +0800</pubDate><guid>http://ionizing.page/post/use_clangd_as_lsp_on_centos7/</guid><description>&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;ul>
+&lt;li>&lt;a href="#%E5%9F%BA%E6%9C%AC%E7%8E%AF%E5%A2%83%E8%A6%81%E6%B1%82">基本环境要求&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E5%AE%89%E8%A3%85-clangd">安装 &lt;code>clangd&lt;/code>&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E9%85%8D%E7%BD%AE-coc-dot-nvim">配置 &lt;code>coc.nvim&lt;/code>&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;!-- raw HTML omitted -->
+&lt;p>最近在 CentOS 7 服务器上写程序时没有 LSP 的帮助，感觉写起来很费劲，于是折腾了一下 &lt;code>clangd&lt;/code> 使之能为 &lt;code>coc.nvim&lt;/code> 所用。&lt;/p></description></item></channel></rss>
