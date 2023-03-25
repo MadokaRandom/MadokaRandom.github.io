@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Ionizing Radiation</title><link>http://ionizing.page/</link><description>Recent content on Ionizing Radiation</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Sat, 25 Mar 2023 16:28:00 +0800</lastBuildDate><atom:link href="http://ionizing.page/index.xml" rel="self" type="application/rss+xml"/><item><title>About</title><link>http://ionizing.page/about/</link><pubDate>Tue, 13 Apr 2021 00:00:00 +0800</pubDate><guid>http://ionizing.page/about/</guid><description>&lt;p>A Ph.D candidate who majors in physical chemistry.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Ionizing Radiation</title><link>http://ionizing.page/</link><description>Recent content on Ionizing Radiation</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Sat, 25 Mar 2023 19:22:00 +0800</lastBuildDate><atom:link href="http://ionizing.page/index.xml" rel="self" type="application/rss+xml"/><item><title>About</title><link>http://ionizing.page/about/</link><pubDate>Tue, 13 Apr 2021 00:00:00 +0800</pubDate><guid>http://ionizing.page/about/</guid><description>&lt;p>A Ph.D candidate who majors in physical chemistry.&lt;/p>
 &lt;table>
 &lt;thead>
 &lt;tr>
@@ -53,7 +53,7 @@
 &lt;td>&lt;a href="https://mrjokersince1997.gitee.io">https://mrjokersince1997.gitee.io&lt;/a>&lt;/td>
 &lt;/tr>
 &lt;/tbody>
-&lt;/table></description></item><item><title>在 CentOS 7 上使用 Clangd 作为 C/C++ 的 LSP</title><link>http://ionizing.page/post/use_clangd_as_lsp_on_centos7/</link><pubDate>Sat, 25 Mar 2023 16:28:00 +0800</pubDate><guid>http://ionizing.page/post/use_clangd_as_lsp_on_centos7/</guid><description>&lt;!-- raw HTML omitted -->
+&lt;/table></description></item><item><title>在 CentOS 7 上使用 Clangd 作为 C/C++ 的 LSP</title><link>http://ionizing.page/post/use_clangd_as_lsp_on_centos7/</link><pubDate>Sat, 25 Mar 2023 19:22:00 +0800</pubDate><guid>http://ionizing.page/post/use_clangd_as_lsp_on_centos7/</guid><description>&lt;!-- raw HTML omitted -->
 &lt;!-- raw HTML omitted -->
 &lt;ul>
 &lt;li>&lt;a href="#%E5%9F%BA%E6%9C%AC%E7%8E%AF%E5%A2%83%E8%A6%81%E6%B1%82">基本环境要求&lt;/a>&lt;/li>
@@ -384,6 +384,7 @@ Add: [--gcc-toolchain=/usr]
 &lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
 &lt;/div>&lt;p>删掉 &lt;code>compile.json&lt;/code> 、 &lt;code>compile_flags.txt&lt;/code> 和 &lt;code>.clangd&lt;/code> ，然后打开 &lt;code>main.cpp&lt;/code> ，补全依然正常工作，大功告成。&lt;/p>
+&lt;p>当然如果你需要为某个工程写特定的编译参数，那还是老老实实用那三个配置文件吧， &lt;code>initializationOptions&lt;/code> 仅限简单场景使用。&lt;/p>
 &lt;section class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
