@@ -23,6 +23,8 @@
   - [[#利用-const-generics-实现编译期量纲分析][利用 Const Generics 实现编译期量纲分析]]
   - [[#铁磁与反铁磁自旋波理论推导][铁磁与反铁磁自旋波理论推导]]
   - [[#使用-perf-和火焰图进行性能分析][使用 =perf= 和火焰图进行性能分析]]
+  - [[#如何将二进制文件打包进-ccfortran-程序内][如何将二进制文件打包进 C/C++/Fortran 程序内]]
+  - [[#在-centos-7-上使用-anaconda-提供的-clangd-作为-cc-的-lsp][在 CentOS 7 上使用 Anaconda 提供的 Clangd 作为 C/C++ 的 LSP]]
 
 * DONE About :about:
 CLOSED: [2021-4-13 Tue]
@@ -3378,3 +3380,7 @@ https://se.inf.ethz.ch/~meyer/publications/OTHERS/scott_meyers/dimensions.pdf] �
 :EXPORT_FILE_NAME: profiling_with_perf_and_flamegraph
 :EXPORT_DATE: [2023-03-12 Sun]
 :END:
+
+** TODO 如何将二进制文件打包进 C/C++/Fortran 程序内 :@Programming:Linux:Windows:MacOS:CXX:C:Fortran:
+
+** TODO 在 CentOS 7 上使用 Anaconda 提供的 Clangd 作为 C/C++ 的 LSP :@Programming:C:CXX:Anaconda:LSP:
