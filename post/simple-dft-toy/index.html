@@ -1,5 +1,28 @@
-<!doctype html><html lang=en itemscope itemtype=http://schema.org/WebPage><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><title>简易 DFT 玩具 - Ionizing Radiation</title><meta name=renderer content="webkit"><meta name=viewport content="width=device-width,initial-scale=1,user-scalable=yes"><meta name=MobileOptimized content="width"><meta name=HandheldFriendly content="true"><meta name=applicable-device content="pc,mobile"><meta name=theme-color content="#f8f5ec"><meta name=msapplication-navbutton-color content="#f8f5ec"><meta name=apple-mobile-web-app-capable content="yes"><meta name=apple-mobile-web-app-status-bar-style content="#f8f5ec"><meta name=mobile-web-app-capable content="yes"><meta name=author content="Ionizing"><meta name=description content=" 理论基础 程序实现  \(\nabla^2\) 的矩阵表示 势能的表示  外场势能 \(v_\text{ext}(\mathbf r)\) 电子密度 \(\rho(\mathbf r)\) 库仑势 \(v_\text{Ha}(\mathbf r)\) 交换关联势   Hamiltonian 的构造 KS 方程的迭代求解   总结与拓展  一直在用别人写好的 DFT 软件，对软件的运行过程略有兴趣，查阅资料弄懂了一些运行原理并参考了前人的程序后，这次我们来自己写一个 DFT 的玩具～
-"><meta name=keywords content="PhysicalChemistry,ComputerScience"><meta name=generator content="Hugo 0.82.0"><link rel=canonical href=http://ionizing.page/post/simple-dft-toy/><link rel=icon href=/favicon.ico><link rel=stylesheet href=/sass/jane.min.f7440b5c0d223f47a09bf5853465434e6f91d80a591c2f8d2d5e8220e5db0580.css integrity="sha256-90QLXA0iP0egm/WFNGVDTm+R2ApZHC+NLV6CIOXbBYA=" media=screen crossorigin=anonymous><meta property="og:title" content="简易 DFT 玩具"><meta property="og:description" content="
+<!doctype html><html lang=en itemscope itemtype=http://schema.org/WebPage>
+<head>
+<meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<title>简易 DFT 玩具 - Ionizing Radiation</title>
+<meta name=renderer content="webkit">
+<meta name=viewport content="width=device-width,initial-scale=1,user-scalable=yes">
+<meta name=MobileOptimized content="width">
+<meta name=HandheldFriendly content="true">
+<meta name=applicable-device content="pc,mobile">
+<meta name=theme-color content="#f8f5ec">
+<meta name=msapplication-navbutton-color content="#f8f5ec">
+<meta name=apple-mobile-web-app-capable content="yes">
+<meta name=apple-mobile-web-app-status-bar-style content="#f8f5ec">
+<meta name=mobile-web-app-capable content="yes">
+<meta name=author content="Ionizing">
+<meta name=description content=" 理论基础 程序实现  \(\nabla^2\) 的矩阵表示 势能的表示  外场势能 \(v_\text{ext}(\mathbf r)\) 电子密度 \(\rho(\mathbf r)\) 库仑势 \(v_\text{Ha}(\mathbf r)\) 交换关联势   Hamiltonian 的构造 KS 方程的迭代求解   总结与拓展  一直在用别人写好的 DFT 软件，对软件的运行过程略有兴趣，查阅资料弄懂了一些运行原理并参考了前人的程序后，这次我们来自己写一个 DFT 的玩具～
+">
+<meta name=keywords content="PhysicalChemistry,ComputerScience">
+<meta name=generator content="Hugo 0.87.0">
+<link rel=canonical href=http://ionizing.page/post/simple-dft-toy/>
+<link rel=icon href=/favicon.ico>
+<link rel=stylesheet href=/sass/jane.min.fa4b2b9f31b5c6d0b683db81157a9226e17b06e61911791ab547242a4a0556f2.css integrity="sha256-+ksrnzG1xtC2g9uBFXqSJuF7BuYZEXkatUckKkoFVvI=" media=screen crossorigin=anonymous>
+<meta property="og:title" content="简易 DFT 玩具">
+<meta property="og:description" content="
 
 
 理论基础
@@ -21,7 +44,13 @@ KS 方程的迭代求解
 总结与拓展
 
 
-一直在用别人写好的 DFT 软件，对软件的运行过程略有兴趣，查阅资料弄懂了一些运行原理并参考了前人的程序后，这次我们来自己写一个 DFT 的玩具～"><meta property="og:type" content="article"><meta property="og:url" content="http://ionizing.page/post/simple-dft-toy/"><meta property="article:section" content="post"><meta property="article:published_time" content="2022-08-14T22:13:00+08:00"><meta property="article:modified_time" content="2022-08-14T22:13:00+08:00"><meta itemprop=name content="简易 DFT 玩具"><meta itemprop=description content="
+一直在用别人写好的 DFT 软件，对软件的运行过程略有兴趣，查阅资料弄懂了一些运行原理并参考了前人的程序后，这次我们来自己写一个 DFT 的玩具～">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://ionizing.page/post/simple-dft-toy/"><meta property="article:section" content="post">
+<meta property="article:published_time" content="2022-08-14T22:13:00+08:00">
+<meta property="article:modified_time" content="2022-08-14T22:13:00+08:00">
+<meta itemprop=name content="简易 DFT 玩具">
+<meta itemprop=description content="
 
 
 理论基础
@@ -43,7 +72,12 @@ KS 方程的迭代求解
 总结与拓展
 
 
-一直在用别人写好的 DFT 软件，对软件的运行过程略有兴趣，查阅资料弄懂了一些运行原理并参考了前人的程序后，这次我们来自己写一个 DFT 的玩具～"><meta itemprop=datePublished content="2022-08-14T22:13:00+08:00"><meta itemprop=dateModified content="2022-08-14T22:13:00+08:00"><meta itemprop=wordCount content="4974"><meta itemprop=keywords content="Posts,Julia,FiniteDifferenceMethod,DensityFunctionalTheory,"><meta name=twitter:card content="summary"><meta name=twitter:title content="简易 DFT 玩具"><meta name=twitter:description content="
+一直在用别人写好的 DFT 软件，对软件的运行过程略有兴趣，查阅资料弄懂了一些运行原理并参考了前人的程序后，这次我们来自己写一个 DFT 的玩具～"><meta itemprop=datePublished content="2022-08-14T22:13:00+08:00">
+<meta itemprop=dateModified content="2022-08-14T22:13:00+08:00">
+<meta itemprop=wordCount content="4972">
+<meta itemprop=keywords content="Posts,Julia,FiniteDifferenceMethod,DensityFunctionalTheory,"><meta name=twitter:card content="summary">
+<meta name=twitter:title content="简易 DFT 玩具">
+<meta name=twitter:description content="
 
 
 理论基础
@@ -65,49 +99,243 @@ KS 方程的迭代求解
 总结与拓展
 
 
-一直在用别人写好的 DFT 软件，对软件的运行过程略有兴趣，查阅资料弄懂了一些运行原理并参考了前人的程序后，这次我们来自己写一个 DFT 的玩具～"><!--[if lte IE 9]><script src=https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js></script><![endif]--><!--[if lt IE 9]><script src=https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js></script><script src=https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js></script><![endif]--></head><body><div id=mobile-navbar class=mobile-navbar><div class=mobile-header-logo><a href=/ class=logo>IonizingRadiation</a></div><div class=mobile-navbar-icon><span></span><span></span><span></span></div></div><nav id=mobile-menu class="mobile-menu slideout-menu"><ul class=mobile-menu-list><li class=mobile-menu-item><a class=menu-item-link href=http://ionizing.page/>Home</a></li><li class=mobile-menu-item><a class=menu-item-link href=http://ionizing.page/post/>Archives</a></li><li class=mobile-menu-item><a class=menu-item-link href=http://ionizing.page/tags/>Tags</a></li><li class=mobile-menu-item><a class=menu-item-link href=http://ionizing.page/categories/>Categories</a></li><li class=mobile-menu-item><a class=menu-item-link href=http://ionizing.page/about/>About</a></li><li class=mobile-menu-item><a class=menu-item-link href=http://ionizing.page/external-link/>External-link</a></li></ul></nav><link rel=stylesheet href=/lib/photoswipe/photoswipe.min.css><link rel=stylesheet href=/lib/photoswipe/default-skin/default-skin.min.css><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+一直在用别人写好的 DFT 软件，对软件的运行过程略有兴趣，查阅资料弄懂了一些运行原理并参考了前人的程序后，这次我们来自己写一个 DFT 的玩具～"><!--[if lte IE 9]><script src=https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js></script><![endif]--><!--[if lt IE 9]><script src=https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js></script>
+<script src=https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js></script><![endif]-->
+</head>
+<body>
+<div id=mobile-navbar class=mobile-navbar>
+<div class=mobile-header-logo>
+<a href=/ class=logo>IonizingRadiation</a>
+</div>
+<div class=mobile-navbar-icon>
+<span></span>
+<span></span>
+<span></span>
+</div>
+</div>
+<nav id=mobile-menu class="mobile-menu slideout-menu">
+<ul class=mobile-menu-list>
+<li class=mobile-menu-item>
+<a class=menu-item-link href=http://ionizing.page/>Home</a>
+</li><li class=mobile-menu-item>
+<a class=menu-item-link href=http://ionizing.page/post/>Archives</a>
+</li><li class=mobile-menu-item>
+<a class=menu-item-link href=http://ionizing.page/tags/>Tags</a>
+</li><li class=mobile-menu-item>
+<a class=menu-item-link href=http://ionizing.page/categories/>Categories</a>
+</li><li class=mobile-menu-item>
+<a class=menu-item-link href=http://ionizing.page/about/>About</a>
+</li><li class=mobile-menu-item>
+<a class=menu-item-link href=http://ionizing.page/external-link/>External-link</a>
+</li>
+</ul>
+</nav>
+<link rel=stylesheet href=/lib/photoswipe/photoswipe.min.css>
+<link rel=stylesheet href=/lib/photoswipe/default-skin/default-skin.min.css>
+<div class=pswp tabindex=-1 role=dialog aria-hidden=true>
+<div class=pswp__bg></div>
+<div class=pswp__scroll-wrap>
+<div class=pswp__container>
+<div class=pswp__item></div>
+<div class=pswp__item></div>
+<div class=pswp__item></div>
+</div>
+<div class="pswp__ui pswp__ui--hidden">
+<div class=pswp__top-bar>
+<div class=pswp__counter></div>
+<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
 <button class="pswp__button pswp__button--share" title=Share></button>
 <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
-<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><header id=header class="header container"><div class=logo-wrapper><a href=/ class=logo>IonizingRadiation</a></div><nav class=site-navbar><ul id=menu class=menu><li class=menu-item><a class=menu-item-link href=http://ionizing.page/>Home</a></li><li class=menu-item><a class=menu-item-link href=http://ionizing.page/post/>Archives</a></li><li class=menu-item><a class=menu-item-link href=http://ionizing.page/tags/>Tags</a></li><li class=menu-item><a class=menu-item-link href=http://ionizing.page/categories/>Categories</a></li><li class=menu-item><a class=menu-item-link href=http://ionizing.page/about/>About</a></li><li class=menu-item><a class=menu-item-link href=http://ionizing.page/external-link/>External-link</a></li></ul></nav></header><div id=mobile-panel><main id=main class="main bg-llight"><div class=content-wrapper><div id=content class="content container"><article class="post bg-white"><header class=post-header><h1 class=post-title>简易 DFT 玩具</h1><div class=post-meta><time datetime=2022-08-14 class=post-time>2022-08-14</time><div class=post-category><a href=http://ionizing.page/categories/physics/>Physics</a></div></div></header><div class=post-toc id=post-toc><h2 class=post-toc-title>文章目录</h2><div class=post-toc-content><nav id=TableOfContents><ul><li><a href=#理论基础>理论基础</a></li><li><a href=#程序实现>程序实现</a><ul><li><a href=#nabla-2-的矩阵表示>\(\nabla^2\) 的矩阵表示</a></li><li><a href=#势能的表示>势能的表示</a></li><li><a href=#hamiltonian-的构造>Hamiltonian 的构造</a></li><li><a href=#ks-方程的迭代求解>KS 方程的迭代求解</a></li></ul></li><li><a href=#总结与拓展>总结与拓展</a></li></ul></nav></div></div><div class=post-content><ul><li><a href=#%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80>理论基础</a></li><li><a href=#%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0>程序实现</a><ul><li><a href=#nabla-2-%E7%9A%84%E7%9F%A9%E9%98%B5%E8%A1%A8%E7%A4%BA>\(\nabla^2\) 的矩阵表示</a></li><li><a href=#%E5%8A%BF%E8%83%BD%E7%9A%84%E8%A1%A8%E7%A4%BA>势能的表示</a><ul><li><a href=#%E5%A4%96%E5%9C%BA%E5%8A%BF%E8%83%BD-v-text-ext--mathbf-r>外场势能 \(v_\text{ext}(\mathbf r)\)</a></li><li><a href=#%E7%94%B5%E5%AD%90%E5%AF%86%E5%BA%A6-rho--mathbf-r>电子密度 \(\rho(\mathbf r)\)</a></li><li><a href=#%E5%BA%93%E4%BB%91%E5%8A%BF-v-text-ha--mathbf-r>库仑势 \(v_\text{Ha}(\mathbf r)\)</a></li><li><a href=#%E4%BA%A4%E6%8D%A2%E5%85%B3%E8%81%94%E5%8A%BF>交换关联势</a></li></ul></li><li><a href=#hamiltonian-%E7%9A%84%E6%9E%84%E9%80%A0>Hamiltonian 的构造</a></li><li><a href=#ks-%E6%96%B9%E7%A8%8B%E7%9A%84%E8%BF%AD%E4%BB%A3%E6%B1%82%E8%A7%A3>KS 方程的迭代求解</a></li></ul></li><li><a href=#%E6%80%BB%E7%BB%93%E4%B8%8E%E6%8B%93%E5%B1%95>总结与拓展</a></li></ul><p>一直在用别人写好的 DFT 软件，对软件的运行过程略有兴趣，查阅资料弄懂了一些运行原理并参考了前人的程序后，这次我们来自己写一个 DFT 的玩具～</p><p><strong>首先感谢一个 GitHub 上的仓库，为本文的代码提供了参考<sup id=fnref:1><a href=#fn:1 class=footnote-ref role=doc-noteref>1</a></sup>。</strong></p><h2 id=理论基础>理论基础</h2><p>我们的目标是求解 Kohn-Sham 方程。</p><p>对于 Kohn-Sham 方程，系统的能量包含下面几个部分</p><p>\[
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+<div class=pswp__preloader>
+<div class=pswp__preloader__icn>
+<div class=pswp__preloader__cut>
+<div class=pswp__preloader__donut></div>
+</div>
+</div>
+</div>
+</div>
+<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+<div class=pswp__share-tooltip></div>
+</div>
+<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+</button>
+<div class=pswp__caption>
+<div class=pswp__caption__center></div>
+</div>
+</div>
+</div>
+</div>
+<header id=header class="header container">
+<div class=logo-wrapper>
+<a href=/ class=logo>
+IonizingRadiation
+</a>
+</div>
+<nav class=site-navbar>
+<ul id=menu class=menu>
+<li class=menu-item>
+<a class=menu-item-link href=http://ionizing.page/>Home</a>
+</li>
+<li class=menu-item>
+<a class=menu-item-link href=http://ionizing.page/post/>Archives</a>
+</li>
+<li class=menu-item>
+<a class=menu-item-link href=http://ionizing.page/tags/>Tags</a>
+</li>
+<li class=menu-item>
+<a class=menu-item-link href=http://ionizing.page/categories/>Categories</a>
+</li>
+<li class=menu-item>
+<a class=menu-item-link href=http://ionizing.page/about/>About</a>
+</li>
+<li class=menu-item>
+<a class=menu-item-link href=http://ionizing.page/external-link/>External-link</a>
+</li>
+</ul>
+</nav>
+</header>
+<div id=mobile-panel>
+<main id=main class="main bg-llight">
+<div class=content-wrapper>
+<div id=content class="content container">
+<article class="post bg-white">
+<header class=post-header>
+<h1 class=post-title>简易 DFT 玩具</h1>
+<div class=post-meta>
+<time datetime=2022-08-14 class=post-time>
+2022-08-14
+</time>
+<div class=post-category>
+<a href=http://ionizing.page/categories/physics/> Physics </a>
+</div>
+</div>
+</header>
+<div class=post-toc id=post-toc>
+<h2 class=post-toc-title>文章目录</h2>
+<div class=post-toc-content>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#理论基础>理论基础</a></li>
+<li><a href=#程序实现>程序实现</a>
+<ul>
+<li><a href=#nabla-2-的矩阵表示>\(\nabla^2\) 的矩阵表示</a></li>
+<li><a href=#势能的表示>势能的表示</a></li>
+<li><a href=#hamiltonian-的构造>Hamiltonian 的构造</a></li>
+<li><a href=#ks-方程的迭代求解>KS 方程的迭代求解</a></li>
+</ul>
+</li>
+<li><a href=#总结与拓展>总结与拓展</a></li>
+</ul>
+</nav>
+</div>
+</div>
+<div class=post-content>
+<ul>
+<li><a href=#%E7%90%86%E8%AE%BA%E5%9F%BA%E7%A1%80>理论基础</a></li>
+<li><a href=#%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0>程序实现</a>
+<ul>
+<li><a href=#nabla-2-%E7%9A%84%E7%9F%A9%E9%98%B5%E8%A1%A8%E7%A4%BA>\(\nabla^2\) 的矩阵表示</a></li>
+<li><a href=#%E5%8A%BF%E8%83%BD%E7%9A%84%E8%A1%A8%E7%A4%BA>势能的表示</a>
+<ul>
+<li><a href=#%E5%A4%96%E5%9C%BA%E5%8A%BF%E8%83%BD-v-text-ext--mathbf-r>外场势能 \(v_\text{ext}(\mathbf r)\)</a></li>
+<li><a href=#%E7%94%B5%E5%AD%90%E5%AF%86%E5%BA%A6-rho--mathbf-r>电子密度 \(\rho(\mathbf r)\)</a></li>
+<li><a href=#%E5%BA%93%E4%BB%91%E5%8A%BF-v-text-ha--mathbf-r>库仑势 \(v_\text{Ha}(\mathbf r)\)</a></li>
+<li><a href=#%E4%BA%A4%E6%8D%A2%E5%85%B3%E8%81%94%E5%8A%BF>交换关联势</a></li>
+</ul>
+</li>
+<li><a href=#hamiltonian-%E7%9A%84%E6%9E%84%E9%80%A0>Hamiltonian 的构造</a></li>
+<li><a href=#ks-%E6%96%B9%E7%A8%8B%E7%9A%84%E8%BF%AD%E4%BB%A3%E6%B1%82%E8%A7%A3>KS 方程的迭代求解</a></li>
+</ul>
+</li>
+<li><a href=#%E6%80%BB%E7%BB%93%E4%B8%8E%E6%8B%93%E5%B1%95>总结与拓展</a></li>
+</ul>
+<p>一直在用别人写好的 DFT 软件，对软件的运行过程略有兴趣，查阅资料弄懂了一些运行原理并参考了前人的程序后，这次我们来自己写一个 DFT 的玩具～</p>
+<p><strong>首先感谢一个 GitHub 上的仓库，为本文的代码提供了参考<sup id=fnref:1><a href=#fn:1 class=footnote-ref role=doc-noteref>1</a></sup>。</strong></p>
+<h2 id=理论基础>理论基础</h2>
+<p>我们的目标是求解 Kohn-Sham 方程。</p>
+<p>对于 Kohn-Sham 方程，系统的能量包含下面几个部分</p>
+<p>\[
 E[\rho] = T_s[\rho] + \int d\mathbf r v_\text{ext}(\mathbf r) \rho(\mathbf r) + E_\text{Ha} [\rho] + E_\text{xc}[\rho]
-\]</p><p>其中 \(T_s\) 是 Kohm-Sham 动能项，它的表达形式为</p><p>\[
+\]</p>
+<p>其中 \(T_s\) 是 Kohm-Sham 动能项，它的表达形式为</p>
+<p>\[
 T_s[\rho] = \sum_{i=1}^{N} \int d\mathbf r \varphi^*(\mathbf r) \left( -\frac{\hbar^2}{2m}
 \nabla^2 \right) \varphi_i( r)
-\]</p><p>\(v_\text{ext}(\mathbf r)\) 是外场作用在系统所有电子上的势能，这里“外”是指除所研究电子以外，
-电子与原子核的相互作用也算在这一项内；</p><p>\(E_\text{H}[\rho]\) 为 Hartree 能，也就是电子-电子的库仑相互作用项</p><p>\[
+\]</p>
+<p>\(v_\text{ext}(\mathbf r)\) 是外场作用在系统所有电子上的势能，这里“外”是指除所研究电子以外，
+电子与原子核的相互作用也算在这一项内；</p>
+<p>\(E_\text{H}[\rho]\) 为 Hartree 能，也就是电子-电子的库仑相互作用项</p>
+<p>\[
 E_\text{H}[\rho] = \frac{e^2}{8\pi\epsilon} \int d\mathbf r \int d\mathbf{r'} \frac{\rho(\mathbf r)
 \rho(\mathbf {r'})}{|\mathbf r - \mathbf{r'}|}
-\]</p><p>\(E_\text{xc}[\rho]\) 是交换关联能，这里为了简便处理，只使用 LDA 近似处理交换项，忽略关联项。
-在 LDA 近似下</p><p>\[
+\]</p>
+<p>\(E_\text{xc}[\rho]\) 是交换关联能，这里为了简便处理，只使用 LDA 近似处理交换项，忽略关联项。
+在 LDA 近似下</p>
+<p>\[
 E_\text{x}^\text{LDA}[\rho] = -\frac 34 (\frac 3\pi)^{1/3} \int \rho^{4/3} d \mathbf r
-\]</p><p>上面式子中 \(\rho\) 代表系统的电子密度，它是通过下面方式计算得到：
+\]</p>
+<p>上面式子中 \(\rho\) 代表系统的电子密度，它是通过下面方式计算得到：
 令一系列正交归一的占据态电子轨道为 \(\varphi_i\)，则体系的电子密度为
 \[
 \rho(\mathbf r) = \sum_i^N |\varphi_i(\mathbf r)|^2
-\]</p><p>上面的式子表示的都是能量，现在将它们对应到 Kohn-Sham 方程的 Hamiltonian 中</p><p>\[
+\]</p>
+<p>上面的式子表示的都是能量，现在将它们对应到 Kohn-Sham 方程的 Hamiltonian 中</p>
+<p>\[
 \hat{H}_\text{KS} \Psi = E_\text{KS} \Psi
-\]</p><ul><li>显然动能算符是 \(-\frac{\hbar^2}{2m}\nabla^2\)</li><li>外场作用算符为 \(v_\text{ext}(\mathbf r) = \frac{\delta \int d\mathbf r v_\text{ext}(\mathbf r) \rho(\mathbf r)}{\delta \rho}\)</li><li>Hartree 作用算符为 \(v_\text{Ha}(\mathbf r) = \frac{\delta E_\text{Ha}[\rho]}{\delta \rho}
-= \frac{e^2 \Delta V}{4\pi \epsilon} \int\frac{\rho(\mathbf r')}{\sqrt{(\mathbf r - \mathbf r')^2}} d\mathbf r'\)</li><li>交换项算符为 \(v_\text{x}(\mathbf r) = \frac{\delta E_\text{x}[\rho]}{\delta \rho} = -(\frac 3\pi)^{1/3} \rho^{1/3}\)</li></ul><p>此时 KS 方程和 Hamiltonian 可以展开为</p><p>\[\begin{aligned}
-\hat{H}_\text{KS} &={} -\frac{\hbar^2}{2m}\nabla^2 + v(\mathbf r) \\<br>&={} -\frac{\hbar^2}{2m}\nabla^2 + v_\text{ext}(\mathbf r) +
-v_\text{Ha}(\mathbf r) + v_\text{x}(\mathbf r) \\<br>&={} -\frac{\hbar^2}{2m}\nabla^2 + v_\text{ext}(\mathbf r) +
+\]</p>
+<ul>
+<li>显然动能算符是 \(-\frac{\hbar^2}{2m}\nabla^2\)</li>
+<li>外场作用算符为 \(v_\text{ext}(\mathbf r) = \frac{\delta \int d\mathbf r v_\text{ext}(\mathbf r) \rho(\mathbf r)}{\delta \rho}\)</li>
+<li>Hartree 作用算符为 \(v_\text{Ha}(\mathbf r) = \frac{\delta E_\text{Ha}[\rho]}{\delta \rho}
+= \frac{e^2 \Delta V}{4\pi \epsilon} \int\frac{\rho(\mathbf r')}{\sqrt{(\mathbf r - \mathbf r')^2}} d\mathbf r'\)</li>
+<li>交换项算符为 \(v_\text{x}(\mathbf r) = \frac{\delta E_\text{x}[\rho]}{\delta \rho} = -(\frac 3\pi)^{1/3} \rho^{1/3}\)</li>
+</ul>
+<p>此时 KS 方程和 Hamiltonian 可以展开为</p>
+<p>\[\begin{aligned}
+\hat{H}_\text{KS} &={} -\frac{\hbar^2}{2m}\nabla^2 + v(\mathbf r) \\<br>
+&={} -\frac{\hbar^2}{2m}\nabla^2 + v_\text{ext}(\mathbf r) +
+v_\text{Ha}(\mathbf r) + v_\text{x}(\mathbf r) \\<br>
+&={} -\frac{\hbar^2}{2m}\nabla^2 + v_\text{ext}(\mathbf r) +
 \frac{e^2}{4\pi \epsilon} \int\frac{\rho(\mathbf r')}{\sqrt{(\mathbf r - \mathbf r')^2}} d\mathbf r'
 -(\frac 3\pi)^{1/3} \rho^{1/3}
-\end{aligned}\]</p><p>将 KS 方程的 Hamiltonian 写成矩阵形式，并对角化，即可得到 KS 轨道 \(\varphi_i\) 和它们对应的能量 \(E_i\) 。</p><h2 id=程序实现>程序实现</h2><p>为方便起见，这里依然使用 Julia 来实现，请确保机器上的 Julia 已经装上了 Arpack 和 Plots 库。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+\end{aligned}\]</p>
+<p>将 KS 方程的 Hamiltonian 写成矩阵形式，并对角化，即可得到 KS 轨道 \(\varphi_i\) 和它们对应的能量 \(E_i\) 。</p>
+<h2 id=程序实现>程序实现</h2>
+<p>为方便起见，这里依然使用 Julia 来实现，请确保机器上的 Julia 已经装上了 Arpack 和 Plots 库。</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
 </span><span class=lnt>2
 </span><span class=lnt>3
 </span><span class=lnt>4
-</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-julia data-lang=julia><span class=k>using</span> <span class=n>LinearAlgebra</span>
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-julia data-lang=julia><span class=k>using</span> <span class=n>LinearAlgebra</span>
 <span class=k>using</span> <span class=n>Arpack</span>
 <span class=k>using</span> <span class=n>Printf</span>
 <span class=k>using</span> <span class=n>PlotlyJS</span>
-</code></pre></td></tr></table></div></div><p>同时既然是玩具，这里就在一维的空间里计算电子的波函数。这里用到的大部分基础知识在上篇文章
+</code></pre></td></tr></table>
+</div>
+</div><p>同时既然是玩具，这里就在一维的空间里计算电子的波函数。这里用到的大部分基础知识在上篇文章
 《使用数值方法求解单电子 Schrodinger 方程》 里都能找到（尤其是一维势箱模型系统的求解部分），
-因此下面的介绍会有所简化。</p><p>这里在 \([-5, 5]\) 之间均匀取 200 个格点来表示整个系统所在的空间。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+因此下面的介绍会有所简化。</p>
+<p>这里在 \([-5, 5]\) 之间均匀取 200 个格点来表示整个系统所在的空间。</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
 </span><span class=lnt>2
-</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-julia data-lang=julia><span class=n>ngrid</span> <span class=o>=</span> <span class=mi>200</span>
-<span class=n>x</span> <span class=o>=</span> <span class=n>LinRange</span><span class=p>(</span><span class=o>-</span><span class=mi>5</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=n>ngrid</span><span class=p>)</span>
-</code></pre></td></tr></table></div></div><h3 id=nabla-2-的矩阵表示>\(\nabla^2\) 的矩阵表示</h3><p>这个算符的矩阵表示在上一篇博客里已经讲过了，这里不再赘述:</p><p>\[
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-julia data-lang=julia><span class=n>ngrid</span> <span class=o>=</span> <span class=mi>200</span>
+<span class=n>x</span> <span class=o>=</span> <span class=kt>LinRange</span><span class=p>(</span><span class=o>-</span><span class=mi>5</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=n>ngrid</span><span class=p>)</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id=nabla-2-的矩阵表示>\(\nabla^2\) 的矩阵表示</h3>
+<p>这个算符的矩阵表示在上一篇博客里已经讲过了，这里不再赘述:</p>
+<p>\[
 \frac{d^2}{dx^2} = \frac{1}{\Delta x^2} \begin{bmatrix}
 -2 & 1 & & & \newline
 1 & -2 & 1 & & \newline
@@ -115,34 +343,99 @@ v_\text{Ha}(\mathbf r) + v_\text{x}(\mathbf r) \\<br>&={} -\frac{\hbar^2}{2m}\na
 & & \ddots & \ddots & 1 \newline
 & & & 1 & -2
 \end{bmatrix}
-\]</p><p>写成代码的形式即为</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+\]</p>
+<p>写成代码的形式即为</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
 </span><span class=lnt>2
-</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-julia data-lang=julia><span class=n>Δx</span> <span class=o>=</span> <span class=n>x</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span> <span class=o>-</span> <span class=n>x</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span>
-<span class=n>∇²</span> <span class=o>=</span> <span class=kt>Tridiagonal</span><span class=p>(</span><span class=n>ones</span><span class=p>(</span><span class=n>ngrid</span><span class=o>-</span><span class=mi>1</span><span class=p>),</span> <span class=o>-</span><span class=mi>2</span><span class=o>*</span><span class=n>ones</span><span class=p>(</span><span class=n>ngrid</span><span class=p>),</span> <span class=n>ones</span><span class=p>(</span><span class=n>ngrid</span><span class=o>-</span><span class=mi>1</span><span class=p>))</span> <span class=o>./</span> <span class=p>(</span><span class=mi>2</span><span class=o>*</span><span class=n>Δx</span><span class=p>)</span>
-</code></pre></td></tr></table></div></div><h3 id=势能的表示>势能的表示</h3><p>一般情况下， Hamiltonian 里势能部分的贡献直接体现在对角线上，这里只给出一维形式的势能函数，然后会在所有势能计算好后一并加到 Hamiltonian 里。除此之外，由于取了模型势，电子质量和一些物理常数就直接取为 1 ，比如
-\(\frac{e^2}{8\pi\epsilon}\) 和 \(\frac{\hbar^2}{2m_e}\) 等。</p><h4 id=外场势能-v-text-ext--mathbf-r>外场势能 \(v_\text{ext}(\mathbf r)\)</h4><p>这里我们选择三个外场模型：无相互作用系统、无限深势阱系统和谐振子系统。</p><ul><li><p>一维势箱系统</p><p>在没有周期性边界条件的情况下， \(v_\text{ext}(x) = 0\)</p></li></ul><ul><li><p>无限深势阱系统</p><p>这里的“无限深”也等价于周围的墙壁无限高，即
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-julia data-lang=julia><span class=n>Δx</span> <span class=o>=</span> <span class=n>x</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span> <span class=o>-</span> <span class=n>x</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span>
+<span class=n>∇²</span> <span class=o>=</span> <span class=n>Tridiagonal</span><span class=p>(</span><span class=n>ones</span><span class=p>(</span><span class=n>ngrid</span><span class=o>-</span><span class=mi>1</span><span class=p>),</span> <span class=o>-</span><span class=mi>2</span><span class=o>*</span><span class=n>ones</span><span class=p>(</span><span class=n>ngrid</span><span class=p>),</span> <span class=n>ones</span><span class=p>(</span><span class=n>ngrid</span><span class=o>-</span><span class=mi>1</span><span class=p>))</span> <span class=o>./</span> <span class=p>(</span><span class=mi>2</span><span class=o>*</span><span class=n>Δx</span><span class=p>)</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id=势能的表示>势能的表示</h3>
+<p>一般情况下， Hamiltonian 里势能部分的贡献直接体现在对角线上，这里只给出一维形式的势能函数，然后会在所有势能计算好后一并加到 Hamiltonian 里。除此之外，由于取了模型势，电子质量和一些物理常数就直接取为 1 ，比如
+\(\frac{e^2}{8\pi\epsilon}\) 和 \(\frac{\hbar^2}{2m_e}\) 等。</p>
+<h4 id=外场势能-v-text-ext--mathbf-r>外场势能 \(v_\text{ext}(\mathbf r)\)</h4>
+<p>这里我们选择三个外场模型：无相互作用系统、无限深势阱系统和谐振子系统。</p>
+<ul>
+<li>
+<p>一维势箱系统</p>
+<p>在没有周期性边界条件的情况下， \(v_\text{ext}(x) = 0\)</p>
+</li>
+</ul>
+<ul>
+<li>
+<p>无限深势阱系统</p>
+<p>这里的“无限深”也等价于周围的墙壁无限高，即
 \[
 v_\text{ext}(x) = \begin{cases}
-\infty & x &lt; -d \\<br>0 & -d \le x \le d \\<br>\infty & x > d
+\infty & x &lt; -d \\<br>
+0 & -d \le x \le d \\<br>
+\infty & x > d
 \end{cases}
 \]
 其中 \(d\) 就是中间势阱宽度，程序中取为 2 。 由于程序中无法直接表示值 \(\infty\) ，因此使用一个非常大的正实数来代替，
-这里取 \(1.0\times 10^10\) 这个值。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+这里取 \(1.0\times 10^10\) 这个值。</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
 </span><span class=lnt>2
-</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-julia data-lang=julia><span class=n>V_well</span> <span class=o>=</span> <span class=n>fill</span><span class=p>(</span><span class=mf>1e10</span><span class=p>,</span> <span class=n>ngrid</span><span class=p>)</span>
-<span class=err>@</span><span class=o>.</span> <span class=n>V_well</span><span class=p>[</span><span class=o>-</span><span class=mi>2</span> <span class=o>&lt;=</span> <span class=n>x</span> <span class=o>&lt;=</span> <span class=mi>2</span><span class=p>]</span> <span class=o>=</span> <span class=mi>0</span>
-</code></pre></td></tr></table></div></div></li></ul><ul><li><p>谐振子系统</p><p>谐振子系统的势能是一条抛物线
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-julia data-lang=julia><span class=n>V_well</span> <span class=o>=</span> <span class=n>fill</span><span class=p>(</span><span class=mf>1e10</span><span class=p>,</span> <span class=n>ngrid</span><span class=p>)</span>
+<span class=nd>@.</span> <span class=n>V_well</span><span class=p>[</span><span class=o>-</span><span class=mi>2</span> <span class=o>&lt;=</span> <span class=n>x</span> <span class=o>&lt;=</span> <span class=mi>2</span><span class=p>]</span> <span class=o>=</span> <span class=mi>0</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<ul>
+<li>
+<p>谐振子系统</p>
+<p>谐振子系统的势能是一条抛物线
 \[
 v_\text{ext}(x) = kx^2
-\]</p><p>出于简化的目的，这里 \(k\) 直接取为 1 。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
-</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-julia data-lang=julia><span class=n>V_harm</span> <span class=o>=</span> <span class=n>x</span><span class=o>.^</span><span class=mi>2</span>
-</code></pre></td></tr></table></div></div><p>以上三种势能函数画出来如下图所示：</p><link rel=stylesheet href=/css/hugo-easy-gallery.css><div class=box><figure itemprop=associatedMedia itemscope itemtype=http://schema.org/ImageObject><div class=img><img itemprop=thumbnail src=/ox-hugo/simple-dft-potentials.svg></div><a href=/ox-hugo/simple-dft-potentials.svg itemprop=contentUrl></a></figure></div></li></ul><h4 id=电子密度-rho--mathbf-r>电子密度 \(\rho(\mathbf r)\)</h4><p>Kohn-Sham 方程中包含电子之间库仑相互作用项（也称作 Hartree 项），和交换关联项，
-而这两者都是电子密度的泛函，因此需要计算电子密度函数 \(\rho(\mathbf r)\) ：</p><p>首先应保证每个电子的波函数是正交归一的</p><p>\[
+\]</p>
+<p>出于简化的目的，这里 \(k\) 直接取为 1 。</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-julia data-lang=julia><span class=n>V_harm</span> <span class=o>=</span> <span class=n>x</span><span class=o>.^</span><span class=mi>2</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>以上三种势能函数画出来如下图所示：</p>
+<link rel=stylesheet href=/css/hugo-easy-gallery.css>
+<div class=box>
+<figure itemprop=associatedMedia itemscope itemtype=http://schema.org/ImageObject>
+<div class=img>
+<img itemprop=thumbnail src=/ox-hugo/simple-dft-potentials.svg>
+</div>
+<a href=/ox-hugo/simple-dft-potentials.svg itemprop=contentUrl></a>
+</figure>
+</div>
+</li>
+</ul>
+<h4 id=电子密度-rho--mathbf-r>电子密度 \(\rho(\mathbf r)\)</h4>
+<p>Kohn-Sham 方程中包含电子之间库仑相互作用项（也称作 Hartree 项），和交换关联项，
+而这两者都是电子密度的泛函，因此需要计算电子密度函数 \(\rho(\mathbf r)\) ：</p>
+<p>首先应保证每个电子的波函数是正交归一的</p>
+<p>\[
 \langle \phi_i | \phi_i \rangle = 1
-\]</p><p>然后电子密度函数为</p><p>\[
+\]</p>
+<p>然后电子密度函数为</p>
+<p>\[
 \rho(x) = \sum_n f_n |\phi(x)|^2
-\]</p><p>其中 \(f_n\) 表示第 \(n\) 个能级上的电子占据数，本文的体系目前暂不考虑电子的自旋，故
-\(f_n\) 的最大值可达到 2 。</p><p>根据上面公式，可以写出下面的代码</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+\]</p>
+<p>其中 \(f_n\) 表示第 \(n\) 个能级上的电子占据数，本文的体系目前暂不考虑电子的自旋，故
+\(f_n\) 的最大值可达到 2 。</p>
+<p>根据上面公式，可以写出下面的代码</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
 </span><span class=lnt> 2
 </span><span class=lnt> 3
 </span><span class=lnt> 4
@@ -156,7 +449,9 @@ v_\text{ext}(x) = kx^2
 </span><span class=lnt>12
 </span><span class=lnt>13
 </span><span class=lnt>14
-</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-julia data-lang=julia><span class=k>function</span> <span class=n>get_density</span><span class=p>(</span><span class=n>fn</span><span class=o>::</span><span class=kt>Vector</span><span class=p>{</span><span class=kt>Float64</span><span class=p>},</span> <span class=n>ψ</span><span class=o>::</span><span class=kt>Matrix</span><span class=p>{</span><span class=kt>Float64</span><span class=p>},</span> <span class=n>Δx</span><span class=o>::</span><span class=kt>Float64</span><span class=p>)</span> <span class=o>::</span><span class=kt>Vector</span><span class=p>{</span><span class=kt>Float64</span><span class=p>}</span>
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-julia data-lang=julia><span class=k>function</span> <span class=n>get_density</span><span class=p>(</span><span class=n>fn</span><span class=o>::</span><span class=kt>Vector</span><span class=p>{</span><span class=kt>Float64</span><span class=p>},</span> <span class=n>ψ</span><span class=o>::</span><span class=kt>Matrix</span><span class=p>{</span><span class=kt>Float64</span><span class=p>},</span> <span class=n>Δx</span><span class=o>::</span><span class=kt>Float64</span><span class=p>)</span> <span class=o>::</span><span class=kt>Vector</span><span class=p>{</span><span class=kt>Float64</span><span class=p>}</span>
     <span class=c># fn 是长度为 nlevel 的向量，表示电子的占据数函数</span>
     <span class=c># ψ 是一个 ngrid x nlevel 的矩阵</span>
 
@@ -170,36 +465,70 @@ v_\text{ext}(x) = kx^2
 
     <span class=k>return</span> <span class=n>ρ</span>
 <span class=k>end</span>
-</code></pre></td></tr></table></div></div><p>我们求解不包含库仑势和交换关联势的 Schrodinger 方程后，求得波函数和电子密度如下图所示</p><div class=box><figure itemprop=associatedMedia itemscope itemtype=http://schema.org/ImageObject><div class=img><img itemprop=thumbnail src=/ox-hugo/simple-dft-psi_rho.svg></div><a href=/ox-hugo/simple-dft-psi_rho.svg itemprop=contentUrl></a></figure></div><h4 id=库仑势-v-text-ha--mathbf-r>库仑势 \(v_\text{Ha}(\mathbf r)\)</h4><p>库仑势的公式为：</p><p>\[
+</code></pre></td></tr></table>
+</div>
+</div><p>我们求解不包含库仑势和交换关联势的 Schrodinger 方程后，求得波函数和电子密度如下图所示</p>
+<div class=box>
+<figure itemprop=associatedMedia itemscope itemtype=http://schema.org/ImageObject>
+<div class=img>
+<img itemprop=thumbnail src=/ox-hugo/simple-dft-psi_rho.svg>
+</div>
+<a href=/ox-hugo/simple-dft-psi_rho.svg itemprop=contentUrl></a>
+</figure>
+</div>
+<h4 id=库仑势-v-text-ha--mathbf-r>库仑势 \(v_\text{Ha}(\mathbf r)\)</h4>
+<p>库仑势的公式为：</p>
+<p>\[
 v_\text{Ha}(x) = \frac{e^2 \Delta x}{4\pi \epsilon} \int\frac{\rho(x')}{\sqrt{(x - x')^2}} dx'
-\]</p><p>在程序实现时，限于积分精度和除零的问题，分母中的 \(\sqrt{(x - x')^2}\) 需要加上一个小量 \(\varepsilon\)
-避免除零的出现</p><p>\[
+\]</p>
+<p>在程序实现时，限于积分精度和除零的问题，分母中的 \(\sqrt{(x - x')^2}\) 需要加上一个小量 \(\varepsilon\)
+避免除零的出现</p>
+<p>\[
 v_\text{Ha} = \int \frac{n_j \Delta x}{\sqrt{(x - x')^2 + \varepsilon}} dx'
-\]</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+\]</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
 </span><span class=lnt>2
 </span><span class=lnt>3
 </span><span class=lnt>4
 </span><span class=lnt>5
 </span><span class=lnt>6
-</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-julia data-lang=julia><span class=k>function</span> <span class=n>get_hartree</span><span class=p>(</span><span class=n>ρ</span><span class=o>::</span><span class=kt>Vector</span><span class=p>{</span><span class=kt>Float64</span><span class=p>},</span> <span class=n>x</span><span class=o>::</span><span class=kt>Vector</span><span class=p>{</span><span class=kt>Float64</span><span class=p>};</span> <span class=n>eps</span><span class=o>=</span><span class=mf>1e-1</span><span class=p>)</span> <span class=o>::</span><span class=kt>Tuple</span><span class=p>{</span><span class=kt>Float64</span><span class=p>,</span> <span class=kt>Vector</span><span class=p>{</span><span class=kt>Float64</span><span class=p>}}</span>
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-julia data-lang=julia><span class=k>function</span> <span class=n>get_hartree</span><span class=p>(</span><span class=n>ρ</span><span class=o>::</span><span class=kt>Vector</span><span class=p>{</span><span class=kt>Float64</span><span class=p>},</span> <span class=n>x</span><span class=o>::</span><span class=kt>Vector</span><span class=p>{</span><span class=kt>Float64</span><span class=p>};</span> <span class=n>eps</span><span class=o>=</span><span class=mf>1e-1</span><span class=p>)</span> <span class=o>::</span><span class=kt>Tuple</span><span class=p>{</span><span class=kt>Float64</span><span class=p>,</span> <span class=kt>Vector</span><span class=p>{</span><span class=kt>Float64</span><span class=p>}}</span>
     <span class=n>Δx</span> <span class=o>=</span> <span class=n>x</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span> <span class=o>-</span> <span class=n>x</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span>
     <span class=n>energy</span> <span class=o>=</span> <span class=n>sum</span><span class=p>((</span><span class=n>ρ</span> <span class=o>*</span> <span class=n>ρ</span><span class=o>&#39;</span> <span class=o>.*</span> <span class=n>Δx</span><span class=o>^</span><span class=mi>2</span><span class=p>)</span> <span class=o>./</span> <span class=n>sqrt</span><span class=o>.</span><span class=p>((</span><span class=n>x</span><span class=o>&#39;</span> <span class=o>.-</span> <span class=n>x</span><span class=p>)</span><span class=o>.^</span><span class=mi>2</span> <span class=o>.+</span> <span class=n>eps</span><span class=p>))</span> <span class=o>/</span> <span class=mi>2</span>
     <span class=n>potential</span> <span class=o>=</span> <span class=n>collect</span><span class=p>(</span><span class=n>Iterators</span><span class=o>.</span><span class=n>flatten</span><span class=p>((</span><span class=n>sum</span><span class=p>(</span><span class=n>ρ</span><span class=o>&#39;</span> <span class=o>.*</span> <span class=n>Δx</span> <span class=o>./</span> <span class=n>sqrt</span><span class=o>.</span><span class=p>((</span><span class=n>x</span><span class=o>&#39;</span> <span class=o>.-</span> <span class=n>x</span><span class=p>)</span><span class=o>.^</span><span class=mi>2</span> <span class=o>.+</span> <span class=n>eps</span><span class=p>),</span> <span class=n>dims</span><span class=o>=</span><span class=mi>2</span><span class=p>))))</span>
     <span class=k>return</span> <span class=p>(</span><span class=n>energy</span><span class=p>,</span> <span class=n>potential</span><span class=p>)</span>
 <span class=k>end</span>
-</code></pre></td></tr></table></div></div><h4 id=交换关联势>交换关联势</h4><p>首先忽略关联势，使用 LDA 近似，得到交换势为</p><p>\[
+</code></pre></td></tr></table>
+</div>
+</div><h4 id=交换关联势>交换关联势</h4>
+<p>首先忽略关联势，使用 LDA 近似，得到交换势为</p>
+<p>\[
 v_\text{x}^\text{LDA}[\rho] = -\sqrt[3]{3\rho / \pi}
-\]</p><p>那么使用代码表示出来就很简单了：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+\]</p>
+<p>那么使用代码表示出来就很简单了：</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
 </span><span class=lnt>2
 </span><span class=lnt>3
 </span><span class=lnt>4
 </span><span class=lnt>5
-</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-julia data-lang=julia><span class=k>function</span> <span class=n>get_exchange</span><span class=p>(</span><span class=n>ρ</span><span class=o>::</span><span class=kt>Vector</span><span class=p>{</span><span class=kt>Float64</span><span class=p>},</span> <span class=n>Δx</span><span class=o>::</span><span class=kt>Float64</span><span class=p>)</span> <span class=o>::</span><span class=kt>Tuple</span><span class=p>{</span><span class=kt>Float64</span><span class=p>,</span> <span class=kt>Vector</span><span class=p>{</span><span class=kt>Float64</span><span class=p>}}</span>
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-julia data-lang=julia><span class=k>function</span> <span class=n>get_exchange</span><span class=p>(</span><span class=n>ρ</span><span class=o>::</span><span class=kt>Vector</span><span class=p>{</span><span class=kt>Float64</span><span class=p>},</span> <span class=n>Δx</span><span class=o>::</span><span class=kt>Float64</span><span class=p>)</span> <span class=o>::</span><span class=kt>Tuple</span><span class=p>{</span><span class=kt>Float64</span><span class=p>,</span> <span class=kt>Vector</span><span class=p>{</span><span class=kt>Float64</span><span class=p>}}</span>
     <span class=n>energy</span> <span class=o>=</span> <span class=o>-</span><span class=mf>3.0</span><span class=o>/</span><span class=mf>4.0</span> <span class=o>*</span> <span class=n>cbrt</span><span class=p>(</span><span class=mf>3.0</span><span class=o>/</span><span class=nb>π</span><span class=p>)</span> <span class=o>*</span> <span class=n>sum</span><span class=p>(</span><span class=n>ρ</span><span class=o>.^</span><span class=p>(</span><span class=mf>4.0</span><span class=o>/</span><span class=mf>3.0</span><span class=p>))</span> <span class=o>*</span> <span class=n>Δx</span>
     <span class=n>potential</span> <span class=o>=</span> <span class=o>-</span><span class=n>cbrt</span><span class=p>(</span><span class=mf>3.0</span><span class=o>/</span><span class=nb>π</span><span class=p>)</span> <span class=o>.*</span> <span class=p>(</span><span class=n>cbrt</span><span class=o>.</span><span class=p>(</span><span class=n>ρ</span><span class=p>))</span>
     <span class=k>return</span> <span class=p>(</span><span class=n>energy</span><span class=p>,</span> <span class=n>potential</span><span class=p>)</span>
 <span class=k>end</span>
-</code></pre></td></tr></table></div></div><h3 id=hamiltonian-的构造>Hamiltonian 的构造</h3><p>上面说到 Hamiltonian 里势能的部分体现在对角线上</p><p>\[\hat{H} = \frac{1}{(\Delta x)^2}
+</code></pre></td></tr></table>
+</div>
+</div><h3 id=hamiltonian-的构造>Hamiltonian 的构造</h3>
+<p>上面说到 Hamiltonian 里势能的部分体现在对角线上</p>
+<p>\[\hat{H} = \frac{1}{(\Delta x)^2}
 \begin{bmatrix}
 -2 & 1 & & & \newline
 1 & -2 & 1 & & \newline
@@ -212,7 +541,11 @@ V_1 & & & \newline
 & V_2 & & \newline
 & & \ddots & \newline
 & & & V_n
-\end{bmatrix} \]</p><p>用代码写出来</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+\end{bmatrix} \]</p>
+<p>用代码写出来</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
 </span><span class=lnt> 2
 </span><span class=lnt> 3
 </span><span class=lnt> 4
@@ -224,22 +557,46 @@ V_1 & & & \newline
 </span><span class=lnt>10
 </span><span class=lnt>11
 </span><span class=lnt>12
-</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-julia data-lang=julia><span class=k>function</span> <span class=n>get_hamiltonian</span><span class=p>(</span><span class=n>x</span><span class=o>::</span><span class=kt>Vector</span><span class=p>{</span><span class=kt>Float64</span><span class=p>},</span> <span class=n>ρ</span><span class=o>::</span><span class=kt>Vector</span><span class=p>{</span><span class=kt>Float64</span><span class=p>},</span>
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-julia data-lang=julia><span class=k>function</span> <span class=n>get_hamiltonian</span><span class=p>(</span><span class=n>x</span><span class=o>::</span><span class=kt>Vector</span><span class=p>{</span><span class=kt>Float64</span><span class=p>},</span> <span class=n>ρ</span><span class=o>::</span><span class=kt>Vector</span><span class=p>{</span><span class=kt>Float64</span><span class=p>},</span>
                          <span class=n>v_ext</span><span class=o>::</span><span class=kt>Vector</span><span class=p>{</span><span class=kt>Float64</span><span class=p>})</span> <span class=o>::</span><span class=kt>Matrix</span><span class=p>{</span><span class=kt>Float64</span><span class=p>}</span>
     <span class=n>Δx</span> <span class=o>=</span> <span class=n>x</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span> <span class=o>-</span> <span class=n>x</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span>
     <span class=n>ex_energy</span><span class=p>,</span> <span class=n>ex_potential</span> <span class=o>=</span> <span class=n>get_exchange</span><span class=p>(</span><span class=n>ρ</span><span class=p>,</span> <span class=n>Δx</span><span class=p>)</span>
     <span class=n>ha_energy</span><span class=p>,</span> <span class=n>ha_potential</span> <span class=o>=</span> <span class=n>get_hartree</span><span class=p>(</span><span class=n>ρ</span><span class=p>,</span> <span class=n>x</span><span class=p>)</span>
-    <span class=n>∇²</span> <span class=o>=</span> <span class=kt>Tridiagonal</span><span class=p>(</span><span class=n>ones</span><span class=p>(</span><span class=n>ngrid</span><span class=o>-</span><span class=mi>1</span><span class=p>),</span> <span class=o>-</span><span class=mi>2</span><span class=o>*</span><span class=n>ones</span><span class=p>(</span><span class=n>ngrid</span><span class=p>),</span> <span class=n>ones</span><span class=p>(</span><span class=n>ngrid</span><span class=o>-</span><span class=mi>1</span><span class=p>))</span> <span class=o>./</span> <span class=p>(</span><span class=n>Δx</span><span class=o>^</span><span class=mi>2</span><span class=p>)</span>
+    <span class=n>∇²</span> <span class=o>=</span> <span class=n>Tridiagonal</span><span class=p>(</span><span class=n>ones</span><span class=p>(</span><span class=n>ngrid</span><span class=o>-</span><span class=mi>1</span><span class=p>),</span> <span class=o>-</span><span class=mi>2</span><span class=o>*</span><span class=n>ones</span><span class=p>(</span><span class=n>ngrid</span><span class=p>),</span> <span class=n>ones</span><span class=p>(</span><span class=n>ngrid</span><span class=o>-</span><span class=mi>1</span><span class=p>))</span> <span class=o>./</span> <span class=p>(</span><span class=n>Δx</span><span class=o>^</span><span class=mi>2</span><span class=p>)</span>
 
     <span class=c># Hamiltonian</span>
-    <span class=n>H</span> <span class=o>=</span> <span class=o>-</span><span class=n>∇²</span><span class=o>./</span><span class=mi>2</span> <span class=o>+</span> <span class=kt>Diagonal</span><span class=p>(</span><span class=n>ex_potential</span> <span class=o>.+</span> <span class=n>ha_potential</span> <span class=o>.+</span> <span class=n>v_ext</span><span class=p>)</span>
+    <span class=n>H</span> <span class=o>=</span> <span class=o>-</span><span class=n>∇²</span><span class=o>./</span><span class=mi>2</span> <span class=o>+</span> <span class=n>Diagonal</span><span class=p>(</span><span class=n>ex_potential</span> <span class=o>.+</span> <span class=n>ha_potential</span> <span class=o>.+</span> <span class=n>v_ext</span><span class=p>)</span>
 
     <span class=k>return</span> <span class=n>H</span>
 <span class=k>end</span>
-</code></pre></td></tr></table></div></div><p>对这个 Hamiltonian 对角化，可以得到一系列波函数 \(\phi_i(x)\) 。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
-</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-julia data-lang=julia><span class=n>E</span><span class=p>,</span> <span class=n>ψ</span> <span class=o>=</span> <span class=n>eigs</span><span class=p>(</span><span class=n>H</span><span class=p>,</span> <span class=n>nev</span><span class=o>=</span><span class=n>nlevel</span><span class=p>,</span> <span class=n>which</span><span class=o>=:</span><span class=n>LM</span><span class=p>,</span> <span class=n>sigma</span><span class=o>=</span><span class=mi>0</span><span class=p>)</span>  <span class=c># 这个函数需要 using Arpack</span>
-</code></pre></td></tr></table></div></div><h3 id=ks-方程的迭代求解>KS 方程的迭代求解</h3><p>电子密度 \(\rho(x)\) 依赖于波函数 \(\phi_i(x)\) ，而求解 \(\phi_i(x)\) 所用的 Hamiltonian 又反过来依赖于 \(\rho(x)\) ，
-这意味着我们不能一次性求得正确的波函数 \(\phi_i(x)\) ， 因此我们需要用迭代的方法来求解：</p><ol><li>先猜一个初始电荷密度 \(\rho(x)\) ；</li><li>用 \(\rho(x)\) 构造 Hartree 势和交换关联势，然后构造 Hamiltonian ；</li><li>对角化 Hamiltonian 求得本征值 \(E_i\) 和波函数 \(\phi_i(x)\) ；</li><li>判断此次求得本征值 \(E_i\) 与上一次结果相差是否足够小，如果是，则停止计算，否则进入第 5 步；</li><li>使用波函数 \(\phi_i(x)\) 构造电子密度 \(\rho(x)\) ，并返回第 2 步。</li></ol><p>上面的过程也叫做自洽迭代(self-consistency loop)。</p><p>到这一步，我们把所有代码整合起来运行一下，便能得到一个简易的 DFT 玩具</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>  1
+</code></pre></td></tr></table>
+</div>
+</div><p>对这个 Hamiltonian 对角化，可以得到一系列波函数 \(\phi_i(x)\) 。</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-julia data-lang=julia><span class=n>E</span><span class=p>,</span> <span class=n>ψ</span> <span class=o>=</span> <span class=n>eigs</span><span class=p>(</span><span class=n>H</span><span class=p>,</span> <span class=n>nev</span><span class=o>=</span><span class=n>nlevel</span><span class=p>,</span> <span class=n>which</span><span class=o>=</span><span class=ss>:LM</span><span class=p>,</span> <span class=n>sigma</span><span class=o>=</span><span class=mi>0</span><span class=p>)</span>  <span class=c># 这个函数需要 using Arpack</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id=ks-方程的迭代求解>KS 方程的迭代求解</h3>
+<p>电子密度 \(\rho(x)\) 依赖于波函数 \(\phi_i(x)\) ，而求解 \(\phi_i(x)\) 所用的 Hamiltonian 又反过来依赖于 \(\rho(x)\) ，
+这意味着我们不能一次性求得正确的波函数 \(\phi_i(x)\) ， 因此我们需要用迭代的方法来求解：</p>
+<ol>
+<li>先猜一个初始电荷密度 \(\rho(x)\) ；</li>
+<li>用 \(\rho(x)\) 构造 Hartree 势和交换关联势，然后构造 Hamiltonian ；</li>
+<li>对角化 Hamiltonian 求得本征值 \(E_i\) 和波函数 \(\phi_i(x)\) ；</li>
+<li>判断此次求得本征值 \(E_i\) 与上一次结果相差是否足够小，如果是，则停止计算，否则进入第 5 步；</li>
+<li>使用波函数 \(\phi_i(x)\) 构造电子密度 \(\rho(x)\) ，并返回第 2 步。</li>
+</ol>
+<p>上面的过程也叫做自洽迭代(self-consistency loop)。</p>
+<p>到这一步，我们把所有代码整合起来运行一下，便能得到一个简易的 DFT 玩具</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>  1
 </span><span class=lnt>  2
 </span><span class=lnt>  3
 </span><span class=lnt>  4
@@ -343,7 +700,9 @@ V_1 & & & \newline
 </span><span class=lnt>102
 </span><span class=lnt>103
 </span><span class=lnt>104
-</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-julia data-lang=julia><span class=c>#!/usr/bin/env julia</span>
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-julia data-lang=julia><span class=c>#!/usr/bin/env julia</span>
 
 <span class=k>using</span> <span class=n>LinearAlgebra</span>
 <span class=k>using</span> <span class=n>Arpack</span>
@@ -384,26 +743,26 @@ V_1 & & & \newline
     <span class=n>Δx</span> <span class=o>=</span> <span class=n>x</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span> <span class=o>-</span> <span class=n>x</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span>
     <span class=n>ex_energy</span><span class=p>,</span> <span class=n>ex_potential</span> <span class=o>=</span> <span class=n>get_exchange</span><span class=p>(</span><span class=n>ρ</span><span class=p>,</span> <span class=n>Δx</span><span class=p>)</span>
     <span class=n>ha_energy</span><span class=p>,</span> <span class=n>ha_potential</span> <span class=o>=</span> <span class=n>get_hartree</span><span class=p>(</span><span class=n>ρ</span><span class=p>,</span> <span class=n>x</span><span class=p>)</span>
-    <span class=n>∇²</span> <span class=o>=</span> <span class=kt>Tridiagonal</span><span class=p>(</span><span class=n>ones</span><span class=p>(</span><span class=n>ngrid</span><span class=o>-</span><span class=mi>1</span><span class=p>),</span> <span class=o>-</span><span class=mi>2</span><span class=o>*</span><span class=n>ones</span><span class=p>(</span><span class=n>ngrid</span><span class=p>),</span> <span class=n>ones</span><span class=p>(</span><span class=n>ngrid</span><span class=o>-</span><span class=mi>1</span><span class=p>))</span> <span class=o>./</span> <span class=p>(</span><span class=n>Δx</span><span class=o>^</span><span class=mi>2</span><span class=p>)</span>
+    <span class=n>∇²</span> <span class=o>=</span> <span class=n>Tridiagonal</span><span class=p>(</span><span class=n>ones</span><span class=p>(</span><span class=n>ngrid</span><span class=o>-</span><span class=mi>1</span><span class=p>),</span> <span class=o>-</span><span class=mi>2</span><span class=o>*</span><span class=n>ones</span><span class=p>(</span><span class=n>ngrid</span><span class=p>),</span> <span class=n>ones</span><span class=p>(</span><span class=n>ngrid</span><span class=o>-</span><span class=mi>1</span><span class=p>))</span> <span class=o>./</span> <span class=p>(</span><span class=n>Δx</span><span class=o>^</span><span class=mi>2</span><span class=p>)</span>
 
     <span class=c># Hamiltonian</span>
-    <span class=n>H</span> <span class=o>=</span> <span class=o>-</span><span class=n>∇²</span><span class=o>./</span><span class=mi>2</span> <span class=o>+</span> <span class=kt>Diagonal</span><span class=p>(</span><span class=n>ex_potential</span> <span class=o>.+</span> <span class=n>ha_potential</span> <span class=o>.+</span> <span class=n>v_ext</span><span class=p>)</span>
+    <span class=n>H</span> <span class=o>=</span> <span class=o>-</span><span class=n>∇²</span><span class=o>./</span><span class=mi>2</span> <span class=o>+</span> <span class=n>Diagonal</span><span class=p>(</span><span class=n>ex_potential</span> <span class=o>.+</span> <span class=n>ha_potential</span> <span class=o>.+</span> <span class=n>v_ext</span><span class=p>)</span>
 
     <span class=k>return</span> <span class=n>H</span>
 <span class=k>end</span>
 
-<span class=k>if</span> <span class=n>abspath</span><span class=p>(</span><span class=n>PROGRAM_FILE</span><span class=p>)</span> <span class=o>==</span> <span class=nd>@__FILE__</span>
+<span class=k>if</span> <span class=n>abspath</span><span class=p>(</span><span class=nb>PROGRAM_FILE</span><span class=p>)</span> <span class=o>==</span> <span class=nd>@__FILE__</span>
     <span class=n>ngrid</span> <span class=o>=</span> <span class=mi>200</span>
     <span class=n>nlevel</span> <span class=o>=</span> <span class=mi>20</span>
     <span class=n>nelect</span> <span class=o>=</span> <span class=mi>17</span>
 
-    <span class=n>x</span> <span class=o>=</span> <span class=n>collect</span><span class=p>(</span><span class=n>LinRange</span><span class=p>(</span><span class=o>-</span><span class=mi>5</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=n>ngrid</span><span class=p>))</span>
+    <span class=n>x</span> <span class=o>=</span> <span class=n>collect</span><span class=p>(</span><span class=kt>LinRange</span><span class=p>(</span><span class=o>-</span><span class=mi>5</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=n>ngrid</span><span class=p>))</span>
     <span class=n>Δx</span> <span class=o>=</span> <span class=n>x</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span> <span class=o>-</span> <span class=n>x</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span>
-    <span class=n>∇²</span> <span class=o>=</span> <span class=kt>Tridiagonal</span><span class=p>(</span><span class=n>ones</span><span class=p>(</span><span class=n>ngrid</span><span class=o>-</span><span class=mi>1</span><span class=p>),</span> <span class=o>-</span><span class=mi>2</span><span class=o>*</span><span class=n>ones</span><span class=p>(</span><span class=n>ngrid</span><span class=p>),</span> <span class=n>ones</span><span class=p>(</span><span class=n>ngrid</span><span class=o>-</span><span class=mi>1</span><span class=p>))</span> <span class=o>./</span> <span class=p>(</span><span class=n>Δx</span><span class=o>^</span><span class=mi>2</span><span class=p>)</span>
+    <span class=n>∇²</span> <span class=o>=</span> <span class=n>Tridiagonal</span><span class=p>(</span><span class=n>ones</span><span class=p>(</span><span class=n>ngrid</span><span class=o>-</span><span class=mi>1</span><span class=p>),</span> <span class=o>-</span><span class=mi>2</span><span class=o>*</span><span class=n>ones</span><span class=p>(</span><span class=n>ngrid</span><span class=p>),</span> <span class=n>ones</span><span class=p>(</span><span class=n>ngrid</span><span class=o>-</span><span class=mi>1</span><span class=p>))</span> <span class=o>./</span> <span class=p>(</span><span class=n>Δx</span><span class=o>^</span><span class=mi>2</span><span class=p>)</span>
 
     <span class=c># V_ext</span>
     <span class=n>V_empty</span> <span class=o>=</span> <span class=n>zeros</span><span class=p>(</span><span class=n>ngrid</span><span class=p>)</span>
-    <span class=n>V_well</span> <span class=o>=</span> <span class=n>fill</span><span class=p>(</span><span class=mf>1e10</span><span class=p>,</span> <span class=n>ngrid</span><span class=p>);</span> <span class=err>@</span><span class=o>.</span> <span class=n>V_well</span><span class=p>[</span><span class=o>-</span><span class=mi>2</span> <span class=o>&lt;=</span> <span class=n>x</span> <span class=o>&lt;=</span> <span class=mi>2</span><span class=p>]</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+    <span class=n>V_well</span> <span class=o>=</span> <span class=n>fill</span><span class=p>(</span><span class=mf>1e10</span><span class=p>,</span> <span class=n>ngrid</span><span class=p>);</span> <span class=nd>@.</span> <span class=n>V_well</span><span class=p>[</span><span class=o>-</span><span class=mi>2</span> <span class=o>&lt;=</span> <span class=n>x</span> <span class=o>&lt;=</span> <span class=mi>2</span><span class=p>]</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
     <span class=n>V_harm</span> <span class=o>=</span> <span class=n>x</span><span class=o>.^</span><span class=mi>2</span>
 
     <span class=c># construct fn</span>
@@ -419,13 +778,13 @@ V_1 & & & \newline
     <span class=n>log0</span> <span class=o>=</span> <span class=kt>Dict</span><span class=p>(</span><span class=s>&#34;E&#34;</span> <span class=o>=&gt;</span> <span class=p>[</span><span class=nb>Inf</span><span class=p>],</span> <span class=s>&#34;ΔE&#34;</span> <span class=o>=&gt;</span> <span class=p>[</span><span class=nb>Inf</span><span class=p>])</span>  <span class=c># Use `log0` instead of `log` to avoid confict</span>
 
     <span class=c># 使用自由电子的波函数做为初始猜测的电子波函数，可以加速收敛</span>
-    <span class=n>E</span><span class=p>,</span> <span class=n>ψ</span> <span class=o>=</span> <span class=n>eigs</span><span class=p>(</span><span class=o>-</span><span class=n>∇²</span><span class=o>./</span><span class=mf>2.0</span><span class=p>,</span> <span class=n>nev</span><span class=o>=</span><span class=n>nlevel</span><span class=p>,</span> <span class=n>which</span><span class=o>=:</span><span class=n>LM</span><span class=p>,</span> <span class=n>sigma</span><span class=o>=</span><span class=mi>0</span><span class=p>)</span>
+    <span class=n>E</span><span class=p>,</span> <span class=n>ψ</span> <span class=o>=</span> <span class=n>eigs</span><span class=p>(</span><span class=o>-</span><span class=n>∇²</span><span class=o>./</span><span class=mf>2.0</span><span class=p>,</span> <span class=n>nev</span><span class=o>=</span><span class=n>nlevel</span><span class=p>,</span> <span class=n>which</span><span class=o>=</span><span class=ss>:LM</span><span class=p>,</span> <span class=n>sigma</span><span class=o>=</span><span class=mi>0</span><span class=p>)</span>
     <span class=n>ρ</span> <span class=o>=</span> <span class=n>get_density</span><span class=p>(</span><span class=n>fn</span><span class=p>,</span> <span class=n>ψ</span><span class=p>,</span> <span class=n>Δx</span><span class=p>)</span>
 
-    <span class=k>for</span> <span class=n>i</span> <span class=kp>in</span> <span class=mi>1</span><span class=o>:</span><span class=n>max_iter</span>
+    <span class=k>for</span> <span class=n>i</span> <span class=k>in</span> <span class=mi>1</span><span class=o>:</span><span class=n>max_iter</span>
         <span class=n>H</span> <span class=o>=</span> <span class=n>get_hamiltonian</span><span class=p>(</span><span class=n>x</span><span class=p>,</span> <span class=n>ρ</span><span class=p>,</span> <span class=n>V_harm</span><span class=p>)</span>
 
-        <span class=n>E0</span><span class=p>,</span> <span class=n>ψ0</span> <span class=o>=</span> <span class=n>eigs</span><span class=p>(</span><span class=n>H</span><span class=p>,</span> <span class=n>nev</span><span class=o>=</span><span class=n>nlevel</span><span class=p>,</span> <span class=n>which</span><span class=o>=:</span><span class=n>LM</span><span class=p>,</span> <span class=n>sigma</span><span class=o>=</span><span class=mi>0</span><span class=p>)</span>
+        <span class=n>E0</span><span class=p>,</span> <span class=n>ψ0</span> <span class=o>=</span> <span class=n>eigs</span><span class=p>(</span><span class=n>H</span><span class=p>,</span> <span class=n>nev</span><span class=o>=</span><span class=n>nlevel</span><span class=p>,</span> <span class=n>which</span><span class=o>=</span><span class=ss>:LM</span><span class=p>,</span> <span class=n>sigma</span><span class=o>=</span><span class=mi>0</span><span class=p>)</span>
         <span class=n>E</span> <span class=o>.=</span> <span class=n>E0</span>
         <span class=n>ψ</span> <span class=o>.=</span> <span class=n>ψ0</span>
 
@@ -447,7 +806,12 @@ V_1 & & & \newline
 
     <span class=n>p</span> <span class=o>=</span> <span class=n>plot</span><span class=p>(</span><span class=n>x</span><span class=p>,</span> <span class=n>ψ</span><span class=p>[</span><span class=o>:</span><span class=p>,</span> <span class=mi>1</span><span class=o>:</span><span class=mi>5</span><span class=p>],</span> <span class=n>label</span><span class=o>=</span><span class=n>sprintf1</span><span class=o>.</span><span class=p>(</span><span class=s>&#34;</span><span class=si>%.3f</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>E</span><span class=p>[</span><span class=mi>1</span><span class=o>:</span><span class=mi>5</span><span class=p>]</span><span class=o>&#39;</span><span class=p>),</span> <span class=n>title</span><span class=o>=</span><span class=s>&#34;ψ&#34;</span><span class=p>)</span>
 <span class=k>end</span>
-</code></pre></td></tr></table></div></div><p>它运行时会出现下面的日志输出（以 \(V_\text{ext} = V_\text{empty}\) 为例）：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</code></pre></td></tr></table>
+</div>
+</div><p>它运行时会出现下面的日志输出（以 \(V_\text{ext} = V_\text{empty}\) 为例）：</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
 </span><span class=lnt> 2
 </span><span class=lnt> 3
 </span><span class=lnt> 4
@@ -484,7 +848,9 @@ V_1 & & & \newline
 </span><span class=lnt>35
 </span><span class=lnt>36
 </span><span class=lnt>37
-</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-text data-lang=text>step:     1 E:   191.3250 ΔE           -Inf
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-text data-lang=text>step:     1 E:   191.3250 ΔE           -Inf
 step:     2 E:   188.6149 ΔE  -2.7101725428
 step:     3 E:   189.9835 ΔE   1.3686497726
 step:     4 E:   189.2422 ΔE  -0.7413493772
@@ -521,29 +887,160 @@ step:    34 E:   189.5523 ΔE  -0.0000195251
 step:    35 E:   189.5523 ΔE   0.0000138599
 step:    36 E:   189.5523 ΔE  -0.0000098385
 converged!
-</code></pre></td></tr></table></div></div><p>和前面一样，把波函数和电子密度函数画出来，如下图所示：</p><div class=box><figure itemprop=associatedMedia itemscope itemtype=http://schema.org/ImageObject><div class=img><img itemprop=thumbnail src=/ox-hugo/simple-dft-psi_rho_dft.svg></div><a href=/ox-hugo/simple-dft-psi_rho_dft.svg itemprop=contentUrl></a></figure></div><p>下面以 \(V_\text{empty}\) 为例，对比一下原来的波函数与 DFT 方法算出的 KS 波函数的变化：</p><div class=box><figure itemprop=associatedMedia itemscope itemtype=http://schema.org/ImageObject><div class=img><img itemprop=thumbnail src=/ox-hugo/simple-dft-psi_org_dft.svg></div><a href=/ox-hugo/simple-dft-psi_org_dft.svg itemprop=contentUrl></a></figure></div><p>可以看到， KS 波函数的空间分布与原来无相互作用波函数空间分布差别很大， KS 波函数的波包的顶点都发生了偏移，说明库仑相互作用和交换相互作用影响较大。例如 \(\psi_1\) ，无相互作用体系里波函数分布最大的地方在 \(x=0\) 处，但 KS 波函数里空间分布最大的地方在 \(x=\pm 4.2\) 处左右，表明其它能级更高的电子对它的分布也产生了显著的影响。除此之外，波函数的本征值也变化巨大。实际上这里的对比不太严谨：原来无相互作用体系的波函数是一个电子在不同能级的波函数，而 KS 波函数则被当成是一个含有 N 个电子的体系里每个电子的波函数，这两者概念上的差异不能忽略。</p><p>需要注意的是，尽管我们习惯用 KS 轨道表示真实体系里每个电子的轨道，但 KS 轨道实质上仍是单粒子
+</code></pre></td></tr></table>
+</div>
+</div><p>和前面一样，把波函数和电子密度函数画出来，如下图所示：</p>
+<div class=box>
+<figure itemprop=associatedMedia itemscope itemtype=http://schema.org/ImageObject>
+<div class=img>
+<img itemprop=thumbnail src=/ox-hugo/simple-dft-psi_rho_dft.svg>
+</div>
+<a href=/ox-hugo/simple-dft-psi_rho_dft.svg itemprop=contentUrl></a>
+</figure>
+</div>
+<p>下面以 \(V_\text{empty}\) 为例，对比一下原来的波函数与 DFT 方法算出的 KS 波函数的变化：</p>
+<div class=box>
+<figure itemprop=associatedMedia itemscope itemtype=http://schema.org/ImageObject>
+<div class=img>
+<img itemprop=thumbnail src=/ox-hugo/simple-dft-psi_org_dft.svg>
+</div>
+<a href=/ox-hugo/simple-dft-psi_org_dft.svg itemprop=contentUrl></a>
+</figure>
+</div>
+<p>可以看到， KS 波函数的空间分布与原来无相互作用波函数空间分布差别很大， KS 波函数的波包的顶点都发生了偏移，说明库仑相互作用和交换相互作用影响较大。例如 \(\psi_1\) ，无相互作用体系里波函数分布最大的地方在 \(x=0\) 处，但 KS 波函数里空间分布最大的地方在 \(x=\pm 4.2\) 处左右，表明其它能级更高的电子对它的分布也产生了显著的影响。除此之外，波函数的本征值也变化巨大。实际上这里的对比不太严谨：原来无相互作用体系的波函数是一个电子在不同能级的波函数，而 KS 波函数则被当成是一个含有 N 个电子的体系里每个电子的波函数，这两者概念上的差异不能忽略。</p>
+<p>需要注意的是，尽管我们习惯用 KS 轨道表示真实体系里每个电子的轨道，但 KS 轨道实质上仍是单粒子
 Schrodinger 方程的解，它能否代替体系真实的波函数仍需要 check ，本人不认为这两者等价。比如在
 Ren Xinguo 老师的课件<sup id=fnref:2><a href=#fn:2 class=footnote-ref role=doc-noteref>2</a></sup>
-里是这样描述的</p><blockquote><p>KS orbitals are auxiliary variables, and have no strict physical meaning (except for HOMO and LUMO).</p></blockquote><p>即除了 HOMO 和 LUMO 之外， KS 波函数仅仅作为计算电子密度函数 \(\rho(\text r)\) 的辅助函数之用。
-HOMO 和 LUMO 在一定程度上可以视作体系的真实轨道，此时体系的第一电离能即为 HOMO 的能量（Janak theorem, 1978）：</p><p>\[
+里是这样描述的</p>
+<blockquote>
+<p>KS orbitals are auxiliary variables, and have no strict physical meaning (except for HOMO and LUMO).</p>
+</blockquote>
+<p>即除了 HOMO 和 LUMO 之外， KS 波函数仅仅作为计算电子密度函数 \(\rho(\text r)\) 的辅助函数之用。
+HOMO 和 LUMO 在一定程度上可以视作体系的真实轨道，此时体系的第一电离能即为 HOMO 的能量（Janak theorem, 1978）：</p>
+<p>\[
 I = E_0(N-1) - E_0(N) = -\epsilon_N
-\]</p><p>下面来看一下电子密度函数的变化：</p><div class=box><figure itemprop=associatedMedia itemscope itemtype=http://schema.org/ImageObject><div class=img><img itemprop=thumbnail src=/ox-hugo/simple-dft-rho_org_dft.svg></div><a href=/ox-hugo/simple-dft-rho_org_dft.svg itemprop=contentUrl></a></figure></div><p>很明显，经过自洽迭代后，体系的电子密度分布也发生了变化，对比占据态轨道的变化而言，电子密度的变化还是比较小的。</p><p>如果考虑电子的自旋，我们需要修改交换关联泛函，即使用考虑电子自旋的 LSDA 泛函，此时体系的波函数表示也需要随之修改， \(\psi_i(x)\) 变为 \(\psi_i(x, \sigma)\) ，即增加了一个自旋维度 \(\sigma\) 。
-具体的泛函形式比较复杂，这里作为一个 toy 介绍就不展开了，如果有兴趣可以去看 <a href="http://lqcc.ustc.edu.cn/renxg/plus/list.php?tid=7">Ren Xinguo 老师的课件</a>。</p><h2 id=总结与拓展>总结与拓展</h2><p>我们实现了一个简单的 DFT 计算程序，它可以使用自定义的外场势能函数，考虑 Hartree 势，并使用 LDA 近似。
+\]</p>
+<p>下面来看一下电子密度函数的变化：</p>
+<div class=box>
+<figure itemprop=associatedMedia itemscope itemtype=http://schema.org/ImageObject>
+<div class=img>
+<img itemprop=thumbnail src=/ox-hugo/simple-dft-rho_org_dft.svg>
+</div>
+<a href=/ox-hugo/simple-dft-rho_org_dft.svg itemprop=contentUrl></a>
+</figure>
+</div>
+<p>很明显，经过自洽迭代后，体系的电子密度分布也发生了变化，对比占据态轨道的变化而言，电子密度的变化还是比较小的。</p>
+<p>如果考虑电子的自旋，我们需要修改交换关联泛函，即使用考虑电子自旋的 LSDA 泛函，此时体系的波函数表示也需要随之修改， \(\psi_i(x)\) 变为 \(\psi_i(x, \sigma)\) ，即增加了一个自旋维度 \(\sigma\) 。
+具体的泛函形式比较复杂，这里作为一个 toy 介绍就不展开了，如果有兴趣可以去看 <a href="http://lqcc.ustc.edu.cn/renxg/plus/list.php?tid=7">Ren Xinguo 老师的课件</a>。</p>
+<h2 id=总结与拓展>总结与拓展</h2>
+<p>我们实现了一个简单的 DFT 计算程序，它可以使用自定义的外场势能函数，考虑 Hartree 势，并使用 LDA 近似。
 通过求解 KS 方程，我们得到了 KS 波函数，并与无相互作用体系的波函数作对比，发现波函数的分布发生了显著的变化，同时波函数的能量也发生了不小的变化。在实现的过程中，本人对那句“通过 DFT 将多体系统映射到单粒子系统”
-可能有了一些很浅薄的理解。</p><p>尽管这是一个很简单的 toy ，但它也是包含了 DFT 计算所需的各种常见操作，比如构造电子密度函数，比如自洽迭代求解 KS 方程，再比如求 Hartree 势函数、使用 LDA 近似等等，这些都可以在常见的 DFT 软件里找到，那么此次 DIY 的过程也能加强对其它成熟 DFT 软件里运行时做了什么有了大概了理解。如果有人想要进一步拓展这个 toy ，我想到了以下几个方向：</p><ul><li>考虑上下自旋，使用 LSDA 近似</li><li>使用 GGA 泛函（比如 PBE 泛函）</li><li>考虑外加电场，这个比较好办，直接在修改外场势函数即可</li><li>考虑外加磁场，这个需要修改 Hamiltonian 中的动能项表达式，添加矢势项</li><li>考虑相对论效应，使用 Dirac 方程代替 Schrodinger 方程，看是否能算出自旋轨道耦合效应</li><li>&mldr;&mldr;</li></ul><p>出于精力限制，本人可能没动力继续往下扩展，读者如果有兴趣，可以自行尝试。</p><section class=footnotes role=doc-endnotes><hr><ol><li id=fn:1 role=doc-endnote><p>tamuhey 的代码 <a href=https://github.com/tamuhey/python_1d_dft>https://github.com/tamuhey/python_1d_dft</a> <a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:2 role=doc-endnote><p>任老师的课件 <a href="http://lqcc.ustc.edu.cn/renxg/plus/list.php?tid=7">http://lqcc.ustc.edu.cn/renxg/plus/list.php?tid=7</a> <a href=#fnref:2 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></section></div><div class=post-copyright><p class=copyright-item><span class=item-title>文章作者</span>
-<span class=item-content>Ionizing</span></p><p class=copyright-item><span class=item-title>上次更新</span>
-<span class=item-content>2022-08-14</span></p><p class=copyright-item><span class=item-title>许可协议</span>
-<span class=item-content><a rel="license noopener" href=https://creativecommons.org/licenses/by-nc-nd/4.0/ target=_blank>CC BY-NC-ND 4.0</a></span></p></div><footer class=post-footer><div class=post-tags><a href=http://ionizing.page/tags/posts/>Posts</a>
+可能有了一些很浅薄的理解。</p>
+<p>尽管这是一个很简单的 toy ，但它也是包含了 DFT 计算所需的各种常见操作，比如构造电子密度函数，比如自洽迭代求解 KS 方程，再比如求 Hartree 势函数、使用 LDA 近似等等，这些都可以在常见的 DFT 软件里找到，那么此次 DIY 的过程也能加强对其它成熟 DFT 软件里运行时做了什么有了大概了理解。如果有人想要进一步拓展这个 toy ，我想到了以下几个方向：</p>
+<ul>
+<li>考虑上下自旋，使用 LSDA 近似</li>
+<li>使用 GGA 泛函（比如 PBE 泛函）</li>
+<li>考虑外加电场，这个比较好办，直接在修改外场势函数即可</li>
+<li>考虑外加磁场，这个需要修改 Hamiltonian 中的动能项表达式，添加矢势项</li>
+<li>考虑相对论效应，使用 Dirac 方程代替 Schrodinger 方程，看是否能算出自旋轨道耦合效应</li>
+<li>&mldr;&mldr;</li>
+</ul>
+<p>出于精力限制，本人可能没动力继续往下扩展，读者如果有兴趣，可以自行尝试。</p>
+<section class=footnotes role=doc-endnotes>
+<hr>
+<ol>
+<li id=fn:1 role=doc-endnote>
+<p>tamuhey 的代码 <a href=https://github.com/tamuhey/python_1d_dft>https://github.com/tamuhey/python_1d_dft</a>&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p>
+</li>
+<li id=fn:2 role=doc-endnote>
+<p>任老师的课件 <a href="http://lqcc.ustc.edu.cn/renxg/plus/list.php?tid=7">http://lqcc.ustc.edu.cn/renxg/plus/list.php?tid=7</a>&#160;<a href=#fnref:2 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+</div>
+<div class=post-copyright>
+<p class=copyright-item>
+<span class=item-title>文章作者</span>
+<span class=item-content>Ionizing</span>
+</p>
+<p class=copyright-item>
+<span class=item-title>上次更新</span>
+<span class=item-content>
+2022-08-14
+</span>
+</p>
+<p class=copyright-item>
+<span class=item-title>许可协议</span>
+<span class=item-content><a rel="license noopener" href=https://creativecommons.org/licenses/by-nc-nd/4.0/ target=_blank>CC BY-NC-ND 4.0</a></span>
+</p>
+</div>
+<footer class=post-footer>
+<div class=post-tags>
+<a href=http://ionizing.page/tags/posts/>Posts</a>
 <a href=http://ionizing.page/tags/julia/>Julia</a>
 <a href=http://ionizing.page/tags/finitedifferencemethod/>FiniteDifferenceMethod</a>
-<a href=http://ionizing.page/tags/densityfunctionaltheory/>DensityFunctionalTheory</a></div><nav class=post-nav><a class=prev href=/post/dimensional-analysis-using-const-generics/><i class=iconfont><svg class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="18" height="18"><path d="M691.908486 949.511495l75.369571-89.491197c10.963703-12.998035 10.285251-32.864502-1.499144-44.378743L479.499795 515.267417l277.93508-310.326815c11.338233-12.190647 11.035334-32.285311-.638543-44.850487l-80.46666-86.564541c-11.680017-12.583596-30.356378-12.893658-41.662889-.716314L257.233596 494.235404c-11.332093 12.183484-11.041474 32.266891.657986 44.844348l80.46666 86.564541c1.772366 1.910513 3.706415 3.533476 5.750981 4.877077l306.620399 321.703933C662.505829 963.726242 680.945807 962.528973 691.908486 949.511495z"/></svg></i><span class="prev-text nav-default">利用 Const Generics 实现编译期量纲分析</span>
-<span class="prev-text nav-mobile">上一篇</span></a>
-<a class=next href=/post/schrodinger-equation-numerical-methods/><span class="next-text nav-default">使用数值方法求解单电子 Schrodinger 方程</span>
+<a href=http://ionizing.page/tags/densityfunctionaltheory/>DensityFunctionalTheory</a>
+</div>
+<nav class=post-nav>
+<a class=prev href=/post/dimensional-analysis-using-const-generics/>
+<i class=iconfont><svg class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="18" height="18"><path d="M691.908486 949.511495l75.369571-89.491197c10.963703-12.998035 10.285251-32.864502-1.499144-44.378743L479.499795 515.267417l277.93508-310.326815c11.338233-12.190647 11.035334-32.285311-.638543-44.850487l-80.46666-86.564541c-11.680017-12.583596-30.356378-12.893658-41.662889-.716314L257.233596 494.235404c-11.332093 12.183484-11.041474 32.266891.657986 44.844348l80.46666 86.564541c1.772366 1.910513 3.706415 3.533476 5.750981 4.877077l306.620399 321.703933C662.505829 963.726242 680.945807 962.528973 691.908486 949.511495z"/></svg>
+</i>
+<span class="prev-text nav-default">利用 Const Generics 实现编译期量纲分析</span>
+<span class="prev-text nav-mobile">上一篇</span>
+</a>
+<a class=next href=/post/schrodinger-equation-numerical-methods/>
+<span class="next-text nav-default">使用数值方法求解单电子 Schrodinger 方程</span>
 <span class="prev-text nav-mobile">下一篇</span>
-<i class=iconfont><svg class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="18" height="18"><path d="M332.091514 74.487481l-75.369571 89.491197c-10.963703 12.998035-10.285251 32.864502 1.499144 44.378743l286.278095 300.375162L266.565125 819.058374c-11.338233 12.190647-11.035334 32.285311.638543 44.850487l80.46666 86.564541c11.680017 12.583596 30.356378 12.893658 41.662889.716314l377.434212-421.426145c11.332093-12.183484 11.041474-32.266891-.657986-44.844348l-80.46666-86.564541c-1.772366-1.910513-3.706415-3.533476-5.750981-4.877077L373.270379 71.774697c-11.777231-11.500939-30.216186-10.304694-41.178865 2.712784z"/></svg></i></a></nav></footer></article></div></div></main><footer id=footer class=footer><div class=icon-links><a href=mailto:petersmith_9@outlook.com rel="me noopener" class=iconfont title=email><svg class="icon" viewBox="0 0 1451 1024" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="36" height="36"><path d="M664.781909 681.472759.0 97.881301C0 3.997201 71.046997.0 71.046997.0H474.477909 961.649408h399.992405s71.046998 3.997201 71.046998 97.881301L771.345323 681.472759S764.482731 685.154773 753.594283 688.65053V688.664858C741.602731 693.493018 729.424896 695.068979 718.077952 694.839748 706.731093 695.068979 694.553173 693.493018 682.561621 688.664858V688.65053C671.644501 685.140446 664.781909 681.472759 664.781909 681.472759zm53.281707 130.131124C693.779541 811.016482 658.879232 802.205449 619.10784 767.734955 542.989056 701.759633.0 212.052267.0 212.052267V942.809523S0 1024 83.726336 1024H682.532949 753.579947h595.368192C1432.688811 1024 1432.688811 942.809523 1432.688811 942.809523V212.052267S893.138176 701.759633 817.019477 767.734955c-39.771477 34.470494-74.671786 43.295855-98.955861 43.868928z"/></svg></a><a href=http://github.com/Ionizing rel="me noopener" class=iconfont title=github target=_blank><svg class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="36" height="36"><path d="M512 12.672c-282.88.0-512 229.248-512 512 0 226.261333 146.688 418.133333 350.08 485.76 25.6 4.821333 34.986667-11.008 34.986667-24.618667.0-12.16-.426667-44.373333-.64-87.04C242.005334 929.664 211.968 830.08 211.968 830.08 188.672 770.986667 155.008 755.2 155.008 755.2c-46.378667-31.744 3.584-31.104 3.584-31.104 51.413333 3.584 78.421333 52.736 78.421333 52.736 45.653333 78.293333 119.850667 55.68 149.12 42.581333 4.608-33.109333 17.792-55.68 32.426667-68.48-113.706667-12.8-233.216-56.832-233.216-253.013333.0-55.893333 19.84-101.546667 52.693333-137.386667-5.76-12.928-23.04-64.981333 4.48-135.509333.0.0 42.88-13.738667 140.8 52.48 40.96-11.392 84.48-17.024 128-17.28 43.52.256 87.04 5.888 128 17.28 97.28-66.218667 140.16-52.48 140.16-52.48 27.52 70.528 10.24 122.581333 5.12 135.509333 32.64 35.84 52.48 81.493333 52.48 137.386667.0 196.693333-119.68 240-233.6 252.586667 17.92 15.36 34.56 46.762667 34.56 94.72.0 68.522667-.64 123.562667-.64 140.202666.0 13.44 8.96 29.44 35.2 24.32C877.44 942.592 1024 750.592 1024 524.672c0-282.752-229.248-512-512-512"/></svg></a><a href=http://ionizing.page/index.xml rel="noopener alternate" type=application/rss+xml class=iconfont title=rss target=_blank><svg class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30" height="30"><path d="M819.157333 1024C819.157333 574.592 449.408 204.8.0 204.8V0c561.706667.0 1024 462.293333 1024 1024H819.157333zM140.416 743.04a140.8 140.8.0 01140.501333 140.586667A140.928 140.928.0 01140.074667 1024C62.72 1024 0 961.109333.0 883.626667S62.933333 743.082667 140.416 743.04zM678.784 1024h-199.04c0-263.210667-216.533333-479.786667-479.744-479.786667v-199.04c372.352.0 678.784 306.517333 678.784 678.826667z"/></svg></a></div><div class=copyright><span class=power-by>Powered by <a class=hexo-link href=https://gohugo.io>Hugo</a></span>
+<i class=iconfont><svg class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="18" height="18"><path d="M332.091514 74.487481l-75.369571 89.491197c-10.963703 12.998035-10.285251 32.864502 1.499144 44.378743l286.278095 300.375162L266.565125 819.058374c-11.338233 12.190647-11.035334 32.285311.638543 44.850487l80.46666 86.564541c11.680017 12.583596 30.356378 12.893658 41.662889.716314l377.434212-421.426145c11.332093-12.183484 11.041474-32.266891-.657986-44.844348l-80.46666-86.564541c-1.772366-1.910513-3.706415-3.533476-5.750981-4.877077L373.270379 71.774697c-11.777231-11.500939-30.216186-10.304694-41.178865 2.712784z"/></svg>
+</i>
+</a>
+</nav>
+</footer>
+</article>
+</div>
+</div>
+</main>
+<footer id=footer class=footer>
+<div class=icon-links>
+<a href=mailto:petersmith_9@outlook.com rel="me noopener" class=iconfont title=email><svg class="icon" viewBox="0 0 1451 1024" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="36" height="36"><path d="M664.781909 681.472759.0 97.881301C0 3.997201 71.046997.0 71.046997.0H474.477909 961.649408h399.992405s71.046998 3.997201 71.046998 97.881301L771.345323 681.472759S764.482731 685.154773 753.594283 688.65053V688.664858C741.602731 693.493018 729.424896 695.068979 718.077952 694.839748 706.731093 695.068979 694.553173 693.493018 682.561621 688.664858V688.65053C671.644501 685.140446 664.781909 681.472759 664.781909 681.472759zm53.281707 130.131124C693.779541 811.016482 658.879232 802.205449 619.10784 767.734955 542.989056 701.759633.0 212.052267.0 212.052267V942.809523S0 1024 83.726336 1024H682.532949 753.579947h595.368192C1432.688811 1024 1432.688811 942.809523 1432.688811 942.809523V212.052267S893.138176 701.759633 817.019477 767.734955c-39.771477 34.470494-74.671786 43.295855-98.955861 43.868928z"/></svg>
+</a>
+<a href=http://github.com/Ionizing rel="me noopener" class=iconfont title=github target=_blank><svg class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="36" height="36"><path d="M512 12.672c-282.88.0-512 229.248-512 512 0 226.261333 146.688 418.133333 350.08 485.76 25.6 4.821333 34.986667-11.008 34.986667-24.618667.0-12.16-.426667-44.373333-.64-87.04C242.005334 929.664 211.968 830.08 211.968 830.08 188.672 770.986667 155.008 755.2 155.008 755.2c-46.378667-31.744 3.584-31.104 3.584-31.104 51.413333 3.584 78.421333 52.736 78.421333 52.736 45.653333 78.293333 119.850667 55.68 149.12 42.581333 4.608-33.109333 17.792-55.68 32.426667-68.48-113.706667-12.8-233.216-56.832-233.216-253.013333.0-55.893333 19.84-101.546667 52.693333-137.386667-5.76-12.928-23.04-64.981333 4.48-135.509333.0.0 42.88-13.738667 140.8 52.48 40.96-11.392 84.48-17.024 128-17.28 43.52.256 87.04 5.888 128 17.28 97.28-66.218667 140.16-52.48 140.16-52.48 27.52 70.528 10.24 122.581333 5.12 135.509333 32.64 35.84 52.48 81.493333 52.48 137.386667.0 196.693333-119.68 240-233.6 252.586667 17.92 15.36 34.56 46.762667 34.56 94.72.0 68.522667-.64 123.562667-.64 140.202666.0 13.44 8.96 29.44 35.2 24.32C877.44 942.592 1024 750.592 1024 524.672c0-282.752-229.248-512-512-512"/></svg>
+</a>
+<a href=http://ionizing.page/index.xml rel="noopener alternate" type=application/rss+xml class=iconfont title=rss target=_blank><svg class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30" height="30"><path d="M819.157333 1024C819.157333 574.592 449.408 204.8.0 204.8V0c561.706667.0 1024 462.293333 1024 1024H819.157333zM140.416 743.04a140.8 140.8.0 01140.501333 140.586667A140.928 140.928.0 01140.074667 1024C62.72 1024 0 961.109333.0 883.626667S62.933333 743.082667 140.416 743.04zM678.784 1024h-199.04c0-263.210667-216.533333-479.786667-479.744-479.786667v-199.04c372.352.0 678.784 306.517333 678.784 678.826667z"/></svg>
+</a>
+</div>
+<div class=copyright>
+<span class=power-by>
+Powered by <a class=hexo-link href=https://gohugo.io>Hugo</a>
+</span>
 <span class=division>|</span>
-<span class=theme-info>Theme - <a class=theme-link href=https://github.com/xianmin/hugo-theme-jane>Jane</a></span>
-<span class=copyright-year>&copy;
+<span class=theme-info>
+Theme - <a class=theme-link href=https://github.com/xianmin/hugo-theme-jane>Jane</a>
+</span>
+<span class=copyright-year>
+&copy;
 2021 -
 2023
-<span class=heart><i class=iconfont><svg class="icon" viewBox="0 0 1025 1024" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="14" height="14"><path d="M1000.1 247.9c-15.5-37.3-37.6-70.6-65.7-98.9-54.4-54.8-125.8-85-201-85-85.7.0-166 39-221.4 107.4C456.6 103 376.3 64 290.6 64c-75.1.0-146.5 30.4-201.1 85.6-28.2 28.5-50.4 61.9-65.8 99.3-16 38.8-24 79.9-23.6 122.2.7 91.7 40.1 177.2 108.1 234.8 3.1 2.6 6 5.1 8.9 7.8 14.9 13.4 58 52.8 112.6 102.7 93.5 85.5 209.9 191.9 257.5 234.2 7 6.1 15.8 9.5 24.9 9.5 9.2.0 18.1-3.4 24.9-9.5 34.5-30.7 105.8-95.9 181.4-165 74.2-67.8 150.9-138 195.8-178.2 69.5-57.9 109.6-144.4 109.9-237.3.1-42.5-8-83.6-24-122.2z" fill="#8a8a8a"/></svg></i></span><span class=author>Ionizing</span></span></div></footer><div class=back-to-top id=back-to-top><i class=iconfont><svg class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="35" height="35"><path d="M510.866688 227.694839 95.449397 629.218702h235.761562L329.15309 958.01517h362.40389L691.55698 628.188232l241.942331-3.089361L510.866688 227.694839zM63.840492 63.962777h894.052392v131.813095H63.840492V63.962777zm0 0"/></svg></i></div></div><script type=text/javascript src=/lib/jquery/jquery-3.2.1.min.js></script><script type=text/javascript src=/lib/slideout/slideout-1.0.1.min.js></script><script type=text/javascript src=/js/main.638251f4230630f0335d8c6748e53a96f94b72670920b60c09a56fdc8bece214.js integrity="sha256-Y4JR9CMGMPAzXYxnSOU6lvlLcmcJILYMCaVv3Ivs4hQ=" crossorigin=anonymous></script><script type=text/javascript>window.MathJax={showProcessingMessages:!1,messageStyle:'none'}</script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML" async></script><script type=text/javascript src=/js/load-photoswipe.js></script><script type=text/javascript src=/lib/photoswipe/photoswipe.min.js></script><script type=text/javascript src=/lib/photoswipe/photoswipe-ui-default.min.js></script></body></html>
+<span class=heart>
+<i class=iconfont><svg class="icon" viewBox="0 0 1025 1024" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="14" height="14"><path d="M1000.1 247.9c-15.5-37.3-37.6-70.6-65.7-98.9-54.4-54.8-125.8-85-201-85-85.7.0-166 39-221.4 107.4C456.6 103 376.3 64 290.6 64c-75.1.0-146.5 30.4-201.1 85.6-28.2 28.5-50.4 61.9-65.8 99.3-16 38.8-24 79.9-23.6 122.2.7 91.7 40.1 177.2 108.1 234.8 3.1 2.6 6 5.1 8.9 7.8 14.9 13.4 58 52.8 112.6 102.7 93.5 85.5 209.9 191.9 257.5 234.2 7 6.1 15.8 9.5 24.9 9.5 9.2.0 18.1-3.4 24.9-9.5 34.5-30.7 105.8-95.9 181.4-165 74.2-67.8 150.9-138 195.8-178.2 69.5-57.9 109.6-144.4 109.9-237.3.1-42.5-8-83.6-24-122.2z" fill="#8a8a8a"/></svg>
+</i>
+</span><span class=author>
+Ionizing
+</span></span>
+</div>
+</footer>
+<div class=back-to-top id=back-to-top>
+<i class=iconfont><svg class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="35" height="35"><path d="M510.866688 227.694839 95.449397 629.218702h235.761562L329.15309 958.01517h362.40389L691.55698 628.188232l241.942331-3.089361L510.866688 227.694839zM63.840492 63.962777h894.052392v131.813095H63.840492V63.962777zm0 0"/></svg>
+</i>
+</div>
+</div>
+<script type=text/javascript src=/lib/jquery/jquery-3.2.1.min.js></script>
+<script type=text/javascript src=/lib/slideout/slideout-1.0.1.min.js></script>
+<script type=text/javascript src=/js/main.638251f4230630f0335d8c6748e53a96f94b72670920b60c09a56fdc8bece214.js integrity="sha256-Y4JR9CMGMPAzXYxnSOU6lvlLcmcJILYMCaVv3Ivs4hQ=" crossorigin=anonymous></script>
+<script type=text/javascript>window.MathJax={showProcessingMessages:!1,messageStyle:'none'}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script type=text/javascript src=/js/load-photoswipe.js></script>
+<script type=text/javascript src=/lib/photoswipe/photoswipe.min.js></script>
+<script type=text/javascript src=/lib/photoswipe/photoswipe-ui-default.min.js></script>
+</body>
+</html>

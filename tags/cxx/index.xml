@@ -1,4 +1,20 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CXX on Ionizing Radiation</title><link>http://ionizing.page/tags/cxx/</link><description>Recent content in CXX on Ionizing Radiation</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Sat, 25 Mar 2023 19:22:00 +0800</lastBuildDate><atom:link href="http://ionizing.page/tags/cxx/index.xml" rel="self" type="application/rss+xml"/><item><title>在 CentOS 7 上使用 Clangd 作为 C/C++ 的 LSP</title><link>http://ionizing.page/post/use_clangd_as_lsp_on_centos7/</link><pubDate>Sat, 25 Mar 2023 19:22:00 +0800</pubDate><guid>http://ionizing.page/post/use_clangd_as_lsp_on_centos7/</guid><description>&lt;!-- raw HTML omitted -->
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CXX on Ionizing Radiation</title><link>http://ionizing.page/tags/cxx/</link><description>Recent content in CXX on Ionizing Radiation</description><generator>Hugo -- gohugo.io</generator><lastBuildDate>Tue, 04 Apr 2023 00:10:00 +0800</lastBuildDate><atom:link href="http://ionizing.page/tags/cxx/index.xml" rel="self" type="application/rss+xml"/><item><title>如何将文件打包进 C/C++/Fortran 程序内</title><link>http://ionizing.page/post/embed_binary_to_c_fortran/</link><pubDate>Tue, 04 Apr 2023 00:10:00 +0800</pubDate><guid>http://ionizing.page/post/embed_binary_to_c_fortran/</guid><description>&lt;!-- raw HTML omitted -->
+&lt;!-- raw HTML omitted -->
+&lt;ul>
+&lt;li>&lt;a href="#%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0">问题描述&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95">解决方法&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#%E7%9B%B4%E6%8E%A5%E5%86%99-const-char">直接写 &lt;code>const char*&lt;/code>&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E9%80%9A%E8%BF%87-inline-assembly">通过 inline assembly&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#%E5%AE%8F-plus-%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96">宏+内联汇编&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#fortran-%E7%9A%84%E5%A4%84%E7%90%86">Fortran 的处理&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#%E5%B0%8F%E7%BB%93">小结&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;!-- raw HTML omitted -->
+&lt;p>最近在写 Fortran 程序时有一个需求：把另一个文件打包进二进制里面，以便可以随时 &lt;code>print&lt;/code> 出来，经过一番网上冲浪，
+摸索出来几个 workaround ，在此记录一下。&lt;/p></description></item><item><title>在 CentOS 7 上使用 Clangd 作为 C/C++ 的 LSP</title><link>http://ionizing.page/post/use_clangd_as_lsp_on_centos7/</link><pubDate>Sat, 25 Mar 2023 19:22:00 +0800</pubDate><guid>http://ionizing.page/post/use_clangd_as_lsp_on_centos7/</guid><description>&lt;!-- raw HTML omitted -->
 &lt;!-- raw HTML omitted -->
 &lt;ul>
 &lt;li>&lt;a href="#%E5%9F%BA%E6%9C%AC%E7%8E%AF%E5%A2%83%E8%A6%81%E6%B1%82">基本环境要求&lt;/a>&lt;/li>
