@@ -1,6 +1,6 @@
 ---
 title: "如何将文件打包进 C/C++/Fortran 程序内"
-date: 2023-04-03T21:02:00+08:00
+date: 2023-04-04T00:10:00+08:00
 tags: ["Posts", "Linux", "Windows", "MacOS", "CXX", "C", "Fortran"]
 categories: ["Programming"]
 draft: false

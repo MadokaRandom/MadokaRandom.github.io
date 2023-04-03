@@ -3382,10 +3382,10 @@ https://se.inf.ethz.ch/~meyer/publications/OTHERS/scott_meyers/dimensions.pdf] �
 :END:
 
 ** DONE 如何将文件打包进 C/C++/Fortran 程序内 :@Programming:Linux:Windows:MacOS:CXX:C:Fortran:
-CLOSED: [2023-04-03 Mon 21:02]
+CLOSED: [2023-04-04 Tue 00:10]
 :PROPERTIES:
 :EXPORT_FILE_NAME: embed_binary_to_c_fortran
-:EXPORT_DATE: [2023-04-03]
+:EXPORT_DATE: [2023-04-04]
 :END:
 
 最近在写 Fortran 程序时有一个需求：把另一个文件打包进二进制里面，以便可以随时 =print= 出来，经过一番网上冲浪，
