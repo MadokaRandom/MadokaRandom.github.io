@@ -66,8 +66,8 @@ str:
     .string "Hello world."
 ```
 
-可见，除了一些内存对齐、类型标注等，主要起作用的还是 `.section .rodata` 和 `number: .long 114514` 了，前者对应了 `const`
-，后者对应了 `int number = 114514` 。那么借用这个方法，我们可以手动定义一个 `const char*` 的变量，然后在 C 代码中调用这个变量，
+可见，除了一些内存对齐、类型标注等，主要起作用的还是 `.section .rodata` 和 `number: .string "Hello world."` 了，前者对应了 `const`
+，后者对应了 `char str[] = "Hello world."` 。那么借用这个方法，我们可以手动定义一个 `const char[]` 的变量，然后在 C 代码中调用这个变量，
 即可达到访问被包含文件的目的。
 
 GCC 支持用 `__asm__()` 来内联汇编代码，那么我们可以这样写
