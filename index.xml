@@ -115,8 +115,8 @@
 &lt;span class="na">.string&lt;/span> &lt;span class="s">&amp;#34;Hello world.&amp;#34;&lt;/span>
 &lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
-&lt;/div>&lt;p>可见，除了一些内存对齐、类型标注等，主要起作用的还是 &lt;code>.section .rodata&lt;/code> 和 &lt;code>number: .long 114514&lt;/code> 了，前者对应了 &lt;code>const&lt;/code>
-，后者对应了 &lt;code>int number = 114514&lt;/code> 。那么借用这个方法，我们可以手动定义一个 &lt;code>const char*&lt;/code> 的变量，然后在 C 代码中调用这个变量，
+&lt;/div>&lt;p>可见，除了一些内存对齐、类型标注等，主要起作用的还是 &lt;code>.section .rodata&lt;/code> 和 &lt;code>number: .string &amp;quot;Hello world.&amp;quot;&lt;/code> 了，前者对应了 &lt;code>const&lt;/code>
+，后者对应了 &lt;code>char str[] = &amp;quot;Hello world.&amp;quot;&lt;/code> 。那么借用这个方法，我们可以手动定义一个 &lt;code>const char[]&lt;/code> 的变量，然后在 C 代码中调用这个变量，
 即可达到访问被包含文件的目的。&lt;/p>
 &lt;p>GCC 支持用 &lt;code>__asm__()&lt;/code> 来内联汇编代码，那么我们可以这样写&lt;/p>
 &lt;div class="highlight">&lt;div class="chroma">
